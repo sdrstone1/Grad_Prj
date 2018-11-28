@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">Arduino_Bluetooth</string>
+    <string name="title_activity_v_splash">Arduino_Bluetooth</string>
+    <string name="imageDescription_welcomeimg">Welcome_Image</string>
+    <string name="radiobtn_SMS_allowed">Enable</string>
+    <string name="radiobtn_SMS_disallowed">Disable</string>
+    <string name="Welcome_Message">Thank you to using my app.</string>
+    <string name="launchbtn">Start using app.</string>
+    <string name="title_activity_c_ble_connect">cBleConnect</string>
+</resources>
