@@ -15,16 +15,19 @@
 package com.tistory.kollhong.arduino_bluetooth;
 
 import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothServerSocket;
 import android.bluetooth.BluetoothSocket;
 import android.util.Log;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 public class mBleVO extends Thread {
-    static final String NAME = "Arduino_calculator";
-    static final UUID uid = UUID.fromString(NAME);
+    static final String TAG = "Arduino_calculator";
     private final BluetoothServerSocket mmServerSocket;
     BluetoothAdapter mBluetoothAdapter;
 
@@ -38,9 +41,9 @@ public class mBleVO extends Thread {
         }
         try {
             // MY_UUID is the app's UUID string, also used by the client code.
-            tmp = mBluetoothAdapter.listenUsingRfcommWithServiceRecord(NAME, uid);
+            tmp = mBluetoothAdapter.listenUsingRfcommWithServiceRecord(mBluetoothAdapter.getName(), UUID.fromString(mBluetoothAdapter.getAddress()));
         } catch (IOException e) {
-            Log.e(NAME, "Socket's listen() method failed", e);
+            Log.e(TAG, "Socket's listen() method failed", e);
         }
         mmServerSocket = tmp;
     }
@@ -57,7 +60,7 @@ public class mBleVO extends Thread {
                 socket = mmServerSocket.accept();       //BLE connection accepted : returns socket
                 socket.
             } catch (IOException e) {
-                Log.e(NAME, "Socket's accept() method failed", e);
+                Log.e(TAG, "Socket's accept() method failed", e);
                 break;
             }
 
@@ -76,11 +79,52 @@ public class mBleVO extends Thread {
         try {
             mmServerSocket.close();
         } catch (IOException e) {
-            Log.e(NAME, "Could not close the connect socket", e);
+            Log.e(TAG, "Could not close the connect socket", e);
         }
     }
 
     public boolean isEnabled() {
         return mBluetoothAdapter.isEnabled();
+    }
+
+    public List<listVO> getPairedDevices() {
+        List<listVO> listVO = new ArrayList<>();
+
+        Set<BluetoothDevice> pairedDevices = mBluetoothAdapter.getBondedDevices();
+
+        if (pairedDevices.size() > 0) {
+            // There are paired devices. Get the name and address of each paired device.
+            for (BluetoothDevice device : pairedDevices) {
+                listVO devVO = new listVO();
+                devVO.setDeviceName(device.getName());
+                devVO.setDeviceUUID(device.getAddress()); // MAC address
+
+                listVO.add(devVO);
+            }
+        }
+        return listVO;
+    }
+
+    public static class listVO {
+        String deviceName;
+        String deviceUUID;
+
+        public String getDeviceName() {
+            return deviceName;
+        }
+
+        public void setDeviceName(String deviceName) {
+            this.deviceName = deviceName;
+        }
+
+        public String getDeviceUUID() {
+            return deviceUUID;
+        }
+
+        public void setDeviceUUID(String deviceUUID) {
+            this.deviceUUID = deviceUUID;
+        }
+
+
     }
 }
