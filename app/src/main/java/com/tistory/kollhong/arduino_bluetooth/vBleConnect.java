@@ -90,9 +90,9 @@ public class vBleConnect extends AppCompatActivity implements cBleDataTransferOb
         BT_list = findViewById(R.id.BT_devices);
 
         arrayAdapter = new BTArrayAdapter(getApplicationContext(), android.R.layout.simple_list_item_2);
-        //TODO 아두이노와 연결되면 소켓통신 시작하기
 
         cBleDTO = new cBleDataTransferObject();
+        cBleDTO.setCallBack(this);
         pairedBTs = cBleDTO.getPairedDevices();
         switchStatus(cBleDTO.isEnabled());
 
@@ -103,14 +103,18 @@ public class vBleConnect extends AppCompatActivity implements cBleDataTransferOb
         BT_list.setAdapter(arrayAdapter);
 
 
-        cBleDTO.setCallBack(this);      //class vBleConnect implements SocketCallback
+        //class vBleConnect implements SocketCallback
         //setCallBack requires SocketCallback
         //so use this as parameter
     }
 
     @Override
     public void callBackMethod(BluetoothSocket mmSocket) {
+        //todo start service
 
+        mBTSocketVO mBTSocketVO = (com.tistory.kollhong.arduino_bluetooth.mBTSocketVO) getApplicationContext();
+        mBTSocketVO.mmSocket = mmSocket;
+        mBTSocketVO.startService();
     }
 
     public void onSwitchBtn(View v) {
@@ -158,15 +162,14 @@ public class vBleConnect extends AppCompatActivity implements cBleDataTransferOb
             convertView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    //TODO 소켓 통신 시작
 
                     TextView textView2 = v.findViewById(android.R.id.text2);
                     BluetoothDevice bluetoothDevice = (BluetoothDevice) textView2.getTag(2);
                     if (textView2.getTag(1) != "Paired") {
                         bluetoothDevice.createBond();
                     }
-                    new mPrefMan(getApplicationContext()).setBTUUID(bluetoothDevice.getAddress());
-                    cBleDTO.createConnection(bluetoothDevice);
+                    //new mPrefMan(getApplicationContext()).setBTUUID(bluetoothDevice.getAddress());
+                    cBleDTO.createSocket(bluetoothDevice);
                 }
             });
             TextView text1 = convertView.findViewById(android.R.id.text1);

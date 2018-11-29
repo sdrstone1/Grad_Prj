@@ -26,6 +26,7 @@ import java.util.UUID;
 
 public class cBleDataTransferObject extends Thread {
     static final String TAG = "Arduino_calculator";
+    private final UUID uid = UUID.fromString("00000003-0000-1000-8000-00805F9B34FB");
     BTSocketCallBack mBTSocketCallBack;
     BluetoothAdapter mBluetoothAdapter;
 
@@ -53,13 +54,16 @@ public class cBleDataTransferObject extends Thread {
         return mBluetoothAdapter.getBondedDevices();
     }
 
-    public void createConnection(BluetoothDevice bluetoothDevice) {
+    public void createSocket(BluetoothDevice bluetoothDevice) {
         new ConnectThread(bluetoothDevice);
     }
 
     private void returnBTSocket(BluetoothSocket mmSocket) {
+
         mBTSocketCallBack.callBackMethod(mmSocket);     //CallBack method called.
         //this method calls callBackMethod.
+
+
     }
 
     public void setCallBack(BTSocketCallBack CallbackClass) {
@@ -84,7 +88,7 @@ public class cBleDataTransferObject extends Thread {
             try {
                 // Get a BluetoothSocket to connect with the given BluetoothDevice.
                 // MY_UUID is the app's UUID string, also used in the server code.
-                tmp = device.createRfcommSocketToServiceRecord(UUID.fromString(mBluetoothAdapter.getAddress()));
+                tmp = device.createRfcommSocketToServiceRecord(uid);
             } catch (IOException e) {
                 Log.e(TAG, "Socket's create() method failed", e);
             }

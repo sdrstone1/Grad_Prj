@@ -54,12 +54,20 @@ The system invokes this method when the service is no longer used and is being d
 Your service should implement this to clean up any resources such as threads, registered listeners, or receivers.
 This is the last call that the service receives.
      */
+
+    BluetoothSocket mmSocket;
+    Handler mHandler;
     public mBleService(String name) {
         super("BLservice");
     }
 
     @Override
     protected void onHandleIntent(@Nullable Intent intent) {
+        mBTSocketVO mBTSocket = (mBTSocketVO) getApplicationContext();
+        this.mmSocket = mBTSocket.mmSocket;
+        mHandler = mBTSocket.mHandler;
+        BTService btService = new BTService(mmSocket, mHandler);
+
 
     }
 
@@ -100,9 +108,10 @@ This is the last call that the service receives.
     }
 
 
-    public static class MyBluetoothService {
-        private static final String TAG = "MY_APP_DEBUG_TAG";
+    public static class BTService {
+        private static final String TAG = "Arduino_App";
         private Handler mHandler; // handler that gets info from Bluetooth service
+        private ConnectedThread connectedThread;
 
         // Defines several constants used when transmitting messages between the
         // service and the UI.
@@ -112,6 +121,15 @@ This is the last call that the service receives.
             public static final int MESSAGE_TOAST = 2;
 
             // ... (Add other message types here as needed.)
+        }
+
+        public BTService(BluetoothSocket mmSocket, Handler mHandler) {
+            connectedThread = new ConnectedThread(mmSocket);
+            this.mHandler = mHandler;
+        }
+
+        public void BTwrite(byte[] bytes) {
+            connectedThread.write(bytes);
         }
 
         private class ConnectedThread extends Thread {
@@ -152,10 +170,12 @@ This is the last call that the service receives.
                         // Read from the InputStream.
                         numBytes = mmInStream.read(mmBuffer);
                         // Send the obtained bytes to the UI activity.
+                        //TODO Handler지우기. DB로 바로 작성할 거야.
                         Message readMsg = mHandler.obtainMessage(
                                 MessageConstants.MESSAGE_READ, numBytes, -1,
-                                mmBuffer);
-                        readMsg.sendToTarget();
+                                mmBuffer);      //mHandler에서 얻은 Message가
+                        readMsg.sendToTarget(); //타겟으로 보냄 == mHandler에 보내짐
+
                     } catch (IOException e) {
                         Log.d(TAG, "Input stream was disconnected", e);
                         break;

@@ -21,4 +21,6 @@
     <string name="Welcome_Message">Thank you to using my app.</string>
     <string name="launchbtn">Start using app.</string>
     <string name="title_activity_c_ble_connect">cBleConnect</string>
+
+    <string name="plsConnect_Bluetooth">Connect to the Arduino with bluetooth to start  to gather informations.</string>
 </resources>

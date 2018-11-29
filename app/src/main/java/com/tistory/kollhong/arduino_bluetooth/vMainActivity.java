@@ -14,12 +14,14 @@
 
 package com.tistory.kollhong.arduino_bluetooth;
 
+import android.app.Application;
+import android.bluetooth.BluetoothSocket;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
-public class vMainActivity extends AppCompatActivity {
+public class vMainActivity extends AppCompatActivity implements cBleDataTransferObject.BTSocketCallBack {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,14 +39,52 @@ public class vMainActivity extends AppCompatActivity {
 
         setTheme(R.style.AppTheme);
 
-        Intent intent = new Intent(this, mBleService.class);
-        startService(intent);
-        //TODO 프리퍼런스에 BT uuid가 저장되어 있으면
-        //todo paired devices에서 uuid 같은 것 찾아서 bluetoothdevice 객체 얻고 소켓통신 시작.
+        /*
+        String uid = mPrefMan.getBTUUID();
+        if(uid != null){
+            BluetoothDevice btDevice = null;
+            cBleDataTransferObject cBleDTO = new cBleDataTransferObject();
+            Set<BluetoothDevice> pairedBTs = cBleDTO.getPairedDevices();
+            for(BluetoothDevice device : pairedBTs){
+                if(device.getAddress() == uid ){
+
+                    btDevice = device;
+                    break;
+                }
+            }
+            if(btDevice != null){
+                //todo start socket transfer
+                cBleDTO.setCallBack(this);
+                cBleDTO.createSocket(btDevice);
+
+            }
+            else{
+                Snackbar.make(findViewById(R.id.mainLayout),R.string.plsConnect_Bluetooth,Snackbar.LENGTH_LONG).show();
+            }
+
+        }
+        */
+
+
+
         super.onCreate(savedInstanceState);
     }
 
     public void onSettingsBtn(View v) {
         startActivity(new Intent(getApplicationContext(), vFirstLaunch.class));
+    }
+
+    @Override
+    public void callBackMethod(BluetoothSocket mmSocket) {
+        //todo callback start service
+
+        mBTSocketVO mBTSocketVO = (com.tistory.kollhong.arduino_bluetooth.mBTSocketVO) getApplicationContext();
+        mBTSocketVO.mmSocket = mmSocket;
+        //mBTSocketVO.mHandler =
+        mBTSocketVO.startService();
+    }
+
+    public class app extends Application {
+
     }
 }

@@ -42,23 +42,19 @@ public class mPrefMan {
             init = false;
     }
 
+    public String getBTUUID() {
+        return mPref.getString("UUID", null);
+    }
+
     public void setBTUUID(String address) {
         mPrefEdit.putString("UUID", address);
+        mPrefEdit.commit();
     }
     public void setInit() {
         mPrefEdit.putBoolean("initialized", true);
         mPrefEdit.commit();
     }
 
-    public boolean getSMSEnabled() {
-        if (mPref.contains("SMS") == true) {
-            return mPref.getBoolean("SMS", true);
-
-        } else {
-            //TODO SMS 사용 여부 없다고 알림 보내고 설정 페이지로 intent
-            return false;
-        }
-    }
 
     public void setSMSRegistered(boolean set) {
 
