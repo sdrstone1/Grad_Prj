@@ -29,15 +29,18 @@ public class vMainActivity extends AppCompatActivity {
 
         mPrefMan mPrefMan = new mPrefMan(getApplicationContext());
         if (!mPrefMan.init) {
-            /*
-            TODO 첫 실행이면 웰컴 액티비티 실행
-             */
+
             Intent firstlaunch_intent = new Intent(getApplicationContext(), vFirstLaunch.class);
             firstlaunch_intent.setFlags(Intent.FLAG_ACTIVITY_TASK_ON_HOME);
             startActivity(firstlaunch_intent);
         }
 
         setTheme(R.style.AppTheme);
+
+        Intent intent = new Intent(this, mBleService.class);
+        startService(intent);
+        //TODO 프리퍼런스에 BT uuid가 저장되어 있으면
+        //todo paired devices에서 uuid 같은 것 찾아서 bluetoothdevice 객체 얻고 소켓통신 시작.
         super.onCreate(savedInstanceState);
     }
 

@@ -42,7 +42,9 @@ public class mPrefMan {
             init = false;
     }
 
-
+    public void setBTUUID(String address) {
+        mPrefEdit.putString("UUID", address);
+    }
     public void setInit() {
         mPrefEdit.putBoolean("initialized", true);
         mPrefEdit.commit();

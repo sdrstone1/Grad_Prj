@@ -16,6 +16,7 @@ package com.tistory.kollhong.arduino_bluetooth;
 
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothSocket;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -33,37 +34,34 @@ import android.widget.ListView;
 import android.widget.Switch;
 import android.widget.TextView;
 
-import java.util.List;
+import java.util.Set;
 
-public class vBleConnect extends AppCompatActivity {
+public class vBleConnect extends AppCompatActivity implements cBleDataTransferObject.BTSocketCallBack {
     static final int REQUEST_ENABLE_BT = 33768;
     //static final String NAME = "Arduino_calculator";
     //static final UUID uid = UUID.fromString(NAME);
 
-    mBleVO mBleVO;
+    cBleDataTransferObject cBleDTO;
     Switch bleSwitch;
     ListView BT_list;
-    ArrayAdapter<mBleVO.listVO> arrayAdapter;
+    ArrayAdapter<BluetoothDevice> arrayAdapter;
     public BroadcastReceiver discoverReciever = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
 
             String action = intent.getAction();
             if (BluetoothDevice.ACTION_FOUND.equals(action)) {
-                mBleVO.listVO devVO = new mBleVO.listVO();
                 // Discovery has found a device. Get the BluetoothDevice
                 // object and its info from the Intent.
                 BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
-                devVO.setDeviceName(device.getName());
-                devVO.setDeviceUUID(device.getAddress()); // MAC address
 
-                arrayAdapter.add(devVO);
+                arrayAdapter.add(device);
                 arrayAdapter.notifyDataSetChanged();
 
             }
         }
     };
-    List<mBleVO.listVO> pairedBTs;
+    Set<BluetoothDevice> pairedBTs;
     public BroadcastReceiver bleReciever = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -94,65 +92,33 @@ public class vBleConnect extends AppCompatActivity {
         arrayAdapter = new BTArrayAdapter(getApplicationContext(), android.R.layout.simple_list_item_2);
         //TODO 아두이노와 연결되면 소켓통신 시작하기
 
-        mBleVO = new mBleVO();
-        pairedBTs = mBleVO.getPairedDevices();
-        switchStatus(mBleVO.isEnabled());
+        cBleDTO = new cBleDataTransferObject();
+        pairedBTs = cBleDTO.getPairedDevices();
+        switchStatus(cBleDTO.isEnabled());
 
         IntentFilter intent = new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED);
         registerReceiver(bleReciever, intent);
 
 
         BT_list.setAdapter(arrayAdapter);
+
+
+        cBleDTO.setCallBack(this);      //class vBleConnect implements SocketCallback
+        //setCallBack requires SocketCallback
+        //so use this as parameter
     }
 
-    public class BTArrayAdapter extends ArrayAdapter<mBleVO.listVO> {
+    @Override
+    public void callBackMethod(BluetoothSocket mmSocket) {
 
-        public BTArrayAdapter(@NonNull Context context, int resource) {
-            super(context, resource);
-        }
+    }
 
-        @Nullable
-        @Override
-        public mBleVO.listVO getItem(int position) {
-            return super.getItem(position);
-        }
-
-        @NonNull
-        @Override
-        public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-            if (convertView == null) {
-
-                convertView = LayoutInflater.from(getContext()).inflate(android.R.layout.simple_list_item_2, parent);
-            }
-
-            convertView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    //TODO 소켓 통신 시작
-                    v.findViewById(android.R.id.text1);
-                }
-            });
-            TextView text1 = convertView.findViewById(android.R.id.text1);
-            TextView text2 = convertView.findViewById(android.R.id.text2);
-            String text = getItem(position).deviceName;
-
-            text2.setText(getItem(position).deviceUUID);
-
-            for (mBleVO.listVO i : pairedBTs) {
-                if (getItem(position).deviceUUID == i.deviceUUID) {
-                    text += "(Paired)";
-                    text1.setTypeface(text1.getTypeface(), Typeface.BOLD);
-                    break;
-                }
-            }
-            text1.setText(text);
-
-            return convertView;
-        }
-
-        @Override
-        public void add(@Nullable mBleVO.listVO object) {
-            super.add(object);
+    public void onSwitchBtn(View v) {
+        if (!cBleDTO.isEnabled()) {
+            Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+            startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
+        } else {
+            cBleDTO.disable();
         }
     }
 
@@ -169,13 +135,62 @@ public class vBleConnect extends AppCompatActivity {
         }
     }
 
+    public class BTArrayAdapter extends ArrayAdapter<BluetoothDevice> {
 
-    public void onSwitchBtn(View v) {
-        if (!mBleVO.isEnabled()) {
-            Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-            startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
-        } else {
-            mBleVO.disable();
+        public BTArrayAdapter(@NonNull Context context, int resource) {
+            super(context, resource);
+        }
+
+        @Nullable
+        @Override
+        public BluetoothDevice getItem(int position) {
+            return super.getItem(position);
+        }
+
+        @NonNull
+        @Override
+        public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+            if (convertView == null) {
+
+                convertView = LayoutInflater.from(getContext()).inflate(android.R.layout.simple_list_item_2, parent);
+            }
+
+            convertView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    //TODO 소켓 통신 시작
+
+                    TextView textView2 = v.findViewById(android.R.id.text2);
+                    BluetoothDevice bluetoothDevice = (BluetoothDevice) textView2.getTag(2);
+                    if (textView2.getTag(1) != "Paired") {
+                        bluetoothDevice.createBond();
+                    }
+                    new mPrefMan(getApplicationContext()).setBTUUID(bluetoothDevice.getAddress());
+                    cBleDTO.createConnection(bluetoothDevice);
+                }
+            });
+            TextView text1 = convertView.findViewById(android.R.id.text1);
+            TextView text2 = convertView.findViewById(android.R.id.text2);
+            String text = getItem(position).getName();
+            String id = getItem(position).getAddress();
+            text2.setText(id);
+
+            for (BluetoothDevice i : pairedBTs) {
+                if (id == i.getAddress()) {
+                    text += "(Paired)";
+                    text1.setTypeface(text1.getTypeface(), Typeface.BOLD);
+                    text2.setTag(1, "Paired");
+                    break;
+                }
+            }
+            text1.setText(text);
+            text2.setTag(2, getItem(position));
+            return convertView;
+        }
+
+        @Override
+        public void add(@Nullable BluetoothDevice object) {
+            super.add(object);
         }
     }
 
