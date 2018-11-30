@@ -28,7 +28,7 @@ import android.view.*;
 import android.view.inputmethod.EditorInfo;
 import android.widget.*;
 
-public class vMessageActivity extends AppCompatActivity {
+public class ActivityMessageViewer extends AppCompatActivity {
     // Message types sent from the BluetoothChatService Handler
     public static final int MESSAGE_STATE_CHANGE = 1;
     public static final int MESSAGE_READ = 2;
@@ -36,7 +36,7 @@ public class vMessageActivity extends AppCompatActivity {
     public static final int MESSAGE_DEVICE_NAME = 4;
     public static final int MESSAGE_TOAST = 5;
     // Key names received from the BluetoothChatService Handler
-    public static final String DEVICE_NAME = "v_device_list_name";
+    public static final String DEVICE_NAME = "device_list_name";
     public static final String TOAST = "toast";
     // Debugging
     private static final String TAG = "BluetoothChat";
@@ -63,16 +63,16 @@ public class vMessageActivity extends AppCompatActivity {
                 case MESSAGE_STATE_CHANGE:
                     if (D) Log.i(TAG, "MESSAGE_STATE_CHANGE: " + msg.arg1);
                     switch (msg.arg1) {
-                        case BluetoothService.STATE_CONNECTED:
+                        case BtService.STATE_CONNECTED:
                             mTitle.setText(R.string.title_connected_to);
                             mTitle.append(mConnectedDeviceName);
                             mConversationArrayAdapter.clear();
                             break;
-                        case BluetoothService.STATE_CONNECTING:
+                        case BtService.STATE_CONNECTING:
                             mTitle.setText(R.string.title_connecting);
                             break;
-                        case BluetoothService.STATE_LISTEN:
-                        case BluetoothService.STATE_NONE:
+                        case BtService.STATE_LISTEN:
+                        case BtService.STATE_NONE:
                             mTitle.setText(R.string.title_not_connected);
                             break;
                     }
@@ -95,6 +95,7 @@ public class vMessageActivity extends AppCompatActivity {
                         수신값 /// -> 시작
 \\\ -> 종료 -> 줄내림; 하는 방식으로 바꾸기
                         */
+
                     mConversationArrayAdapter.add(mConnectedDeviceName + ":  " + readMessage);
                     break;
                 case MESSAGE_DEVICE_NAME:
@@ -115,12 +116,12 @@ public class vMessageActivity extends AppCompatActivity {
     // Local Bluetooth adapter
     private BluetoothAdapter mBluetoothAdapter = null;
     // Member object for the chat services
-    private BluetoothService mChatService = null;
+    private BtService mChatService = null;
     // The action listener for the EditText widget, to listen for the return key
     private TextView.OnEditorActionListener mWriteListener =
             new TextView.OnEditorActionListener() {
                 public boolean onEditorAction(TextView view, int actionId, KeyEvent event) {
-                    // If the action is a key-up event on the return key, send the v_msg_list_holder
+                    // If the action is a key-up event on the return key, send the msg_list_holder
                     if (actionId == EditorInfo.IME_NULL && event.getAction() == KeyEvent.ACTION_UP) {
                         String message = view.getText().toString();
                         sendMessage(message);
@@ -138,8 +139,8 @@ public class vMessageActivity extends AppCompatActivity {
 
         // Set up the window layout
         requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
-        setContentView(R.layout.activity_v_msg);
-        getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.activity_v_msg_title);
+        setContentView(R.layout.activity_msg);
+        getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.activity_msg_title);
 
         // Set up the custom title
         mTitle = (TextView) findViewById(R.id.title_left_text);
@@ -183,7 +184,7 @@ public class vMessageActivity extends AppCompatActivity {
         // onResume() will be called when ACTION_REQUEST_ENABLE activity returns.
         if (mChatService != null) {
             // Only if the state is STATE_NONE, do we know that we haven't started already
-            if (mChatService.getState() == BluetoothService.STATE_NONE) {
+            if (mChatService.getState() == BtService.STATE_NONE) {
                 // Start the Bluetooth chat services
                 mChatService.start();
             }
@@ -194,7 +195,7 @@ public class vMessageActivity extends AppCompatActivity {
         Log.d(TAG, "setupChat()");
 
         // Initialize the array adapter for the conversation thread
-        mConversationArrayAdapter = new ArrayAdapter<String>(this, R.layout.v_msg_list_holder);
+        mConversationArrayAdapter = new ArrayAdapter<String>(this, R.layout.msg_list_holder);
         mConversationView = (ListView) findViewById(R.id.in);
         mConversationView.setAdapter(mConversationArrayAdapter);
 
@@ -206,7 +207,7 @@ public class vMessageActivity extends AppCompatActivity {
         mSendButton = (Button) findViewById(R.id.button_send);
         mSendButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                // Send a v_msg_list_holder using content of the edit text widget
+                // Send a msg_list_holder using content of the edit text widget
                 TextView view = (TextView) findViewById(R.id.edit_text_out);
                 String message = view.getText().toString();
                 sendMessage(message);
@@ -214,7 +215,7 @@ public class vMessageActivity extends AppCompatActivity {
         });
 
         // Initialize the BluetoothChatService to perform bluetooth connections
-        mChatService = new BluetoothService(this, mHandler);
+        mChatService = new BtService(this, mHandler);
 
         // Initialize the buffer for outgoing messages
         mOutStringBuffer = new StringBuffer("");
@@ -251,20 +252,20 @@ public class vMessageActivity extends AppCompatActivity {
     }
 
     /**
-     * Sends a v_msg_list_holder.
+     * Sends a msg_list_holder.
      *
      * @param message A string of text to send.
      */
     private void sendMessage(String message) {
         // Check that we're actually connected before trying anything
-        if (mChatService.getState() != BluetoothService.STATE_CONNECTED) {
+        if (mChatService.getState() != BtService.STATE_CONNECTED) {
             Toast.makeText(this, R.string.not_connected, Toast.LENGTH_SHORT).show();
             return;
         }
 
         // Check that there's actually something to send
         if (message.length() > 0) {
-            // Get the v_msg_list_holder bytes and tell the BluetoothChatService to write
+            // Get the msg_list_holder bytes and tell the BluetoothChatService to write
             byte[] send = message.getBytes();
             mChatService.write(send);
 
@@ -282,7 +283,7 @@ public class vMessageActivity extends AppCompatActivity {
                 if (resultCode == Activity.RESULT_OK) {
                     // Get the device MAC address
                     String address = data.getExtras()
-                            .getString(vBleConnect.EXTRA_DEVICE_ADDRESS);
+                            .getString(ActivityBtConnect.EXTRA_DEVICE_ADDRESS);
                     // Get the BLuetoothDevice object
                     BluetoothDevice device = mBluetoothAdapter.getRemoteDevice(address);
                     // Attempt to connect to the device
@@ -315,7 +316,7 @@ public class vMessageActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.scan:
                 // Launch the DeviceListActivity to see devices and do scan
-                Intent serverIntent = new Intent(this, vBleConnect.class);
+                Intent serverIntent = new Intent(this, ActivityBtConnect.class);
                 startActivityForResult(serverIntent, REQUEST_CONNECT_DEVICE);
                 return true;
             case R.id.discoverable:

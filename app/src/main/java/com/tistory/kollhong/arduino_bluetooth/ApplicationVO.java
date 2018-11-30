@@ -17,17 +17,15 @@ package com.tistory.kollhong.arduino_bluetooth;
 import android.app.Application;
 import android.bluetooth.BluetoothSocket;
 import android.content.Intent;
-import android.os.Handler;
 
 
-public class mApplicationVO extends Application {
+public class ApplicationVO extends Application {
     BluetoothSocket mmSocket;
-    Handler mHandler = new Handler();
     static final String DATABASE_NAME = "data.db";
     static String ROOT_DIR;
 
     public void startService() {
-        Intent intent = new Intent(getApplicationContext(), mBleService.class);
+        Intent intent = new Intent(getApplicationContext(), BtService.class);
         startService(intent);
         stopService(intent);
     }

@@ -14,5 +14,5 @@
 
 package com.tistory.kollhong.arduino_bluetooth;
 
-public class mDrinkCalculator {
+public class DrinkCalculator {
 }

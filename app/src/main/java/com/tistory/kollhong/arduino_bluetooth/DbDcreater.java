@@ -22,11 +22,11 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-import static com.tistory.kollhong.arduino_bluetooth.mApplicationVO.DATABASE_NAME;
-import static com.tistory.kollhong.arduino_bluetooth.mApplicationVO.ROOT_DIR;
+import static com.tistory.kollhong.arduino_bluetooth.ApplicationVO.DATABASE_NAME;
+import static com.tistory.kollhong.arduino_bluetooth.ApplicationVO.ROOT_DIR;
 
-public class cDBcreate {
-    cDBcreate(Context context) {
+public class DbDcreater {
+    DbDcreater(Context context) {
 
         File folder = new File(ROOT_DIR + "/database");
         folder.mkdirs();

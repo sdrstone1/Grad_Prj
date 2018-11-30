@@ -31,7 +31,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-public class vFirstLaunch extends AppCompatActivity {
+public class ActivityWelcome extends AppCompatActivity {
     int radio_checked = 0;
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -51,7 +51,7 @@ public class vFirstLaunch extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_v_first_launch);
+        setContentView(R.layout.activity_welcome);
 
         //Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         //setSupportActionBar(toolbar);
@@ -66,19 +66,19 @@ public class vFirstLaunch extends AppCompatActivity {
         TabLayout tabLayout = findViewById(R.id.tabDots);
         tabLayout.setupWithViewPager(mViewPager, true);
 
-        new cDBcreate(this);
+        new DbDcreater(this);
 
     }
 
     public void onFinish(View view) {
         if (radio_checked == 2) {
-            cPrefDao mPref = new cPrefDao(getApplicationContext());
+            PrefDao mPref = new PrefDao(getApplicationContext());
             mPref.setInit();
             mPref.setSMSRegistered(true);
             getSMSPerm();
 
         } else if (radio_checked == 1) {
-            cPrefDao mPref = new cPrefDao(getApplicationContext());
+            PrefDao mPref = new PrefDao(getApplicationContext());
             mPref.setInit();
             mPref.setSMSRegistered(false);
             finish();
@@ -139,7 +139,7 @@ public class vFirstLaunch extends AppCompatActivity {
         @Nullable
         @Override
         public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.activity_v_first_launch_frag0, container, false);
+            View rootView = inflater.inflate(R.layout.activity_welcome_frag0, container, false);
             return rootView;
         }
     }
@@ -147,7 +147,7 @@ public class vFirstLaunch extends AppCompatActivity {
     public static class infoFragment extends Fragment {
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-            View rootview = inflater.inflate(R.layout.activity_v_first_launch_frag1, container, false);
+            View rootview = inflater.inflate(R.layout.activity_welcome_frag1, container, false);
             return rootview;
         }
     }

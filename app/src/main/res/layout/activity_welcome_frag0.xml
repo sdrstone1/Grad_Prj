@@ -18,7 +18,7 @@
                                              android:id="@+id/constraintLayout"
                                              android:layout_width="match_parent"
                                              android:layout_height="match_parent"
-                                             tools:context="com.tistory.kollhong.arduino_bluetooth.vFirstLaunch$welcomFragment">
+                                             tools:context="com.tistory.kollhong.arduino_bluetooth.ActivityWelcome$welcomFragment">
 
     <ImageView
             android:id="@+id/imageView2"

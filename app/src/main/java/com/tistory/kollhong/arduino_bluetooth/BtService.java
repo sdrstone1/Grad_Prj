@@ -33,7 +33,7 @@ import java.util.UUID;
  * Created by seo on 2018. 9. 10..
  */
 
-public class BluetoothService {
+public class BtService {
     // Constants that indicate the current connection state
     public static final int STATE_NONE = 0;       // we're doing nothing
     public static final int STATE_LISTEN = 1;     // now listening for incoming connections
@@ -60,7 +60,7 @@ public class BluetoothService {
      * @param context The UI Activity Context
      * @param handler A Handler to send messages back to the UI Activity
      */
-    public BluetoothService(Context context, Handler handler) {
+    public BtService(Context context, Handler handler) {
         mAdapter = BluetoothAdapter.getDefaultAdapter();
         mState = STATE_NONE;
         mHandler = handler;
@@ -83,7 +83,7 @@ public class BluetoothService {
         mState = state;
 
         // Give the new state to the Handler so the UI Activity can update
-        mHandler.obtainMessage(vMessageActivity.MESSAGE_STATE_CHANGE, state, -1).sendToTarget();
+        mHandler.obtainMessage(ActivityMessageViewer.MESSAGE_STATE_CHANGE, state, -1).sendToTarget();
     }
 
     /**
@@ -173,9 +173,9 @@ public class BluetoothService {
         mConnectedThread.start();
 
         // Send the name of the connected device back to the UI Activity
-        Message msg = mHandler.obtainMessage(vMessageActivity.MESSAGE_DEVICE_NAME);
+        Message msg = mHandler.obtainMessage(ActivityMessageViewer.MESSAGE_DEVICE_NAME);
         Bundle bundle = new Bundle();
-        bundle.putString(vMessageActivity.DEVICE_NAME, device.getName());
+        bundle.putString(ActivityMessageViewer.DEVICE_NAME, device.getName());
         msg.setData(bundle);
         mHandler.sendMessage(msg);
 
@@ -226,10 +226,10 @@ public class BluetoothService {
     private void connectionFailed() {
         setState(STATE_LISTEN);
 
-        // Send a failure v_msg_list_holder back to the Activity
-        Message msg = mHandler.obtainMessage(vMessageActivity.MESSAGE_TOAST);
+        // Send a failure msg_list_holder back to the Activity
+        Message msg = mHandler.obtainMessage(ActivityMessageViewer.MESSAGE_TOAST);
         Bundle bundle = new Bundle();
-        bundle.putString(vMessageActivity.TOAST, "Unable to connect device");
+        bundle.putString(ActivityMessageViewer.TOAST, "Unable to connect device");
         msg.setData(bundle);
         mHandler.sendMessage(msg);
     }
@@ -240,10 +240,10 @@ public class BluetoothService {
     private void connectionLost() {
         setState(STATE_LISTEN);
 
-        // Send a failure v_msg_list_holder back to the Activity
-        Message msg = mHandler.obtainMessage(vMessageActivity.MESSAGE_TOAST);
+        // Send a failure msg_list_holder back to the Activity
+        Message msg = mHandler.obtainMessage(ActivityMessageViewer.MESSAGE_TOAST);
         Bundle bundle = new Bundle();
-        bundle.putString(vMessageActivity.TOAST, "Device connection was lost");
+        bundle.putString(ActivityMessageViewer.TOAST, "Device connection was lost");
         msg.setData(bundle);
         mHandler.sendMessage(msg);
     }
@@ -287,7 +287,7 @@ public class BluetoothService {
 
                 // If a connection was accepted
                 if (socket != null) {
-                    synchronized (BluetoothService.this) {
+                    synchronized (BtService.this) {
                         switch (mState) {
                             case STATE_LISTEN:
                             case STATE_CONNECTING:
@@ -365,12 +365,12 @@ public class BluetoothService {
                     Log.e(TAG, "unable to close() socket during connection failure", e2);
                 }
                 // Start the service over to restart listening mode
-                BluetoothService.this.start();
+                BtService.this.start();
                 return;
             }
 
             // Reset the ConnectThread because we're done
-            synchronized (BluetoothService.this) {
+            synchronized (BtService.this) {
                 mConnectThread = null;
             }
 
@@ -428,7 +428,7 @@ public class BluetoothService {
 
 
                     // Send the obtained bytes to the UI Activity
-                    mHandler.obtainMessage(vMessageActivity.MESSAGE_READ, bytes, -1, buffer)
+                    mHandler.obtainMessage(ActivityMessageViewer.MESSAGE_READ, bytes, -1, buffer)
                             .sendToTarget();
                 } catch (IOException e) {
                     Log.e(TAG, "disconnected", e);
@@ -447,8 +447,8 @@ public class BluetoothService {
             try {
                 mmOutStream.write(buffer);
 
-                // Share the sent v_msg_list_holder back to the UI Activity
-                mHandler.obtainMessage(vMessageActivity.MESSAGE_WRITE, -1, -1, buffer)
+                // Share the sent msg_list_holder back to the UI Activity
+                mHandler.obtainMessage(ActivityMessageViewer.MESSAGE_WRITE, -1, -1, buffer)
                         .sendToTarget();
             } catch (IOException e) {
                 Log.e(TAG, "Exception during write", e);

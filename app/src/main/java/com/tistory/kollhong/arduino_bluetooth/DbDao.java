@@ -14,64 +14,36 @@
 
 package com.tistory.kollhong.arduino_bluetooth;
 
-import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteConstraintException;
 import android.database.sqlite.SQLiteDatabase;
 
-import static com.tistory.kollhong.arduino_bluetooth.mApplicationVO.ROOT_DIR;
+import static com.tistory.kollhong.arduino_bluetooth.ApplicationVO.ROOT_DIR;
 
-public class cDbDao {
+public class DbDao {
     SQLiteDatabase db;
-    SaveData data;
     Cursor cursor;
+    Context context;
 
     //여기서 읽기 쓰기 작업 모두 진행
     //여기서 디비 객체 선언
-    cDbDao(Context context, boolean RW) {
+    DbDao(Context context, boolean RW) {
         if (RW) {
             db = SQLiteDatabase.openDatabase(ROOT_DIR + "/database/data.db", null, SQLiteDatabase.OPEN_READWRITE | SQLiteDatabase.NO_LOCALIZED_COLLATORS);
-            data = new SaveData();
         } else {
             db = SQLiteDatabase.openDatabase(ROOT_DIR + "/database/data.db", null, SQLiteDatabase.OPEN_READONLY | SQLiteDatabase.NO_LOCALIZED_COLLATORS);
 
         }
+        this.context = context;
         //todo db writing
     }
 
-    public Cursor getTransHistory(long today00, long today2359) {
-        cursor = db.rawQuery("select c.name, t.amount, t.recipient, a.name, parent.name, c.level, t._id " +
-                "from trans as t " +
-                "left join category as c on ( t.categoryid = c._id ) " +
-                "left join accounts as a on ( t.accountid = a._id ) " +
-                "left join category as parent on ( c.parent = parent._id) " +
-                "where t.time >= '" + today00 + "' and t.time <= '" + today2359 +
-                "' order by t.time desc", null);
-        return cursor;
-    }
-
-    public Cursor getTransByAcc(long thisMonth, long nextMonth) {
-
-        cursor = db.rawQuery("SELECT t._id, t.categoryid, a.name as accname, t.amount, t.accountid, t.recipient, t.rewardamount, c.level " +
-                "FROM trans as t " +
-                "left join category as c on (t.categoryid = c._id) " +
-                "left join accounts as a on ( t.accountid = a._id ) " +
-                "WHERE t.time >= '" + thisMonth + "' and t.time <= '" + nextMonth + "' " +
-                "order by t.accountid ", null);
-        return cursor;
-    }
-
-    public Cursor getTransbyCat(long thisMonth, long nextMonth) {
-        cursor = db.rawQuery("SELECT t._id, t.categoryid, c.name, t.amount " +
-                "FROM trans as t " +
-                "left join category as c on (t.categoryid = c._id) " +
-                "WHERE t.time >= '" + thisMonth + "' and t.time <= '" + nextMonth + "' " +
-                "order by c._id ", null);
-        return cursor;
+    public void add() {
 
     }
 
+
+    /*
     public Cursor getTransbyID(long id) {
         cursor = db.rawQuery("SELECT _id, time, categoryid, amount, accountid, recipient, notes, rewardrecipientid, budgetexception, rewardamount, perfexception, rewardtype FROM trans WHERE _id = '" + id + "' ", null);
         return cursor;
@@ -120,45 +92,6 @@ public class cDbDao {
         cursor = db.rawQuery("select _id, type, name, balance, withdrawalaccount, withdrawalday, cardid " +
                 "from accounts ", null);
         return cursor;
-    }
-
-    public Cursor getAccInfo(long id) {
-        cursor = db.rawQuery("select _id, type, name, nickname, balance, withdrawalaccount, withdrawalday, cardid " +
-                "from accounts " +
-                "where _id = '" + id + "' ", null);
-
-        return cursor;
-
-    }
-
-    public Cursor getAccBankList() {
-        cursor = db.rawQuery("select _id, type, name, balance, withdrawalaccount, withdrawalday, cardid " +
-                "from accounts where type == '1' ", null);
-        return cursor;
-    }
-
-    public Cursor getCardinfo(long card_id) {
-        cursor = db.rawQuery("select performanceexceptions, sections, " +
-                " rewardrecip1, rewardamount1,  rewardrecip2, rewardamount2, rewardrecip3, rewardamount3, rewardrecip4, rewardamount4, rewardrecip5, rewardamount5, rewardrecip6, rewardamount6, rewardrecip7, rewardamount7, rewardrecip8, rewardamount8 " +
-                "from card where _id = '" + card_id + "' ", null);
-        return cursor;
-    }
-
-    public Cursor getCardList(int type) {
-        cursor = db.rawQuery("select _id, card_name, company " +
-                "from card where type = '" + type + "' ", null);
-        return cursor;
-    }
-
-    public String getRecipName(long id) {
-        cursor = db.rawQuery("select name " +
-                "from reciplists " +
-                "where _id = '" + id +
-                "'", null);
-        if (cursor.getCount() != 0) {
-            cursor.moveToNext();
-            return cursor.getString(0);
-        } else return "";
     }
 
     public Cursor getLearnData(String name) {        //이름과 계좌가 같을 경우
@@ -217,54 +150,6 @@ public class cDbDao {
     }
 
 
-    public void addAcc(boolean isUpdate, ItemAcc itemAcc) {
-        /*
-                long id;
-        String name;
-        int type = 1;
-        long cardid;
-        float balance;
-        int withdrawalaccount;
-        int withdrawalday;
-        String nickname;
-         */
-
-        ContentValues values = new ContentValues();
-        values.put("name", itemAcc.name);
-
-        values.put("cardid", itemAcc.cardid);
-        values.put("nickname", itemAcc.nickname);
-
-        if (itemAcc.type == 1) {     //현금
-            values.put("balance", itemAcc.balance);
-        } else if (itemAcc.type == 2) {       //체크카드
-            values.put("withdrawalaccount", itemAcc.withdrawalaccount);
-        } else if (itemAcc.type == 3) {       //신용카드
-            values.put("balance", itemAcc.balance);
-            values.put("withdrawalaccount", itemAcc.withdrawalaccount);
-            values.put("withdrawalday", itemAcc.withdrawalday);
-        }
-
-        if (isUpdate) {      //id확인
-
-
-            db.update("accounts", values, " _id = '" + itemAcc.id + "' ", null);
-        } else {
-            db.insert("accounts", null, values);
-        }
-        //타입에 따라 바꾸기
-    }
-
-    public void addCat(int cat_Level, Long parent, String name) {
-
-        ContentValues values = new ContentValues();
-        values.put("level", cat_Level + 1);
-        values.put("parent", parent);
-        values.put("name", name);
-
-        db.insert("category", null, values);
-    }
-
 
     public void addTransaction(SaveData data) {
         ContentValues values = new ContentValues();
@@ -282,28 +167,6 @@ public class cDbDao {
 
 
         db.insert("trans", null, values);
-    }
-
-    public long addTransactionfromReciever(SaveData data) {
-        ContentValues values = new ContentValues();
-
-        values.put("time", data.timeinmillis);
-        values.put("categoryid", data.category_id);
-        values.put("amount", data.amount);
-
-        values.put("recipient", data.recipname);
-        values.put("rewardrecipientid", data.recipid);
-        values.put("budgetexception", data.budgetexception);
-        values.put("perfexception", data.perfexception);
-        values.put("rewardtype", data.rew_type);
-        values.put("rewardamount", data.rew_amount_calculated);
-        if (data.acc_id != 0) {
-            values.put("accountid", data.acc_id);
-            updateAccBalance(data.acc_id, data.amount);
-        }
-
-
-        return db.insert("trans", null, values);
     }
 
 
@@ -378,52 +241,6 @@ public class cDbDao {
         db.delete("category", "_id = '" + id + "' ", null);
     }
 
-    class SaveData {
-        boolean isUpdate = false;
-        long trans_id;
-        long category_id = 0;
-        String category_name = null;
-        long timeinmillis = 0L;
-        float amount;
-        long acc_id = 0;
-        int acc_type;
-        String acc_name = null;
-        int withdrawlday = 0;
-        int withdrawlaccount = 0;
-        long cardid = 0;
-        float balance;
-        long recipid = 0;
-        String recipname = " ";
-        float rew_amount;
-        float rew_amount_calculated;
-        int rew_type;
-        String note = " ";
-        int budgetexception = 0;
-        int perfexception;
-        int perftype;
-        float perfamount;
-        boolean learn;
-
-
-        //_id, type, balance, withdrawalday, cardid
-    }
-
-    class ItemCat {
-        long id;
-        String name;
-    }
-
-    class ItemAcc {
-        long id;
-        String name;
-        int type = 1;
-        long cardid;
-        float balance;
-        int withdrawalaccount;
-        int withdrawalday;
-        String nickname;
-        //_id, type, name, balance, withdrawalaccount, withdrawalday, cardid
-    }
-
+*/
 
 }

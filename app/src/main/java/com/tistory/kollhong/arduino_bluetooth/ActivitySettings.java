@@ -19,15 +19,15 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
-public class vSettings extends AppCompatActivity {
+public class ActivitySettings extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_v_settings);
+        setContentView(R.layout.activity_settings);
     }
 
     public void onSensorConnectBtn(View v) {
-        startActivity(new Intent(getApplicationContext(), vBleConnect.class));
+        startActivity(new Intent(getApplicationContext(), ActivityBtConnect.class));
     }
 }

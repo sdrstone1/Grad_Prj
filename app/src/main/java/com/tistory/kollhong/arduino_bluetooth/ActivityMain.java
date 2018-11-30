@@ -20,29 +20,29 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
-public class vMainActivity extends AppCompatActivity implements cBleDataTransferObject.BTSocketCallBack {
+public class ActivityMain extends AppCompatActivity implements BtDto.BTSocketCallBack {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        cPrefDao cPrefDao = new cPrefDao(getApplicationContext());
-        if (!cPrefDao.init) {
+        PrefDao PrefDao = new PrefDao(getApplicationContext());
+        if (!PrefDao.init) {
 
-            Intent firstlaunch_intent = new Intent(getApplicationContext(), vFirstLaunch.class);
+            Intent firstlaunch_intent = new Intent(getApplicationContext(), ActivityWelcome.class);
             firstlaunch_intent.setFlags(Intent.FLAG_ACTIVITY_TASK_ON_HOME);
             startActivity(firstlaunch_intent);
         }
 
 
         setTheme(R.style.AppTheme);
-        setContentView(R.layout.activity_v_main);
+        setContentView(R.layout.activity_main);
 
         /*
-        String uid = cPrefDao.getBTUUID();
+        String uid = PrefDao.getBTUUID();
         if(uid != null){
             BluetoothDevice btDevice = null;
-            cBleDataTransferObject cBleDTO = new cBleDataTransferObject();
+            BtDto cBleDTO = new BtDto();
             Set<BluetoothDevice> pairedBTs = cBleDTO.getPairedDevices();
             for(BluetoothDevice device : pairedBTs){
                 if(device.getAddress() == uid ){
@@ -68,17 +68,17 @@ public class vMainActivity extends AppCompatActivity implements cBleDataTransfer
     }
 
     public void onSettingsBtn(View v) {
-        startActivity(new Intent(getApplicationContext(), vMessageActivity.class));
+        startActivity(new Intent(getApplicationContext(), ActivityMessageViewer.class));
     }
 
     public void onMsgBtn(View v) {
-        startActivity(new Intent(getApplicationContext(), vMessageActivity.class));
+        startActivity(new Intent(getApplicationContext(), ActivityMessageViewer.class));
     }
 
     @Override
     protected void onDestroy() {
-        mApplicationVO mApplicationVO = (com.tistory.kollhong.arduino_bluetooth.mApplicationVO) getApplicationContext();
-        mApplicationVO.stopService(new Intent(this, mBleService.class));
+        ApplicationVO ApplicationVO = (ApplicationVO) getApplicationContext();
+        ApplicationVO.stopService(new Intent(this, BtService.class));
         super.onDestroy();
     }
 
@@ -86,9 +86,9 @@ public class vMainActivity extends AppCompatActivity implements cBleDataTransfer
     public void callBackMethod(BluetoothSocket mmSocket) {
         // callback start service
 
-        mApplicationVO mApplicationVO = (mApplicationVO) getApplicationContext();
-        mApplicationVO.mmSocket = mmSocket;
-        //mApplicationVO.mHandler =
-        mApplicationVO.startService();
+        ApplicationVO ApplicationVO = (ApplicationVO) getApplicationContext();
+        ApplicationVO.mmSocket = mmSocket;
+        //ApplicationVO.mHandler =
+        ApplicationVO.startService();
     }
 }

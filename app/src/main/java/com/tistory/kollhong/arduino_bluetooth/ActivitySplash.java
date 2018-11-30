@@ -19,13 +19,13 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
-public class vSplash extends AppCompatActivity {
+public class ActivitySplash extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_v_splash);
-        mApplicationVO applicationVO = (mApplicationVO) getApplicationContext();
+        setContentView(R.layout.activity_splash);
+        ApplicationVO applicationVO = (ApplicationVO) getApplicationContext();
 
         if (Build.VERSION.SDK_INT >= 24) {
             applicationVO.ROOT_DIR = getApplicationContext().getDataDir().getAbsolutePath();
@@ -38,7 +38,7 @@ public class vSplash extends AppCompatActivity {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        startActivity(new Intent(vSplash.this, vMainActivity.class));
+        startActivity(new Intent(ActivitySplash.this, ActivityMain.class));
         finish();
     }
 }

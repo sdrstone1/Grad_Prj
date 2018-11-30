@@ -30,14 +30,14 @@ import android.widget.*;
 
 import java.util.Set;
 
-public class vBleConnect extends AppCompatActivity implements cBleDataTransferObject.BTSocketCallBack {
+public class ActivityBtConnect extends AppCompatActivity implements BtDto.BTSocketCallBack {
     static final int REQUEST_ENABLE_BT = 33768;
     public static String EXTRA_DEVICE_ADDRESS = "device_address";
     //ListView BT_list;
     Button searchBtn;
     boolean mScan = false;
 
-    cBleDataTransferObject cBleDTO;
+    BtDto cBleDTO;
     Switch bleSwitch;
     private BluetoothAdapter mBtAdapter;
     private ArrayAdapter<String> mPairedDevicesArrayAdapter;
@@ -75,9 +75,9 @@ public class vBleConnect extends AppCompatActivity implements cBleDataTransferOb
     @Override
     public void callBackMethod(BluetoothSocket mmSocket) {
 
-        mApplicationVO mApplicationVO = (mApplicationVO) getApplicationContext();
-        mApplicationVO.mmSocket = mmSocket;
-        mApplicationVO.startService();
+        ApplicationVO ApplicationVO = (ApplicationVO) getApplicationContext();
+        ApplicationVO.mmSocket = mmSocket;
+        ApplicationVO.startService();
     }
 
     // The on-click listener for all devices in the ListViews
@@ -103,13 +103,13 @@ public class vBleConnect extends AppCompatActivity implements cBleDataTransferOb
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_v_ble_connect);
+        setContentView(R.layout.activity_bt_connect);
 
         bleSwitch = findViewById(R.id.switch1);
         //BT_list = findViewById(R.id.BT_devices);
         searchBtn = findViewById(R.id.search);
 
-        cBleDTO = new cBleDataTransferObject();
+        cBleDTO = new BtDto();
         cBleDTO.setCallBack(this);
         pairedBTs = cBleDTO.getPairedDevices();
         //switchStatus(cBleDTO.isEnabled());
@@ -126,8 +126,8 @@ public class vBleConnect extends AppCompatActivity implements cBleDataTransferOb
 
         // Initialize array adapters. One for already paired devices and
         // one for newly discovered devices
-        mPairedDevicesArrayAdapter = new ArrayAdapter<String>(this, R.layout.v_device_list_name);
-        mNewDevicesArrayAdapter = new ArrayAdapter<String>(this, R.layout.v_device_list_name);
+        mPairedDevicesArrayAdapter = new ArrayAdapter<String>(this, R.layout.device_list_name);
+        mNewDevicesArrayAdapter = new ArrayAdapter<String>(this, R.layout.device_list_name);
 
         // Find and set up the ListView for paired devices
         ListView pairedListView = (ListView) findViewById(R.id.paired_devices);
