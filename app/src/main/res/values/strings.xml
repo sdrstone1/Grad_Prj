@@ -14,28 +14,38 @@
 
 <resources>
     <string name="app_name">Arduino_Bluetooth</string>
-    <string name="title_activity_v_splash">Arduino_Bluetooth</string>
-    <string name="imageDescription_welcomeimg">Welcome_Image</string>
-    <string name="radiobtn_SMS_allowed">Enable</string>
-    <string name="radiobtn_SMS_disallowed">Disable</string>
-    <string name="Welcome_Message">Thank you to using my app.</string>
-    <string name="launchbtn">Start using app.</string>
-    <string name="title_activity_c_ble_connect">cBleConnect</string>
-    <string name="title_activity_v_first_launch">FirstLaunch</string>
-    <string name="plsConnect_Bluetooth">Connect to the Arduino with bluetooth to start  to gather informations.</string>
-    <string name="select_device">Select Device.</string>
-    <string name="not_connected">not Connected.</string>
+
+    <string name="title_activity_splash">Arduino_Bluetooth</string>
+    <string name="title_activity_bt_connect">cBleConnect</string>
+    <string name="title_activity_welcome">FirstLaunch</string>
     <string name="title_connected_to"> Connected to : </string>
     <string name="title_connecting"> Connecting to : </string>
     <string name="title_not_connected"> No connection </string>
+    <string name="title_paired_devices"> Paired Devices </string>
+    <string name="title_other_devices"> Devices </string>
+
+    <string name="appbar_scrolling_view_behavior">appbar_scrolling_view_behavior</string>
+
+    <string name="imageDescription_welcomeimg">Welcome_Image</string>
+    <string name="Welcome_Message">Thank you to using my app.</string>
+
+    <string name="plsConnect_Bluetooth">Connect to the Arduino with bluetooth to start  to gather informations.</string>
+    <string name="not_connected">not Connected.</string>
     <string name="bt_not_enabled_leaving"> Bluetooth is OFF </string>
     <string name="none_paired"> No paired device </string>
     <string name="scanning"> Scanning </string>
-    <string name="title_paired_devices"> Paired Devices </string>
-    <string name="title_other_devices"> Devices </string>
-    <string name="button_scan">Scan</string>
     <string name="none_found"> No devices found </string>
+
+
+    <string name="select_device">Select Device.</string>
     <string name="send">Send</string>
+
+    <string name="button_scan">Scan</string>
     <string name="discoverable">찾기가능 </string>
     <string name="connect">연결</string>
+
+    <string name="launchBtn">Start!!</string>
+    <string name="messageBtn">Messages</string>
+    <string name="settingsBtn">Settings</string>
+    <string name="connect_bluetooth">ConnectBluetooth</string>
 </resources>

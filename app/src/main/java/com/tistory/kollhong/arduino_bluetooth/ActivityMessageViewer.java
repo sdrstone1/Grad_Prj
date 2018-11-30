@@ -15,6 +15,7 @@
 
 package com.tistory.kollhong.arduino_bluetooth;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -55,7 +56,12 @@ public class ActivityMessageViewer extends AppCompatActivity {
     private String mConnectedDeviceName = null;
     // Array adapter for the conversation thread
     private ArrayAdapter<String> mConversationArrayAdapter;
+
+    // String for Socket commuication
+    private String tmpMessage = "";
+
     // The Handler that gets information back from the BluetoothChatService
+    @SuppressLint("HandlerLeak")
     private final Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -95,8 +101,8 @@ public class ActivityMessageViewer extends AppCompatActivity {
                         수신값 /// -> 시작
 \\\ -> 종료 -> 줄내림; 하는 방식으로 바꾸기
                         */
-
-                    mConversationArrayAdapter.add(mConnectedDeviceName + ":  " + readMessage);
+                    processMessage(readMessage);
+                    //mConversationArrayAdapter.add(mConnectedDeviceName + ":  " + readMessage);
                     break;
                 case MESSAGE_DEVICE_NAME:
                     // save the connected device's name
@@ -131,6 +137,18 @@ public class ActivityMessageViewer extends AppCompatActivity {
                 }
             };
 
+    private void processMessage(String message) {
+        tmpMessage += message;      //메시지 수신- 타이밍이 맞지 않으므로 기존 메시지와 병합
+        String[] messages = tmpMessage.split(" ");      //띄어쓰기 세개로 메시지 타이밍 구분
+        int size = messages.length;     //메시지 갯수 확인
+        for (int i = 0; i < size; i++) {       //메시지에 대하여
+            mConversationArrayAdapter.add(messages[i]);     //대화어레이에 추가
+        }
+        //마지막 배열은 다음 메시지와 연결될 수 있기 때문에
+        //어레이에 추가하지 않음.
+        tmpMessage = messages[messages.length - 1];
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -143,9 +161,9 @@ public class ActivityMessageViewer extends AppCompatActivity {
         getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.activity_msg_title);
 
         // Set up the custom title
-        mTitle = (TextView) findViewById(R.id.title_left_text);
+        mTitle = findViewById(R.id.title_left_text);
         mTitle.setText(R.string.app_name);
-        mTitle = (TextView) findViewById(R.id.title_right_text);
+        mTitle = findViewById(R.id.title_right_text);
 
         // Get local Bluetooth adapter
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
@@ -195,20 +213,20 @@ public class ActivityMessageViewer extends AppCompatActivity {
         Log.d(TAG, "setupChat()");
 
         // Initialize the array adapter for the conversation thread
-        mConversationArrayAdapter = new ArrayAdapter<String>(this, R.layout.msg_list_holder);
-        mConversationView = (ListView) findViewById(R.id.in);
+        mConversationArrayAdapter = new ArrayAdapter<>(this, R.layout.msg_list_holder);
+        mConversationView = findViewById(R.id.in);
         mConversationView.setAdapter(mConversationArrayAdapter);
 
         // Initialize the compose field with a listener for the return key
-        mOutEditText = (EditText) findViewById(R.id.edit_text_out);
+        mOutEditText = findViewById(R.id.edit_text_out);
         mOutEditText.setOnEditorActionListener(mWriteListener);
 
         // Initialize the send button with a listener that for click events
-        mSendButton = (Button) findViewById(R.id.button_send);
+        mSendButton = findViewById(R.id.button_send);
         mSendButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 // Send a msg_list_holder using content of the edit text widget
-                TextView view = (TextView) findViewById(R.id.edit_text_out);
+                TextView view = findViewById(R.id.edit_text_out);
                 String message = view.getText().toString();
                 sendMessage(message);
             }

@@ -27,7 +27,7 @@
             android:visibility="gone"
             android:background="#666"
             android:textColor="#fff"
-            android:paddingLeft="5dp"
+            android:paddingStart="5dp"
             />
 
     <ListView
@@ -46,7 +46,7 @@
             android:visibility="gone"
             android:background="#666"
             android:textColor="#fff"
-            android:paddingLeft="5dp"
+            android:paddingStart="5dp"
             />
 
     <ListView
