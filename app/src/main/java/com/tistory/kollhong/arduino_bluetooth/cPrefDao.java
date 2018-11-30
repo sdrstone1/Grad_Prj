@@ -24,14 +24,14 @@ import java.util.prefs.Preferences;
  * Created by KollHong on 14/04/2018.
  */
 
-public class mPrefMan {
+public class cPrefDao {
     Preferences mPrefs;
     SharedPreferences mPref;
     SharedPreferences.Editor mPrefEdit;
     Boolean init = false;
     Context context;
 
-    mPrefMan(Context appcontext) {
+    cPrefDao(Context appcontext) {
         context = appcontext;
         mPref = PreferenceManager.getDefaultSharedPreferences(context);
         //mPref = context.getSharedPreferences(Pref_name,Context.MODE_PRIVATE);

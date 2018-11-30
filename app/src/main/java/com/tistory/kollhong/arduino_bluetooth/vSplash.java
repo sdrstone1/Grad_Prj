@@ -25,23 +25,16 @@ public class vSplash extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_v_splash);
-        String ROOT_DIR;
+        mApplicationVO applicationVO = (mApplicationVO) getApplicationContext();
+
         if (Build.VERSION.SDK_INT >= 24) {
-            ROOT_DIR = getApplicationContext().getDataDir().getAbsolutePath();
+            applicationVO.ROOT_DIR = getApplicationContext().getDataDir().getAbsolutePath();
         } else {
-            ROOT_DIR = getApplication().getFilesDir().getAbsolutePath();
+            applicationVO.ROOT_DIR = getApplication().getFilesDir().getAbsolutePath();
         }
 
-        //String ROOT_DIR = getApplicationContext().getDataDir().getAbsolutePath();
-        String DATABASE_NAME = "data.db";
-
-//        if(BuildConfig.isTEST)
-//        {
-//            //File file = new File(ROOT_DIR, "/database/data.db");
-//            //boolean deleted = file.delete();
-//        }
         try {
-            Thread.sleep(200);      //스플래시 보여주기
+            Thread.sleep(500);      //스플래시 보여주기
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

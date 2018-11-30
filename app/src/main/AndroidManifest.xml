@@ -21,14 +21,16 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
 
     <application
-            android:name=".mBTSocketVO"
+            android:name=".mApplicationVO"
             android:allowBackup="true"
             android:icon="@mipmap/ic_launcher"
             android:label="@string/app_name"
             android:roundIcon="@mipmap/ic_launcher_round"
             android:supportsRtl="true"
             android:theme="@style/AppTheme">
-        <activity android:name=".vMainActivity"/>
+        <activity
+                android:name=".vMainActivity"
+                android:theme="@style/SplashTheme"/>
         <activity
                 android:name=".vSplash"
                 android:configChanges="orientation|keyboardHidden|screenSize"

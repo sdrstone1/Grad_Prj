@@ -110,11 +110,10 @@ public class vBleConnect extends AppCompatActivity implements cBleDataTransferOb
 
     @Override
     public void callBackMethod(BluetoothSocket mmSocket) {
-        //todo start service
 
-        mBTSocketVO mBTSocketVO = (com.tistory.kollhong.arduino_bluetooth.mBTSocketVO) getApplicationContext();
-        mBTSocketVO.mmSocket = mmSocket;
-        mBTSocketVO.startService();
+        mApplicationVO mApplicationVO = (mApplicationVO) getApplicationContext();
+        mApplicationVO.mmSocket = mmSocket;
+        mApplicationVO.startService();
     }
 
     public void onSwitchBtn(View v) {
@@ -168,7 +167,7 @@ public class vBleConnect extends AppCompatActivity implements cBleDataTransferOb
                     if (textView2.getTag(1) != "Paired") {
                         bluetoothDevice.createBond();
                     }
-                    //new mPrefMan(getApplicationContext()).setBTUUID(bluetoothDevice.getAddress());
+                    //new cPrefDao(getApplicationContext()).setBTUUID(bluetoothDevice.getAddress());
                     cBleDTO.createSocket(bluetoothDevice);
                 }
             });

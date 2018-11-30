@@ -29,8 +29,8 @@ public class vMainActivity extends AppCompatActivity implements cBleDataTransfer
         setContentView(R.layout.activity_v_main);
 
 
-        mPrefMan mPrefMan = new mPrefMan(getApplicationContext());
-        if (!mPrefMan.init) {
+        cPrefDao cPrefDao = new cPrefDao(getApplicationContext());
+        if (!cPrefDao.init) {
 
             Intent firstlaunch_intent = new Intent(getApplicationContext(), vFirstLaunch.class);
             firstlaunch_intent.setFlags(Intent.FLAG_ACTIVITY_TASK_ON_HOME);
@@ -40,7 +40,7 @@ public class vMainActivity extends AppCompatActivity implements cBleDataTransfer
         setTheme(R.style.AppTheme);
 
         /*
-        String uid = mPrefMan.getBTUUID();
+        String uid = cPrefDao.getBTUUID();
         if(uid != null){
             BluetoothDevice btDevice = null;
             cBleDataTransferObject cBleDTO = new cBleDataTransferObject();
@@ -53,7 +53,7 @@ public class vMainActivity extends AppCompatActivity implements cBleDataTransfer
                 }
             }
             if(btDevice != null){
-                //todo start socket transfer
+                // start socket transfer
                 cBleDTO.setCallBack(this);
                 cBleDTO.createSocket(btDevice);
 
@@ -76,12 +76,12 @@ public class vMainActivity extends AppCompatActivity implements cBleDataTransfer
 
     @Override
     public void callBackMethod(BluetoothSocket mmSocket) {
-        //todo callback start service
+        // callback start service
 
-        mBTSocketVO mBTSocketVO = (com.tistory.kollhong.arduino_bluetooth.mBTSocketVO) getApplicationContext();
-        mBTSocketVO.mmSocket = mmSocket;
-        //mBTSocketVO.mHandler =
-        mBTSocketVO.startService();
+        mApplicationVO mApplicationVO = (mApplicationVO) getApplicationContext();
+        mApplicationVO.mmSocket = mmSocket;
+        //mApplicationVO.mHandler =
+        mApplicationVO.startService();
     }
 
     public class app extends Application {

@@ -63,7 +63,7 @@ This is the last call that the service receives.
 
     @Override
     protected void onHandleIntent(@Nullable Intent intent) {
-        mBTSocketVO mBTSocket = (mBTSocketVO) getApplicationContext();
+        mApplicationVO mBTSocket = (mApplicationVO) getApplicationContext();
         this.mmSocket = mBTSocket.mmSocket;
         mHandler = mBTSocket.mHandler;
         BTService btService = new BTService(mmSocket, mHandler);

@@ -66,17 +66,19 @@ public class vFirstLaunch extends AppCompatActivity {
         TabLayout tabLayout = findViewById(R.id.tabDots);
         tabLayout.setupWithViewPager(mViewPager, true);
 
+        new cDBcreate(this);
+
     }
 
     public void onFinish(View view) {
         if (radio_checked == 2) {
-            mPrefMan mPref = new mPrefMan(getApplicationContext());
+            cPrefDao mPref = new cPrefDao(getApplicationContext());
             mPref.setInit();
             mPref.setSMSRegistered(true);
             getSMSPerm();
 
         } else if (radio_checked == 1) {
-            mPrefMan mPref = new mPrefMan(getApplicationContext());
+            cPrefDao mPref = new cPrefDao(getApplicationContext());
             mPref.setInit();
             mPref.setSMSRegistered(false);
             finish();
