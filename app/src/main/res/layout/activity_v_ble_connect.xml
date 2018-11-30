@@ -13,37 +13,97 @@
   ~ limitations under the License.
   -->
 
-<android.support.constraint.ConstraintLayout
+<LinearLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".vBleConnect">
+        tools:context=".vBleConnect"
+        tools:layout_editor_absoluteY="81dp"
+        android:orientation="vertical">
 
-    <Switch
+    <LinearLayout
+            android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/switch1"
-            android:padding="13dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            android:textOff="Turn on Bluetooth"
-            android:textOn="Turn off Bluetooth"
-            android:onClick="onSwitchBtn"/>
-
-    <ListView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginTop="32dp"
-            app:layout_constraintTop_toBottomOf="@+id/switch1"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            android:id="@+id/BT_devices"
+            android:layout_height="?attr/actionBarSize"
+            android:id="@+id/linearLayout"
             >
 
-    </ListView>
+        <Switch
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/switch1"
+                android:padding="13dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                android:textOff="Turn on Bluetooth"
+                android:textOn="Turn off Bluetooth"
+                android:text="Bluetooth"
+                android:layout_weight="1"/>
 
-</android.support.constraint.ConstraintLayout>
+        <Button
+                android:text="Search"
+                android:layout_height="match_parent"
+                android:id="@+id/search"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginEnd="0dp"
+                app:layout_constraintStart_toStartOf="parent"
+                android:layout_marginStart="0dp"
+                app:layout_constraintTop_toBottomOf="@+id/switch1"
+                style="@style/Widget.AppCompat.Button.Borderless"
+                android:layout_weight="1"
+                android:layout_width="wrap_content"
+                android:onClick="onSearchClicked"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:layout_editor_absoluteY="184dp"
+            tools:layout_editor_absoluteX="0dp">
+
+        <TextView
+                android:id="@+id/title_paired_devices"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/title_paired_devices"
+                android:visibility="gone"
+                android:background="#666"
+                android:textColor="#fff"
+                android:paddingLeft="5dp"
+                />
+
+        <ListView
+                android:id="@+id/paired_devices"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:stackFromBottom="true"
+                android:layout_weight="1"
+                />
+
+        <TextView
+                android:id="@+id/title_new_devices"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/title_other_devices"
+                android:visibility="gone"
+                android:background="#666"
+                android:textColor="#fff"
+                android:paddingLeft="5dp"
+                />
+
+        <ListView
+                android:id="@+id/new_devices"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:stackFromBottom="true"
+                android:layout_weight="2"
+                />
+
+    </LinearLayout>
+
+</LinearLayout>

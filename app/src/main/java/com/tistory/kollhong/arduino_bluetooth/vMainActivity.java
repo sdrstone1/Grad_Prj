@@ -14,7 +14,6 @@
 
 package com.tistory.kollhong.arduino_bluetooth;
 
-import android.app.Application;
 import android.bluetooth.BluetoothSocket;
 import android.content.Intent;
 import android.os.Bundle;
@@ -26,8 +25,6 @@ public class vMainActivity extends AppCompatActivity implements cBleDataTransfer
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_v_main);
-
 
         cPrefDao cPrefDao = new cPrefDao(getApplicationContext());
         if (!cPrefDao.init) {
@@ -37,7 +34,9 @@ public class vMainActivity extends AppCompatActivity implements cBleDataTransfer
             startActivity(firstlaunch_intent);
         }
 
+
         setTheme(R.style.AppTheme);
+        setContentView(R.layout.activity_v_main);
 
         /*
         String uid = cPrefDao.getBTUUID();
@@ -66,12 +65,21 @@ public class vMainActivity extends AppCompatActivity implements cBleDataTransfer
         */
 
 
-
-        super.onCreate(savedInstanceState);
     }
 
     public void onSettingsBtn(View v) {
-        startActivity(new Intent(getApplicationContext(), vFirstLaunch.class));
+        startActivity(new Intent(getApplicationContext(), vMessageActivity.class));
+    }
+
+    public void onMsgBtn(View v) {
+        startActivity(new Intent(getApplicationContext(), vMessageActivity.class));
+    }
+
+    @Override
+    protected void onDestroy() {
+        mApplicationVO mApplicationVO = (com.tistory.kollhong.arduino_bluetooth.mApplicationVO) getApplicationContext();
+        mApplicationVO.stopService(new Intent(this, mBleService.class));
+        super.onDestroy();
     }
 
     @Override
@@ -82,9 +90,5 @@ public class vMainActivity extends AppCompatActivity implements cBleDataTransfer
         mApplicationVO.mmSocket = mmSocket;
         //mApplicationVO.mHandler =
         mApplicationVO.startService();
-    }
-
-    public class app extends Application {
-
     }
 }

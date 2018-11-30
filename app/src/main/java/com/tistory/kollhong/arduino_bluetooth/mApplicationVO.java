@@ -29,5 +29,6 @@ public class mApplicationVO extends Application {
     public void startService() {
         Intent intent = new Intent(getApplicationContext(), mBleService.class);
         startService(intent);
+        stopService(intent);
     }
 }

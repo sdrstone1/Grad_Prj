@@ -19,7 +19,8 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteConstraintException;
 import android.database.sqlite.SQLiteDatabase;
-import android.os.Build;
+
+import static com.tistory.kollhong.arduino_bluetooth.mApplicationVO.ROOT_DIR;
 
 public class cDbDao {
     SQLiteDatabase db;
@@ -30,20 +31,11 @@ public class cDbDao {
     //여기서 디비 객체 선언
     cDbDao(Context context, boolean RW) {
         if (RW) {
-            if (Build.VERSION.SDK_INT >= 24) {
-                db = SQLiteDatabase.openDatabase(context.getDataDir().getAbsolutePath() + "/database/data.db", null, SQLiteDatabase.OPEN_READWRITE | SQLiteDatabase.NO_LOCALIZED_COLLATORS);
-            } else {
-                db = SQLiteDatabase.openDatabase(context.getFilesDir().getAbsolutePath() + "/database/data.db", null, SQLiteDatabase.OPEN_READWRITE | SQLiteDatabase.NO_LOCALIZED_COLLATORS);
-            }
+            db = SQLiteDatabase.openDatabase(ROOT_DIR + "/database/data.db", null, SQLiteDatabase.OPEN_READWRITE | SQLiteDatabase.NO_LOCALIZED_COLLATORS);
             data = new SaveData();
         } else {
-            if (Build.VERSION.SDK_INT >= 24) {
+            db = SQLiteDatabase.openDatabase(ROOT_DIR + "/database/data.db", null, SQLiteDatabase.OPEN_READONLY | SQLiteDatabase.NO_LOCALIZED_COLLATORS);
 
-                db = SQLiteDatabase.openDatabase(context.getDataDir().getAbsolutePath() + "/database/data.db", null, SQLiteDatabase.OPEN_READONLY | SQLiteDatabase.NO_LOCALIZED_COLLATORS);
-            } else {
-
-                db = SQLiteDatabase.openDatabase(context.getFilesDir().getAbsolutePath() + "/database/data.db", null, SQLiteDatabase.OPEN_READONLY | SQLiteDatabase.NO_LOCALIZED_COLLATORS);
-            }
         }
         //todo db writing
     }

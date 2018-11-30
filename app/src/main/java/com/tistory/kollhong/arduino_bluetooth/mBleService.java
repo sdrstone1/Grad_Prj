@@ -29,6 +29,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 public class mBleService extends IntentService {
+    private static final String TAG = "Arduino_app";
     /*
 onStartCommand()
 The system invokes this method by calling startService() when another component (such as an activity)
@@ -61,12 +62,14 @@ This is the last call that the service receives.
         super("BLservice");
     }
 
+    BTService btService;
+
     @Override
     protected void onHandleIntent(@Nullable Intent intent) {
         mApplicationVO mBTSocket = (mApplicationVO) getApplicationContext();
         this.mmSocket = mBTSocket.mmSocket;
         mHandler = mBTSocket.mHandler;
-        BTService btService = new BTService(mmSocket, mHandler);
+        btService = new BTService(mmSocket, mHandler);
 
 
     }
@@ -88,6 +91,12 @@ This is the last call that the service receives.
 
     @Override
     public void onDestroy() {
+        btService.Cancel();
+        try {
+            mmSocket.close();
+        } catch (IOException e) {
+            Log.e(TAG, "Could not close the client socket", e);
+        }
         super.onDestroy();
     }
 
@@ -113,14 +122,8 @@ This is the last call that the service receives.
         private Handler mHandler; // handler that gets info from Bluetooth service
         private ConnectedThread connectedThread;
 
-        // Defines several constants used when transmitting messages between the
-        // service and the UI.
-        private interface MessageConstants {
-            public static final int MESSAGE_READ = 0;
-            public static final int MESSAGE_WRITE = 1;
-            public static final int MESSAGE_TOAST = 2;
-
-            // ... (Add other message types here as needed.)
+        public void Cancel() {
+            connectedThread.cancel();
         }
 
         public BTService(BluetoothSocket mmSocket, Handler mHandler) {
@@ -130,6 +133,16 @@ This is the last call that the service receives.
 
         public void BTwrite(byte[] bytes) {
             connectedThread.write(bytes);
+        }
+
+        // Defines several constants used when transmitting messages between the
+        // service and the UI.
+        private interface MessageConstants {
+            public static final int MESSAGE_READ = 0;
+            public static final int MESSAGE_WRITE = 1;
+            public static final int MESSAGE_TOAST = 2;
+
+            // ... (Add other v_msg_list_holder types here as needed.)
         }
 
         private class ConnectedThread extends Thread {
@@ -188,14 +201,14 @@ This is the last call that the service receives.
                 try {
                     mmOutStream.write(bytes);
 
-                    // Share the sent message with the UI activity.
+                    // Share the sent v_msg_list_holder with the UI activity.
                     Message writtenMsg = mHandler.obtainMessage(
                             MessageConstants.MESSAGE_WRITE, -1, -1, mmBuffer);
                     writtenMsg.sendToTarget();
                 } catch (IOException e) {
                     Log.e(TAG, "Error occurred when sending data", e);
 
-                    // Send a failure message back to the activity.
+                    // Send a failure v_msg_list_holder back to the activity.
                     Message writeErrorMsg =
                             mHandler.obtainMessage(MessageConstants.MESSAGE_TOAST);
                     Bundle bundle = new Bundle();

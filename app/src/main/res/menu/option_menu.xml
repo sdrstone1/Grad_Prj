@@ -13,10 +13,13 @@
   ~ limitations under the License.
   -->
 
-<selector xmlns:android="http://schemas.android.com/apk/res/android">
-
-    <item android:drawable="@drawable/tab_indicator_selected"
-          android:state_selected="true"/>
-
-    <item android:drawable="@drawable/tab_indicator_default"/>
-</selector>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+            android:id="@+id/scan"
+            android:icon="@android:drawable/ic_menu_search"
+            android:title="@string/connect"/>
+    <item
+            android:id="@+id/discoverable"
+            android:icon="@android:drawable/ic_menu_mylocation"
+            android:title="@string/discoverable"/>
+</menu>

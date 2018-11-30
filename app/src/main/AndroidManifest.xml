@@ -40,7 +40,9 @@
                 <action android:name="android.intent.action.MAIN"/>
 
                 <category android:name="android.intent.category.LAUNCHER"/>
+
             </intent-filter>
+
         </activity>
         <activity android:name=".vSettings">
         </activity>
@@ -49,6 +51,19 @@
                 android:label="@string/title_activity_c_ble_connect"
                 android:theme="@style/AppTheme">
         </activity>
+        <activity
+                android:name=".vFirstLaunch"
+                android:label="@string/title_activity_v_first_launch"
+                android:theme="@style/AppTheme">
+        </activity>
+
+        <activity
+                android:name=".vMessageActivity"
+                android:theme="@style/AppTheme.NoTitle">
+
+        </activity>
+
+
     </application>
 
 </manifest>

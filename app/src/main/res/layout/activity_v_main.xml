@@ -42,6 +42,22 @@
             style="@style/Widget.AppCompat.Button.Borderless"
             android:onClick="onSettingsBtn"/>
 
+    <Button
+            android:text="Message"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:id="@+id/Msglist"
+            style="@style/Widget.AppCompat.Button.Borderless"
+            android:onClick="onSettingsBtn"
+            android:layout_marginTop="8dp"
+            app:layout_constraintTop_toTopOf="@+id/guideline"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginBottom="8dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintVertical_bias="0.486"
+            app:layout_constraintEnd_toStartOf="@+id/guideline2"
+            />
+
     <android.support.constraint.Guideline
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
