@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2018. KollHong. All Rights Reserved.
+ * Copyright (c) 2018. KollHong. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -71,20 +72,11 @@ public class ActivityWelcome extends AppCompatActivity {
     }
 
     public void onFinish(View view) {
-        if (radio_checked == 2) {
-            PrefDao mPref = new PrefDao(getApplicationContext());
-            mPref.setInit();
-            mPref.setSMSRegistered(true);
-            getSMSPerm();
+        PrefDao mPref = new PrefDao(getApplicationContext());
+        mPref.setInit();
+        finish();
 
-        } else if (radio_checked == 1) {
-            PrefDao mPref = new PrefDao(getApplicationContext());
-            mPref.setInit();
-            mPref.setSMSRegistered(false);
-            finish();
-        } else {
 
-        }
     }
 
     public void SMSEnable(View view) {
