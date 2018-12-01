@@ -48,7 +48,6 @@ public class ActivityMessageViewer extends AppCompatActivity {
     private static final int REQUEST_ENABLE_BT = 2;
 
     // Layout Views
-    private ActionBar mTitleBar;
     private ListView mConversationView;
     private EditText mOutEditText;
     private Button mSendButton;
@@ -73,15 +72,15 @@ public class ActivityMessageViewer extends AppCompatActivity {
                         case BtService.STATE_CONNECTED:
 
                             getString(R.string.title_connected_to);
-                            mTitleBar.setTitle(getString(R.string.title_connected_to) + mConnectedDeviceName + "");
+                            setTitle(getString(R.string.title_connected_to) + mConnectedDeviceName + "");
                             mConversationArrayAdapter.clear();
                             break;
                         case BtService.STATE_CONNECTING:
-                            mTitleBar.setTitle(R.string.title_connecting);
+                            setTitle(R.string.title_connecting);
                             break;
                         case BtService.STATE_LISTEN:
                         case BtService.STATE_NONE:
-                            mTitleBar.setTitle(R.string.title_not_connected);
+                            setTitle(R.string.title_not_connected);
                             break;
                     }
                     break;
@@ -141,7 +140,7 @@ public class ActivityMessageViewer extends AppCompatActivity {
 
     private void processMessage(String message) {
         tmpMessage += message;      //메시지 수신- 타이밍이 맞지 않으므로 기존 메시지와 병합
-        String[] messages = tmpMessage.split(" ");      //띄어쓰기 세개로 메시지 타이밍 구분
+        String[] messages = tmpMessage.split("/&");      //띄어쓰기 세개로 메시지 타이밍 구분
         int size = messages.length;     //메시지 갯수 확인
         for (int i = 0; i < size; i++) {       //메시지에 대하여
             mConversationArrayAdapter.add(messages[i]);     //대화어레이에 추가
@@ -163,8 +162,7 @@ public class ActivityMessageViewer extends AppCompatActivity {
 //        getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.activity_msg_title);
 
         // Set up the custom title
-        mTitleBar = getActionBar();
-        mTitleBar.setTitle(R.string.app_name);
+        setTitle(R.string.app_name);
 
         // Get local Bluetooth adapter
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();

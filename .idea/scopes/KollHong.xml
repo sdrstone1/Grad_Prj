@@ -1,0 +1,3 @@
+<component name="DependencyValidationManager">
+  <scope name="KollHong" pattern="file[Arduino_Bluetooth copy]:*/" />
+</component>

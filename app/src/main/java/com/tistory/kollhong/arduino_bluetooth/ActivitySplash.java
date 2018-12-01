@@ -26,7 +26,7 @@ public class ActivitySplash extends AppCompatActivity {
         setContentView(R.layout.activity_splash);
 
         try {
-            Thread.sleep(500);      //스플래시 보여주기
+            Thread.sleep(1000);      //스플래시 보여주기
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

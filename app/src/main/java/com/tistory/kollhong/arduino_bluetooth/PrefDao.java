@@ -34,21 +34,12 @@ public class PrefDao {
     PrefDao(Context appcontext) {
         context = appcontext;
         mPref = PreferenceManager.getDefaultSharedPreferences(context);
-        //mPref = context.getSharedPreferences(Pref_name,Context.MODE_PRIVATE);
+
         mPrefEdit = mPref.edit();
         if (mPref.contains("initialized") == true) {
             init = mPref.getBoolean("initialized", false);
         } else
             init = false;
-    }
-
-    public String getBTUUID() {
-        return mPref.getString("UUID", null);
-    }
-
-    public void setBTUUID(String address) {
-        mPrefEdit.putString("UUID", address);
-        mPrefEdit.commit();
     }
 
     public void setInit() {

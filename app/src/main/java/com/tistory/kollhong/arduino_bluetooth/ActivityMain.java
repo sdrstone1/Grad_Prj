@@ -66,12 +66,12 @@ public class ActivityMain extends AppCompatActivity {
 
     }
 
-    public void onSettingsBtn(View v) {
+    public void onMsgBtn(View v) {
         startActivity(new Intent(getApplicationContext(), ActivityMessageViewer.class));
     }
 
-    public void onMsgBtn(View v) {
-        startActivity(new Intent(getApplicationContext(), ActivityMessageViewer.class));
+    public void onSettingsBtn(View v) {
+        startActivity(new Intent(getApplicationContext(), ActivitySettings.class));
     }
 
     @Override

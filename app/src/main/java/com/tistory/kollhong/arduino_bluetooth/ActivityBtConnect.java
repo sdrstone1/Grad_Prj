@@ -98,6 +98,14 @@ public class ActivityBtConnect extends AppCompatActivity {
         //BT_list = findViewById(R.id.BT_devices);
         searchBtn = findViewById(R.id.search);
 
+        mBtAdapter = BluetoothAdapter.getDefaultAdapter();
+
+        // If the adapter is null, then Bluetooth is not supported
+        if (mBtAdapter == null) {
+            Toast.makeText(this, "Bluetooth is not available", Toast.LENGTH_LONG).show();
+            finish();
+            return;
+        }
         pairedBTs = mBtAdapter.getBondedDevices();
         //switchStatus(cBleDTO.isEnabled());
         bleSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {

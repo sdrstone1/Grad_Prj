@@ -1,7 +1,7 @@
 <component name="CopyrightManager">
-  <settings>
+  <settings default="KollHong">
     <module2copyright>
-      <element module="All" copyright="KollHong Apache" />
+      <element module="All" copyright="KollHong" />
     </module2copyright>
   </settings>
 </component>
