@@ -16,6 +16,7 @@
 package com.tistory.kollhong.arduino_bluetooth;
 
 import android.annotation.SuppressLint;
+import android.app.ActionBar;
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -47,7 +48,7 @@ public class ActivityMessageViewer extends AppCompatActivity {
     private static final int REQUEST_ENABLE_BT = 2;
 
     // Layout Views
-    private TextView mTitle;
+    private ActionBar mTitleBar;
     private ListView mConversationView;
     private EditText mOutEditText;
     private Button mSendButton;
@@ -70,16 +71,17 @@ public class ActivityMessageViewer extends AppCompatActivity {
                     if (D) Log.i(TAG, "MESSAGE_STATE_CHANGE: " + msg.arg1);
                     switch (msg.arg1) {
                         case BtService.STATE_CONNECTED:
-                            mTitle.setText(R.string.title_connected_to);
-                            mTitle.append(mConnectedDeviceName);
+
+                            getString(R.string.title_connected_to);
+                            mTitleBar.setTitle(getString(R.string.title_connected_to) + mConnectedDeviceName + "");
                             mConversationArrayAdapter.clear();
                             break;
                         case BtService.STATE_CONNECTING:
-                            mTitle.setText(R.string.title_connecting);
+                            mTitleBar.setTitle(R.string.title_connecting);
                             break;
                         case BtService.STATE_LISTEN:
                         case BtService.STATE_NONE:
-                            mTitle.setText(R.string.title_not_connected);
+                            mTitleBar.setTitle(R.string.title_not_connected);
                             break;
                     }
                     break;
@@ -156,14 +158,13 @@ public class ActivityMessageViewer extends AppCompatActivity {
         if (D) Log.e(TAG, "+++ ON CREATE +++");
 
         // Set up the window layout
-        requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
+//        requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
         setContentView(R.layout.activity_msg);
-        getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.activity_msg_title);
+//        getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.activity_msg_title);
 
         // Set up the custom title
-        mTitle = findViewById(R.id.title_left_text);
-        mTitle.setText(R.string.app_name);
-        mTitle = findViewById(R.id.title_right_text);
+        mTitleBar = getActionBar();
+        mTitleBar.setTitle(R.string.app_name);
 
         // Get local Bluetooth adapter
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
@@ -236,7 +237,7 @@ public class ActivityMessageViewer extends AppCompatActivity {
         mChatService = new BtService(this, mHandler);
 
         // Initialize the buffer for outgoing messages
-        mOutStringBuffer = new StringBuffer("");
+        mOutStringBuffer = new StringBuffer();
     }
 
     @Override

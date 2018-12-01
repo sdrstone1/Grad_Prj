@@ -17,8 +17,7 @@ package com.tistory.kollhong.arduino_bluetooth;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-
-import static com.tistory.kollhong.arduino_bluetooth.ApplicationVO.ROOT_DIR;
+import android.os.Build;
 
 public class DbDao {
     SQLiteDatabase db;
@@ -28,13 +27,21 @@ public class DbDao {
     //여기서 읽기 쓰기 작업 모두 진행
     //여기서 디비 객체 선언
     DbDao(Context context, boolean RW) {
+        this.context = context;
+        String ROOT_DIR;
+        if (Build.VERSION.SDK_INT >= 24) {
+            ROOT_DIR = context.getDataDir().getAbsolutePath();
+        } else {
+            ROOT_DIR = context.getFilesDir().getAbsolutePath();
+        }
+
+
         if (RW) {
             db = SQLiteDatabase.openDatabase(ROOT_DIR + "/database/data.db", null, SQLiteDatabase.OPEN_READWRITE | SQLiteDatabase.NO_LOCALIZED_COLLATORS);
         } else {
             db = SQLiteDatabase.openDatabase(ROOT_DIR + "/database/data.db", null, SQLiteDatabase.OPEN_READONLY | SQLiteDatabase.NO_LOCALIZED_COLLATORS);
 
         }
-        this.context = context;
         //todo db writing
     }
 

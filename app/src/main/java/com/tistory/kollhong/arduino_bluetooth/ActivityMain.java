@@ -14,13 +14,12 @@
 
 package com.tistory.kollhong.arduino_bluetooth;
 
-import android.bluetooth.BluetoothSocket;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
-public class ActivityMain extends AppCompatActivity implements BtDto.BTSocketCallBack {
+public class ActivityMain extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,15 +79,5 @@ public class ActivityMain extends AppCompatActivity implements BtDto.BTSocketCal
         ApplicationVO ApplicationVO = (ApplicationVO) getApplicationContext();
         ApplicationVO.stopService(new Intent(this, BtService.class));
         super.onDestroy();
-    }
-
-    @Override
-    public void callBackMethod(BluetoothSocket mmSocket) {
-        // callback start service
-
-        ApplicationVO ApplicationVO = (ApplicationVO) getApplicationContext();
-        ApplicationVO.mmSocket = mmSocket;
-        //ApplicationVO.mHandler =
-        ApplicationVO.startService();
     }
 }

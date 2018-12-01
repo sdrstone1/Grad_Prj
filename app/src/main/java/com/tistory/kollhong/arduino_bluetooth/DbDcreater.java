@@ -16,17 +16,22 @@ package com.tistory.kollhong.arduino_bluetooth;
 
 import android.content.Context;
 import android.content.res.AssetManager;
+import android.os.Build;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-import static com.tistory.kollhong.arduino_bluetooth.ApplicationVO.DATABASE_NAME;
-import static com.tistory.kollhong.arduino_bluetooth.ApplicationVO.ROOT_DIR;
-
 public class DbDcreater {
     DbDcreater(Context context) {
+        String DATABASE_NAME = "data.db";
+        String ROOT_DIR;
+        if (Build.VERSION.SDK_INT >= 24) {
+            ROOT_DIR = context.getDataDir().getAbsolutePath();
+        } else {
+            ROOT_DIR = context.getFilesDir().getAbsolutePath();
+        }
 
         File folder = new File(ROOT_DIR + "/database");
         folder.mkdirs();

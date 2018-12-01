@@ -50,6 +50,7 @@ public class PrefDao {
         mPrefEdit.putString("UUID", address);
         mPrefEdit.commit();
     }
+
     public void setInit() {
         mPrefEdit.putBoolean("initialized", true);
         mPrefEdit.commit();

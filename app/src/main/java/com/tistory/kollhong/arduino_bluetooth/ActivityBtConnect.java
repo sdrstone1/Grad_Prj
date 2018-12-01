@@ -17,7 +17,6 @@ package com.tistory.kollhong.arduino_bluetooth;
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
-import android.bluetooth.BluetoothSocket;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -30,20 +29,18 @@ import android.widget.*;
 
 import java.util.Set;
 
-public class ActivityBtConnect extends AppCompatActivity implements BtDto.BTSocketCallBack {
+public class ActivityBtConnect extends AppCompatActivity {
     static final int REQUEST_ENABLE_BT = 33768;
     public static String EXTRA_DEVICE_ADDRESS = "device_address";
     //ListView BT_list;
     Button searchBtn;
     boolean mScan = false;
 
-    BtDto cBleDTO;
     Switch bleSwitch;
+    Set<BluetoothDevice> pairedBTs;
     private BluetoothAdapter mBtAdapter;
     private ArrayAdapter<String> mPairedDevicesArrayAdapter;
     private ArrayAdapter<String> mNewDevicesArrayAdapter;
-
-    Set<BluetoothDevice> pairedBTs;
     // The BroadcastReceiver that listens for discovered devices and
     // changes the title when discovery is finished
     private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
@@ -71,14 +68,6 @@ public class ActivityBtConnect extends AppCompatActivity implements BtDto.BTSock
         }
     };
 
-
-    @Override
-    public void callBackMethod(BluetoothSocket mmSocket) {
-
-        ApplicationVO ApplicationVO = (ApplicationVO) getApplicationContext();
-        ApplicationVO.mmSocket = mmSocket;
-        ApplicationVO.startService();
-    }
 
     // The on-click listener for all devices in the ListViews
     private AdapterView.OnItemClickListener mDeviceClickListener = new AdapterView.OnItemClickListener() {
@@ -109,9 +98,7 @@ public class ActivityBtConnect extends AppCompatActivity implements BtDto.BTSock
         //BT_list = findViewById(R.id.BT_devices);
         searchBtn = findViewById(R.id.search);
 
-        cBleDTO = new BtDto();
-        cBleDTO.setCallBack(this);
-        pairedBTs = cBleDTO.getPairedDevices();
+        pairedBTs = mBtAdapter.getBondedDevices();
         //switchStatus(cBleDTO.isEnabled());
         bleSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -130,12 +117,12 @@ public class ActivityBtConnect extends AppCompatActivity implements BtDto.BTSock
         mNewDevicesArrayAdapter = new ArrayAdapter<String>(this, R.layout.device_list_name);
 
         // Find and set up the ListView for paired devices
-        ListView pairedListView = (ListView) findViewById(R.id.paired_devices);
+        ListView pairedListView = findViewById(R.id.paired_devices);
         pairedListView.setAdapter(mPairedDevicesArrayAdapter);
         pairedListView.setOnItemClickListener(mDeviceClickListener);
 
         // Find and set up the ListView for newly discovered devices
-        ListView newDevicesListView = (ListView) findViewById(R.id.new_devices);
+        ListView newDevicesListView = findViewById(R.id.new_devices);
         newDevicesListView.setAdapter(mNewDevicesArrayAdapter);
         newDevicesListView.setOnItemClickListener(mDeviceClickListener);
 

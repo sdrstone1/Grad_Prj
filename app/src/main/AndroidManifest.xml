@@ -59,7 +59,7 @@
 
         <activity
                 android:name=".ActivityMessageViewer"
-                android:theme="@style/AppTheme.NoTitle">
+                android:theme="@style/AppTheme">
 
         </activity>
 

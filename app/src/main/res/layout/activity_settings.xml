@@ -26,9 +26,12 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:id="@+id/button"
-            style="@style/Widget.AppCompat.Button.Borderless" app:layout_constraintTop_toTopOf="parent"
+            style="@style/Widget.AppCompat.Button.Borderless"
+            app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            android:layout_margin="1dp" android:padding="11dp" android:gravity="left|center_vertical|start"
+            android:layout_margin="1dp"
+            android:padding="11dp"
+            android:gravity="left|center_vertical|start"
             android:onClick="onSensorConnectBtn"/>
 </android.support.constraint.ConstraintLayout>

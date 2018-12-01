@@ -15,14 +15,13 @@
 package com.tistory.kollhong.arduino_bluetooth;
 
 import android.app.Application;
-import android.bluetooth.BluetoothSocket;
 import android.content.Intent;
 
 
 public class ApplicationVO extends Application {
-    BluetoothSocket mmSocket;
-    static final String DATABASE_NAME = "data.db";
-    static String ROOT_DIR;
+    //BluetoothSocket mmSocket;
+    //static final String DATABASE_NAME = "data.db";
+    //static String ROOT_DIR;
 
     public void startService() {
         Intent intent = new Intent(getApplicationContext(), BtService.class);

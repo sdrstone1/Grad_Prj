@@ -15,7 +15,6 @@
 package com.tistory.kollhong.arduino_bluetooth;
 
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
@@ -25,13 +24,6 @@ public class ActivitySplash extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
-        ApplicationVO applicationVO = (ApplicationVO) getApplicationContext();
-
-        if (Build.VERSION.SDK_INT >= 24) {
-            applicationVO.ROOT_DIR = getApplicationContext().getDataDir().getAbsolutePath();
-        } else {
-            applicationVO.ROOT_DIR = getApplication().getFilesDir().getAbsolutePath();
-        }
 
         try {
             Thread.sleep(500);      //스플래시 보여주기
