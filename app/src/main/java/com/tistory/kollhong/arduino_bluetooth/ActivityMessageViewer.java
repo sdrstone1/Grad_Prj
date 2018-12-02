@@ -1,6 +1,7 @@
 
 /*
  * Copyright (c) 2018. KollHong. All Rights Reserved.
+ * Copyright (c) 2018. KollHong. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +17,6 @@
 package com.tistory.kollhong.arduino_bluetooth;
 
 import android.annotation.SuppressLint;
-import android.app.ActionBar;
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -141,13 +141,13 @@ public class ActivityMessageViewer extends AppCompatActivity {
     private void processMessage(String message) {
         tmpMessage += message;      //메시지 수신- 타이밍이 맞지 않으므로 기존 메시지와 병합
         String[] messages = tmpMessage.split("/&");      //띄어쓰기 세개로 메시지 타이밍 구분
-        int size = messages.length;     //메시지 갯수 확인
+        int size = messages.length - 1;     //메시지 갯수 확인
         for (int i = 0; i < size; i++) {       //메시지에 대하여
             mConversationArrayAdapter.add(messages[i]);     //대화어레이에 추가
         }
         //마지막 배열은 다음 메시지와 연결될 수 있기 때문에
         //어레이에 추가하지 않음.
-        tmpMessage = messages[messages.length - 1];
+        tmpMessage = messages[size];
     }
 
     @Override
