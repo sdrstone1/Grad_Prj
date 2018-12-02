@@ -14,6 +14,11 @@
   -->
 
 <resources>
+    <!-- Don't change this Parameter name & value-->
+    <!-- This string value is for system work cycle-->
+    <string name="appbar_scrolling_view_behavior" translatable="false">android.support.design.widget.AppBarLayout$ScrollingViewBehavior</string>
+
+
     <string name="app_name">Arduino_Bluetooth</string>
 
     <string name="title_activity_splash">Arduino_Bluetooth</string>
@@ -24,8 +29,6 @@
     <string name="title_not_connected"> No connection </string>
     <string name="title_paired_devices"> Paired Devices </string>
     <string name="title_other_devices"> Devices </string>
-
-    <string name="appbar_scrolling_view_behavior" translatable="false">android.support.design.widget.AppBarLayout$ScrollingViewBehavior</string>
 
     <string name="imageDescription_welcomeimg">Welcome_Image</string>
     <string name="Welcome_Message">Thank you to using my app.</string>

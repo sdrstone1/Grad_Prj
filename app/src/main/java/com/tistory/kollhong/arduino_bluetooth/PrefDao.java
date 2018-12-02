@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2018. KollHong. All Rights Reserved.
+ * Copyright (c) 2018. KollHong. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -44,6 +45,16 @@ public class PrefDao {
 
     public void setInit() {
         mPrefEdit.putBoolean("initialized", true);
+        mPrefEdit.commit();
+    }
+
+    public String getBTaddr() {
+        return mPref.getString("BTaddr", null);
+
+    }
+
+    public void setBTaddr(String addr) {
+        mPrefEdit.putString("BTaddr", addr);
         mPrefEdit.commit();
     }
 

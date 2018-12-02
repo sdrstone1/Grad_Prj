@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2018. KollHong. All Rights Reserved.
+ * Copyright (c) 2018. KollHong. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -79,12 +80,19 @@ public class ActivityBtConnect extends AppCompatActivity {
             String info = ((TextView) v).getText().toString();
             String address = info.substring(info.length() - 17);
 
+
             // Create the result Intent and include the MAC address
             Intent intent = new Intent();
             intent.putExtra(EXTRA_DEVICE_ADDRESS, address);
 
+            PrefDao mPrefMan = new PrefDao(getApplicationContext());
+            mPrefMan.setBTaddr(address);
+
             // Set result and finish this Activity
-            setResult(Activity.RESULT_OK, intent);
+            setResult(Activity.RESULT_OK);
+
+
+
             finish();
         }
     };
