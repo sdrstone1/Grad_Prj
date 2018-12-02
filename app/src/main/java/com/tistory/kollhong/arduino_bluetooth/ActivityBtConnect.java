@@ -89,9 +89,7 @@ public class ActivityBtConnect extends AppCompatActivity {
             mPrefMan.setBTaddr(address);
 
             // Set result and finish this Activity
-            setResult(Activity.RESULT_OK);
-
-
+            setResult(Activity.RESULT_OK, intent);
 
             finish();
         }
