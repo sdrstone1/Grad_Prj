@@ -1,4 +1,5 @@
 /*
+ * Copyright (c) 2019. KollHong. All Rights Reserved.
  * Copyright (c) 2018. KollHong. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,5 +15,5 @@
 
 package com.tistory.kollhong.arduino_bluetooth;
 
-public class DrinkCalculator {
+public class mDrinkCalculator {
 }

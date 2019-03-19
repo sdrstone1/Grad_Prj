@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018. KollHong. All Rights Reserved.
+ * Copyright (c) 2019. KollHong. All Rights Reserved.
  * Copyright (c) 2018. KollHong. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -26,8 +26,8 @@ public class ActivityMain extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        PrefDao PrefDao = new PrefDao(getApplicationContext());
-        if (!PrefDao.init) {
+        cPreferences cPreferences = new cPreferences(getApplicationContext());
+        if (!cPreferences.init) {
 
             Intent firstlaunch_intent = new Intent(getApplicationContext(), ActivityWelcome.class);
             firstlaunch_intent.setFlags(Intent.FLAG_ACTIVITY_TASK_ON_HOME);
@@ -39,7 +39,7 @@ public class ActivityMain extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         /*
-        String uid = PrefDao.getBTUUID();
+        String uid = cPreferences.getBTUUID();
         if(uid != null){
             BluetoothDevice btDevice = null;
             BtDto cBleDTO = new BtDto();

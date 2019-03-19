@@ -1,4 +1,5 @@
 /*
+ * Copyright (c) 2019. KollHong. All Rights Reserved.
  * Copyright (c) 2018. KollHong. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,19 +15,22 @@
 
 package com.tistory.kollhong.arduino_bluetooth;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteConstraintException;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Build;
+import android.util.Log;
 
-public class DbDao {
+class cDb {
     SQLiteDatabase db;
     Cursor cursor;
     Context context;
 
     //여기서 읽기 쓰기 작업 모두 진행
     //여기서 디비 객체 선언
-    DbDao(Context context, boolean RW) {
+    cDb(Context context, boolean RW) {
         this.context = context;
         String ROOT_DIR;
         if (Build.VERSION.SDK_INT >= 24) {
@@ -45,10 +49,30 @@ public class DbDao {
         //todo db writing
     }
 
-    public void add() {
+    boolean Join(String id, String pw, String name, int age, float weight, float height, String email) {
+        ContentValues values = new ContentValues();
+        values.put("id", id);
+        values.put("password", pw);
+        values.put("name", name);
+        values.put("age", age);
+        values.put("weight", weight);
+        values.put("height", height);
+        values.put("email", email);
 
+
+        try {
+            db.insertOrThrow("user", null, values);
+        } catch (SQLiteConstraintException e) {
+            Log.e("Join Error", e.getLocalizedMessage());
+            return false;
+        }
+        return true;
     }
 
+    boolean IDredun(String id) {
+        cursor = db.query(true, "user", new String[]{"id"}, "id='" + id + "'", null, null, null, null, null);
+        return cursor.getCount() != 0;
+    }
 
     /*
     public Cursor getTransbyID(long id) {

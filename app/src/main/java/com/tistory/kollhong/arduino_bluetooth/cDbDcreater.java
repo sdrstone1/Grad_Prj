@@ -1,4 +1,5 @@
 /*
+ * Copyright (c) 2019. KollHong. All Rights Reserved.
  * Copyright (c) 2018. KollHong. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -23,8 +24,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-public class DbDcreater {
-    DbDcreater(Context context) {
+class cDbDcreater {
+    cDbDcreater(Context context) {
         String DATABASE_NAME = "data.db";
         String ROOT_DIR;
         if (Build.VERSION.SDK_INT >= 24) {

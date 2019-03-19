@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018. KollHong. All Rights Reserved.
+ * Copyright (c) 2019. KollHong. All Rights Reserved.
  * Copyright (c) 2018. KollHong. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -25,25 +25,26 @@ import java.util.prefs.Preferences;
  * Created by KollHong on 14/04/2018.
  */
 
-public class PrefDao {
+public class cPreferences {
     Preferences mPrefs;
-    SharedPreferences mPref;
-    SharedPreferences.Editor mPrefEdit;
-    Boolean init = false;
-    Context context;
+    Boolean init;
+    private SharedPreferences mPref;
+    private SharedPreferences.Editor mPrefEdit;
+    private Context context;
 
-    PrefDao(Context appcontext) {
+    cPreferences(Context appcontext) {
         context = appcontext;
         mPref = PreferenceManager.getDefaultSharedPreferences(context);
 
-        mPrefEdit = mPref.edit();
-        if (mPref.contains("initialized") == true) {
+
+        if (mPref.contains("initialized")) {
             init = mPref.getBoolean("initialized", false);
         } else
             init = false;
     }
 
-    public void setInit() {
+    void setInit() {
+        mPrefEdit = mPref.edit();
         mPrefEdit.putBoolean("initialized", true);
         mPrefEdit.commit();
     }
@@ -53,19 +54,21 @@ public class PrefDao {
 
     }
 
-    public void setBTaddr(String addr) {
+    void setBTaddr(String addr) {
+        mPrefEdit = mPref.edit();
         mPrefEdit.putString("BTaddr", addr);
         mPrefEdit.commit();
     }
 
 
     public void setSMSRegistered(boolean set) {
-
+        mPrefEdit = mPref.edit();
         mPrefEdit.putBoolean("SMSReg", set);
         mPrefEdit.commit();
     }
 
     public void ClearSharedPref() {      //if(BuildConfig.isTest)
+        mPrefEdit = mPref.edit();
         mPrefEdit.clear();
         mPrefEdit.commit();
     }

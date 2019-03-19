@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018. KollHong. All Rights Reserved.
+ * Copyright (c) 2019. KollHong. All Rights Reserved.
  * Copyright (c) 2018. KollHong. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -31,14 +31,14 @@ import android.widget.*;
 import java.util.Set;
 
 public class ActivityBtConnect extends AppCompatActivity {
-    static final int REQUEST_ENABLE_BT = 33768;
-    public static String EXTRA_DEVICE_ADDRESS = "device_address";
+    private static final int REQUEST_ENABLE_BT = 33768;
+    static String EXTRA_DEVICE_ADDRESS = "device_address";
     //ListView BT_list;
-    Button searchBtn;
+    private Button searchBtn;
     boolean mScan = false;
 
-    Switch bleSwitch;
-    Set<BluetoothDevice> pairedBTs;
+    private Switch bleSwitch;
+    private Set<BluetoothDevice> pairedBTs;
     private BluetoothAdapter mBtAdapter;
     private ArrayAdapter<String> mPairedDevicesArrayAdapter;
     private ArrayAdapter<String> mNewDevicesArrayAdapter;
@@ -85,7 +85,7 @@ public class ActivityBtConnect extends AppCompatActivity {
             Intent intent = new Intent();
             intent.putExtra(EXTRA_DEVICE_ADDRESS, address);
 
-            PrefDao mPrefMan = new PrefDao(getApplicationContext());
+            cPreferences mPrefMan = new cPreferences(getApplicationContext());
             mPrefMan.setBTaddr(address);
 
             // Set result and finish this Activity
@@ -140,8 +140,8 @@ public class ActivityBtConnect extends AppCompatActivity {
 
         // Initialize array adapters. One for already paired devices and
         // one for newly discovered devices
-        mPairedDevicesArrayAdapter = new ArrayAdapter<String>(this, R.layout.device_list_name);
-        mNewDevicesArrayAdapter = new ArrayAdapter<String>(this, R.layout.device_list_name);
+        mPairedDevicesArrayAdapter = new ArrayAdapter<>(this, R.layout.device_list_name);
+        mNewDevicesArrayAdapter = new ArrayAdapter<>(this, R.layout.device_list_name);
 
         // Find and set up the ListView for paired devices
         ListView pairedListView = findViewById(R.id.paired_devices);

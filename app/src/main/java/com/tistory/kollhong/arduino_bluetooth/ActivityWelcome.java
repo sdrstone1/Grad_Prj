@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018. KollHong. All Rights Reserved.
+ * Copyright (c) 2019. KollHong. All Rights Reserved.
  * Copyright (c) 2018. KollHong. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,6 +18,7 @@ package com.tistory.kollhong.arduino_bluetooth;
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
@@ -33,7 +34,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 public class ActivityWelcome extends AppCompatActivity {
-    int radio_checked = 0;
+    private int radio_checked = 0;
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
      * fragments for each of the sections. We use a
@@ -67,12 +68,12 @@ public class ActivityWelcome extends AppCompatActivity {
         TabLayout tabLayout = findViewById(R.id.tabDots);
         tabLayout.setupWithViewPager(mViewPager, true);
 
-        new DbDcreater(this);
+        new cDbDcreater(this);
 
     }
 
     public void onFinish(View view) {
-        PrefDao mPref = new PrefDao(getApplicationContext());
+        cPreferences mPref = new cPreferences(getApplicationContext());
         mPref.setInit();
         finish();
 
@@ -130,17 +131,15 @@ public class ActivityWelcome extends AppCompatActivity {
 
         @Nullable
         @Override
-        public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.activity_welcome_frag0, container, false);
-            return rootView;
+        public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+            return inflater.inflate(R.layout.activity_welcome_frag0, container, false);
         }
     }
 
     public static class infoFragment extends Fragment {
         @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-            View rootview = inflater.inflate(R.layout.activity_welcome_frag1, container, false);
-            return rootview;
+        public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+            return inflater.inflate(R.layout.activity_welcome_frag1, container, false);
         }
     }
 
@@ -150,7 +149,7 @@ public class ActivityWelcome extends AppCompatActivity {
      */
     public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
-        public SectionsPagerAdapter(FragmentManager fm) {
+        SectionsPagerAdapter(FragmentManager fm) {
             super(fm);
         }
 
