@@ -19,19 +19,34 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
-public class ActivitySplash extends AppCompatActivity {
+public class ActivityCalendar extends AppCompatActivity {
+    String session;
+    mRecords records;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_splash);
+        setContentView(R.layout.activity_calendar);
 
-        try {
-            Thread.sleep(1000);      //스플래시 보여주기
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        startActivity(new Intent(ActivitySplash.this, ActivityLogin.class));
-        finish();
+        records = new mRecords(this);
+
+        Intent intent = getIntent();
+        session = intent.getStringExtra("session");
+
+
+
+
+
+/*
+
+        Double record = records.getMonthRecord(session, date);
+        Double record = records.getWeekRecord(session, date);
+        Float recordf = record.floatValue();
+
+        ArrayList<BarData> dataList = new ArrayList<>();
+        BarData data = new BarData("7",recordf,recordf +"mL");
+        dataList.add(data);
+        */
+
     }
 }

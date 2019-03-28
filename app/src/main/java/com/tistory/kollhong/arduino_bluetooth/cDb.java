@@ -23,6 +23,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.Build;
 import android.util.Log;
 
+import java.util.ArrayList;
+
 class cDb {
     SQLiteDatabase db;
     Cursor cursor;
@@ -30,7 +32,7 @@ class cDb {
 
     //여기서 읽기 쓰기 작업 모두 진행
     //여기서 디비 객체 선언
-    cDb(Context context, boolean RW) {
+    cDb(Context context, String database, boolean RW) {
         this.context = context;
         String ROOT_DIR;
         if (Build.VERSION.SDK_INT >= 24) {
@@ -41,12 +43,29 @@ class cDb {
 
 
         if (RW) {
-            db = SQLiteDatabase.openDatabase(ROOT_DIR + "/database/data.db", null, SQLiteDatabase.OPEN_READWRITE | SQLiteDatabase.NO_LOCALIZED_COLLATORS);
+            db = SQLiteDatabase.openDatabase(ROOT_DIR + "/database/" + database + ".db", null, SQLiteDatabase.OPEN_READWRITE | SQLiteDatabase.NO_LOCALIZED_COLLATORS);
         } else {
-            db = SQLiteDatabase.openDatabase(ROOT_DIR + "/database/data.db", null, SQLiteDatabase.OPEN_READONLY | SQLiteDatabase.NO_LOCALIZED_COLLATORS);
+            db = SQLiteDatabase.openDatabase(ROOT_DIR + "/database/" + database + ".db", null, SQLiteDatabase.OPEN_READONLY | SQLiteDatabase.NO_LOCALIZED_COLLATORS);
 
         }
+
         //todo db writing
+    }
+
+    /* recommended to do not close SQL on android
+    void closeDB(){
+        db.close();
+    }
+    */
+    String Login(String id, String pw) { //기본 admin, admin
+        cursor = db.query(true, "user", new String[]{"id", "pw"}, "id='" + id + "'", null, null, null, null, null);
+        if (cursor.getCount() == 1) {
+            cursor.moveToNext();
+            if (pw == cursor.getString(1)) {
+                //TODO generate session id & return session id
+                return id;
+            } else return "false";
+        } else return "false";
     }
 
     boolean Join(String id, String pw, String name, int age, float weight, float height, String email) {
@@ -74,6 +93,22 @@ class cDb {
         return cursor.getCount() != 0;
     }
 
+
+    ArrayList<Double> getRecord(String session, long startdate, long enddate) {
+        cursor = db.query(true, session, new String[]{"measurement"}, "date BETWEEN '" + startdate + "' AND '" + enddate + "'", null, null, null, null, null);
+        ArrayList<Double> record = new ArrayList<>();
+        int count = cursor.getCount();
+        if (count != 0) {
+            for (int i = 0; i < count; i++) {
+
+                record.add(cursor.getDouble(0));
+            }
+        }
+        return record;
+
+    }
+
+/* table : record , col : userid, measurement, date
     /*
     public Cursor getTransbyID(long id) {
         cursor = db.rawQuery("SELECT _id, time, categoryid, amount, accountid, recipient, notes, rewardrecipientid, budgetexception, rewardamount, perfexception, rewardtype FROM trans WHERE _id = '" + id + "' ", null);

@@ -19,12 +19,13 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.ImageButton;
 
 public class ActivityMain extends AppCompatActivity {
-
+    String session;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+
 
         cPreferences cPreferences = new cPreferences(getApplicationContext());
         if (!cPreferences.init) {
@@ -38,41 +39,49 @@ public class ActivityMain extends AppCompatActivity {
         setTheme(R.style.AppTheme);
         setContentView(R.layout.activity_main);
 
-        /*
-        String uid = cPreferences.getBTUUID();
-        if(uid != null){
-            BluetoothDevice btDevice = null;
-            BtDto cBleDTO = new BtDto();
-            Set<BluetoothDevice> pairedBTs = cBleDTO.getPairedDevices();
-            for(BluetoothDevice device : pairedBTs){
-                if(device.getAddress() == uid ){
-
-                    btDevice = device;
-                    break;
-                }
-            }
-            if(btDevice != null){
-                // start socket transfer
-                cBleDTO.setCallBack(this);
-                cBleDTO.createSocket(btDevice);
-
-            }
-            else{
-                Snackbar.make(findViewById(R.id.mainLayout),R.string.plsConnect_Bluetooth,Snackbar.LENGTH_LONG).show();
-            }
-
-        }
-        */
+        Intent intent = getIntent();
+        session = intent.getStringExtra("session");
 
 
-    }
+        super.onCreate(savedInstanceState);
 
-    public void onMsgBtn(View v) {
-        startActivity(new Intent(getApplicationContext(), ActivityMessageViewer.class));
-    }
+        ImageButton calendarbutton = findViewById(R.id.calendarbutton);
+        calendarbutton.setOnClickListener(
+                new ImageButton.OnClickListener() {
+                    public void onClick(View v) {
+                        Intent intent = new Intent(v.getContext(), ActivityCalendar.class);
+                        intent.putExtra("session", session);
+                        startActivity(intent);
+                    }
+                });
 
-    public void onSettingsBtn(View v) {
-        startActivity(new Intent(getApplicationContext(), ActivitySettings.class));
+        ImageButton mypagebutton = findViewById(R.id.mypagebutton);
+        mypagebutton.setOnClickListener(
+                new ImageButton.OnClickListener() {
+                    public void onClick(View v) {
+                        Intent intent = new Intent(v.getContext(), ActivityMypage.class);
+                        intent.putExtra("session", session);
+                        startActivity(intent);
+                    }
+                });
+        ImageButton LEDbutton = findViewById(R.id.LEDbutton);
+        LEDbutton.setOnClickListener(
+                new ImageButton.OnClickListener() {
+                    public void onClick(View v) {
+                        Intent intent = new Intent(v.getContext(), ActivityLEDsettings.class);
+                        intent.putExtra("session", session);
+                        startActivity(intent);
+                    }
+                });
+        ImageButton Controlbutton = findViewById(R.id.Controlbutton);
+        Controlbutton.setOnClickListener(
+                new ImageButton.OnClickListener() {
+                    public void onClick(View v) {
+                        Intent intent = new Intent(v.getContext(), ActivitySetting.class);
+                        intent.putExtra("session", session);
+                        startActivity(intent);
+                    }
+                });
     }
 
     @Override

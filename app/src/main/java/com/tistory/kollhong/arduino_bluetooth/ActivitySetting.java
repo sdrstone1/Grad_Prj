@@ -15,23 +15,14 @@
 
 package com.tistory.kollhong.arduino_bluetooth;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
-public class ActivitySplash extends AppCompatActivity {
+public class ActivitySetting extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_splash);
-
-        try {
-            Thread.sleep(1000);      //스플래시 보여주기
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        startActivity(new Intent(ActivitySplash.this, ActivityLogin.class));
-        finish();
+        setContentView(R.layout.activity_control);
     }
 }

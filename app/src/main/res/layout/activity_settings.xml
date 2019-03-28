@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
+  ~ Copyright (c) 2019. KollHong. All Rights Reserved.
   ~ Copyright (c) 2018. KollHong. All Rights Reserved.
   ~
   ~ Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,7 +20,7 @@
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".ActivitySettings">
+        tools:context=".ActivitySettingsobs">
 
     <Button
             android:text="@string/connect_bluetooth"

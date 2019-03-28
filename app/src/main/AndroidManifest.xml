@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  ~ Copyright (c) 2018. KollHong. All Rights Reserved.
+  ~ Copyright (c) 2019. KollHong. All Rights Reserved.
   ~ Copyright (c) 2018. KollHong. All Rights Reserved.
   ~
   ~ Licensed under the Apache License, Version 2.0 (the "License");
@@ -44,7 +44,7 @@
             </intent-filter>
 
         </activity>
-        <activity android:name=".ActivitySettings">
+        <activity android:name=".ActivitySettingsobs">
         </activity>
         <activity
                 android:name=".ActivityBtConnect"
@@ -61,6 +61,20 @@
                 android:name=".ActivityMessageViewer"
                 android:theme="@style/AppTheme">
 
+        </activity>
+
+        <activity android:name=".ActivityCalendar"/>
+        <activity android:name=".ActivityMypage"/>
+        <activity android:name=".ActivitySetting"/>
+        <activity android:name=".ActivityLEDsettings"/>
+        <activity android:name=".ActivityMain"/>
+        <activity android:name=".ActivityRegister"/>
+        <activity android:name=".ActivityLogin">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
         </activity>
 
 

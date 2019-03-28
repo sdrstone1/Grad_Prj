@@ -15,23 +15,31 @@
 
 package com.tistory.kollhong.arduino_bluetooth;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
 
-public class ActivitySplash extends AppCompatActivity {
+public class ActivityRegister extends AppCompatActivity {
+
+    private ArrayAdapter adapter;
+    private Spinner spinner;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_splash);
+        setContentView(R.layout.activity_register);
 
-        try {
-            Thread.sleep(1000);      //스플래시 보여주기
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        startActivity(new Intent(ActivitySplash.this, ActivityLogin.class));
-        finish();
+        spinner = findViewById(R.id.ageSpinner);
+        adapter = ArrayAdapter.createFromResource(this, R.array.age, android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(adapter);
+
+        spinner = findViewById(R.id.weightSpinner);
+        adapter = ArrayAdapter.createFromResource(this, R.array.weight, android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(adapter);
+
+        spinner = findViewById(R.id.heightSpinner);
+        adapter = ArrayAdapter.createFromResource(this, R.array.height, android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(adapter);
     }
 }

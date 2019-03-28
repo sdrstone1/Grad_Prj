@@ -1,4 +1,5 @@
 /*
+ * Copyright (c) 2019. KollHong. All Rights Reserved.
  * Copyright (c) 2018. KollHong. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,7 +20,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
-public class ActivitySettings extends AppCompatActivity {
+public class ActivitySettingsobs extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

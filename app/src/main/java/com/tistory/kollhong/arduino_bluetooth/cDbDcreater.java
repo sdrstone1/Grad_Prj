@@ -26,7 +26,8 @@ import java.io.InputStream;
 
 class cDbDcreater {
     cDbDcreater(Context context) {
-        String DATABASE_NAME = "data.db";
+        String DATABASE_acc = "accounts.db";
+        String DATABASE_admin = "admin.db";
         String ROOT_DIR;
         if (Build.VERSION.SDK_INT >= 24) {
             ROOT_DIR = context.getDataDir().getAbsolutePath();
@@ -36,11 +37,29 @@ class cDbDcreater {
 
         File folder = new File(ROOT_DIR + "/database");
         folder.mkdirs();
-        File outfile = new File(ROOT_DIR + "/database/" + DATABASE_NAME);
+        File outfile = new File(ROOT_DIR + "/database/" + DATABASE_acc);
         if (outfile.length() <= 0) {
             AssetManager assetManager = context.getResources().getAssets();
             try {
-                InputStream input = assetManager.open(DATABASE_NAME, AssetManager.ACCESS_BUFFER);
+                InputStream input = assetManager.open(DATABASE_acc, AssetManager.ACCESS_BUFFER);
+                long filesize = input.available();
+                byte[] tempdata = new byte[(int) filesize];
+                input.read(tempdata);
+                input.close();
+
+                outfile.createNewFile();
+                FileOutputStream fo = new FileOutputStream(outfile);
+                fo.write(tempdata);
+                fo.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        outfile = new File(ROOT_DIR + "/database/" + DATABASE_admin);
+        if (outfile.length() <= 0) {
+            AssetManager assetManager = context.getResources().getAssets();
+            try {
+                InputStream input = assetManager.open(DATABASE_admin, AssetManager.ACCESS_BUFFER);
                 long filesize = input.available();
                 byte[] tempdata = new byte[(int) filesize];
                 input.read(tempdata);

@@ -25,7 +25,7 @@ public class mAccounts {
 
     Context context;
     cDb mDb;
-
+    String session;
 
     mAccounts(Context context) {
         this.context = context;
@@ -33,14 +33,19 @@ public class mAccounts {
     }
 
 
-    public boolean Login(String id, String pw) {
-        boolean success = false;
-        mDb = new cDb(context, false);
-        return success;
+    public String Login(String id, String pw) {
+        mDb = new cDb(context, "accounts", false);
+        pw = encrypt(pw);
+        session = mDb.Login(id, pw);
+        if (session == "false") {
+            return "false";
+        }
+        //TODO session ID를 저장하여 자동 로그인이 가능하도록
+        return session;
     }
 
     public int Join(String id, String pw, String name, int age, float weight, float height, String email) {
-        mDb = new cDb(context, true);
+        mDb = new cDb(context, "accounts", true);
         //check id redundancy
         if (mDb.IDredun(id)) {
             Log.e("Join Error", "ID is redundant");
@@ -52,6 +57,9 @@ public class mAccounts {
             Log.e("Join Error", "pw condition not satisfied");
             return 2;
         }
+
+        pw = encrypt(pw);
+
         if (mDb.Join(id, pw, name, age, weight, height, email)) {
             return 0;
         } else {
@@ -60,4 +68,12 @@ public class mAccounts {
 
         }
     }
+
+    public String encrypt(String pw) {
+        //st
+        return pw;
+    }
+
+
+
 }

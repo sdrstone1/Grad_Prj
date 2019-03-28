@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018. KollHong. All Rights Reserved.
+ * Copyright (c) 2019. KollHong. All Rights Reserved.
  * Copyright (c) 2018. KollHong. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -45,4 +45,5 @@ dependencies {
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
     implementation 'com.android.support:recyclerview-v7:27.1.1'
+    implementation 'com.github.hadiidbouk:ChartProgressBar-Android:2.0.6'
 }
