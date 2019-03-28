@@ -57,6 +57,13 @@ public class mRecords {
         return record;
     }
     //TODO 월별 통계, 주간 통계
+    public Double getWeekRecord(String session, Date date) {
+        return 0d;
+    }
+
+    public Double getMonthRecord(String session, Date date) {
+        return 0d;
+    }
 
 
     //view returns String

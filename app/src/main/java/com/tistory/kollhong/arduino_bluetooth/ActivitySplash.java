@@ -26,12 +26,13 @@ public class ActivitySplash extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
 
+        startActivity(new Intent(ActivitySplash.this, ActivityLogin.class));
+
         try {
             Thread.sleep(1000);      //스플래시 보여주기
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        startActivity(new Intent(ActivitySplash.this, ActivityLogin.class));
         finish();
     }
 }
