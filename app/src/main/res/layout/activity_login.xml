@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) 2019. KollHong. All Rights Reserved.
+  ~ Copyright (c) 2018. KollHong. All Rights Reserved.
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~ http://www.apache.org/licenses/LICENSE-2.0
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                tools:context=".ActivityLogin"
+                android:id="@+id/LoginView">
+
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="225dp"
+                android:orientation="vertical"
+                android:background="@color/colorPrimary">
+
+            <ImageView
+                    android:layout_width="125dp"
+                    android:layout_height="125dp"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="20dp"
+                    android:src="@drawable/logo"/>
+
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="주량 관리 프로젝트"
+                    android:textColor="#ffffff"
+                    android:textSize="25dp"
+                    android:textStyle="bold"
+                    android:layout_marginTop="10dp"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+            <EditText
+                    android:layout_width="280dp"
+                    android:layout_height="wrap_content"
+                    android:hint="아이디"
+                    android:layout_gravity="center"
+                    android:padding="10dp"
+                    android:textColor="#ffffff"
+                    android:textColorHint="#ffffff"
+                    android:id="@+id/idText"
+                    android:drawableStart="@drawable/ic_person_black_24dp"
+                    android:drawableLeft="@drawable/ic_person_black_24dp"
+                    android:layout_marginTop="50dp"
+                    android:background="@color/colorPrimary"
+                    android:imeOptions="actionNext"
+                    android:maxLines="1"
+                    android:singleLine="true"/>
+
+            <EditText
+                    android:inputType="textPassword"
+                    android:layout_width="280dp"
+                    android:layout_height="wrap_content"
+                    android:hint="비밀번호"
+                    android:layout_gravity="center"
+                    android:padding="10dp"
+                    android:textColor="#ffffff"
+                    android:textColorHint="#ffffff"
+                    android:id="@+id/passwordText"
+                    android:drawableStart="@drawable/ic_lock_black_24dp"
+                    android:drawableLeft="@drawable/ic_lock_black_24dp"
+                    android:layout_marginTop="10dp"
+                    android:background="@color/colorPrimary"
+                    android:imeOptions="actionGo|actionSend"
+                    android:password="true"
+                    android:maxLines="1"
+                    android:singleLine="true"/>
+
+            <Button
+                    android:layout_width="280dp"
+                    android:layout_height="wrap_content"
+                    android:textSize="20dp"
+                    android:textStyle="bold"
+                    android:textColor="#ffffff"
+                    android:background="@color/colorPrimary"
+                    android:text="로그인"
+                    android:layout_marginTop="10dp"
+                    android:layout_gravity="center"
+                    android:id="@+id/loginButton"/>
+
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:textSize="18dp"
+                    android:layout_marginTop="10dp"
+                    android:text="회원가입"
+                    android:id="@+id/registerButton"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</RelativeLayout>

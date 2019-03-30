@@ -62,7 +62,8 @@ class cDb {
         cursor = db.query(true, "user", new String[]{"loginid", "pw"}, "loginid='" + id + "'", null, null, null, null, null);
         if (cursor.getCount() == 1) {
             cursor.moveToNext();
-            if (pw.equals(cursor.getString(1))) {
+            String dbpw = cursor.getString(1);
+            if (pw.equals(dbpw)) {
                 //TODO generate session id & return session id
                 return id;
             } else return "false";

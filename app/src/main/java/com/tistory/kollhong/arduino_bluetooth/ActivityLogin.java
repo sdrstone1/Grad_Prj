@@ -42,12 +42,13 @@ public class ActivityLogin extends AppCompatActivity {
                         String session = mAcc.Login(id.getText().toString(), pw.getText().toString());
                         //Bundle bundle = new Bundle();
                         //bundle.putString("session", session);
-                        if (session.equals(false)) {
+                        if (session.equals("false")) {
                             Snackbar.make(findViewById(R.id.LoginView), "Check ID & PW again", Snackbar.LENGTH_SHORT).show();
                         } else {
                             Intent intent = new Intent(v.getContext(), ActivityMain.class);
                             intent.putExtra("session", session);
                             startActivity(intent);
+                            finish();
                         }
                     }
                 });
@@ -64,6 +65,5 @@ public class ActivityLogin extends AppCompatActivity {
                 });
 
     }
-
 
 }

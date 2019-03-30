@@ -37,7 +37,7 @@ public class mAccounts {
         mDb = new cDb(context, "accounts", false);
         pw = encrypt(pw);
         session = mDb.Login(id, pw);
-        if (session.equals(false)) {
+        if (session.equals("false")) {
             return "false";
         }
         //TODO session ID를 저장하여 자동 로그인이 가능하도록

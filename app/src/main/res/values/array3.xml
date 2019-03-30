@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) 2019. KollHong. All Rights Reserved.
+  ~ Copyright (c) 2018. KollHong. All Rights Reserved.
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~ http://www.apache.org/licenses/LICENSE-2.0
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<resources>
+    <string-array name="height">
+        <item>135cm</item>
+        <item>136cm</item>
+        <item>137cm</item>
+        <item>138cm</item>
+        <item>139cm</item>
+        <item>140cm</item>
+        <item>141cm</item>
+        <item>142cm</item>
+        <item>143cm</item>
+        <item>144cm</item>
+        <item>145cm</item>
+        <item>146cm</item>
+        <item>147cm</item>
+        <item>148cm</item>
+        <item>149cm</item>
+        <item>150cm</item>
+        <item>151cm</item>
+        <item>152cm</item>
+        <item>153cm</item>
+        <item>154cm</item>
+        <item>155cm</item>
+        <item>156cm</item>
+        <item>157cm</item>
+        <item>158cm</item>
+        <item>159cm</item>
+        <item>160cm</item>
+        <item>161cm</item>
+        <item>162cm</item>
+        <item>163cm</item>
+        <item>164cm</item>
+        <item>165cm</item>
+        <item>166cm</item>
+        <item>167cm</item>
+        <item>168cm</item>
+        <item>169cm</item>
+        <item>170cm</item>
+        <item>171cm</item>
+        <item>172cm</item>
+        <item>173cm</item>
+        <item>174cm</item>
+        <item>175cm</item>
+        <item>176cm</item>
+        <item>177cm</item>
+        <item>178cm</item>
+        <item>179cm</item>
+        <item>180cm</item>
+        <item>181cm</item>
+        <item>182cm</item>
+        <item>183cm</item>
+        <item>184cm</item>
+        <item>185cm</item>
+        <item>186cm</item>
+        <item>187cm</item>
+        <item>188cm</item>
+        <item>189cm</item>
+        <item>190cm</item>
+        <item>191cm</item>
+        <item>192cm</item>
+        <item>193cm</item>
+        <item>194cm</item>
+        <item>195cm</item>
+        <item>196cm</item>
+        <item>197cm</item>
+        <item>198cm</item>
+        <item>199cm</item>
+        <item>200cm</item>
+        <item>201cm</item>
+        <item>202cm</item>
+        <item>203cm</item>
+        <item>204cm</item>
+        <item>205cm</item>
+        <item>206cm</item>
+        <item>207cm</item>
+        <item>208cm</item>
+        <item>209cm</item>
+        <item>210cm</item>
+
+    </string-array>
+
+</resources>

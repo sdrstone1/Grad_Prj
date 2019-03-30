@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) 2019. KollHong. All Rights Reserved.
+  ~ Copyright (c) 2018. KollHong. All Rights Reserved.
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~ http://www.apache.org/licenses/LICENSE-2.0
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<resources>
+    <string-array name="age">
+        <item>19세</item>
+        <item>20세</item>
+        <item>21세</item>
+        <item>22세</item>
+        <item>23세</item>
+        <item>24세</item>
+        <item>25세</item>
+        <item>26세</item>
+        <item>27세</item>
+        <item>28세</item>
+        <item>29세</item>
+        <item>30세</item>
+        <item>31세</item>
+        <item>32세</item>
+        <item>33세</item>
+        <item>34세</item>
+        <item>35세</item>
+        <item>36세</item>
+        <item>37세</item>
+        <item>38세</item>
+        <item>39세</item>
+        <item>40세</item>
+        <item>41세</item>
+        <item>42세</item>
+        <item>43세</item>
+        <item>44세</item>
+        <item>45세</item>
+        <item>46세</item>
+        <item>47세</item>
+        <item>48세</item>
+        <item>49세</item>
+        <item>50세</item>
+        <item>51세</item>
+        <item>52세</item>
+        <item>53세</item>
+        <item>54세</item>
+        <item>55세</item>
+        <item>56세</item>
+        <item>57세</item>
+        <item>58세</item>
+        <item>59세</item>
+        <item>60세</item>
+        <item>61세</item>
+        <item>62세</item>
+        <item>63세</item>
+        <item>64세</item>
+        <item>65세</item>
+        <item>66세</item>
+        <item>67세</item>
+        <item>68세</item>
+        <item>69세</item>
+        <item>70세</item>
+        <item>71세</item>
+        <item>72세</item>
+        <item>73세</item>
+        <item>74세</item>
+        <item>75세</item>
+        <item>76세</item>
+        <item>77세</item>
+        <item>78세</item>
+        <item>79세</item>
+        <item>80세</item>
+        <item>81세</item>
+        <item>82세</item>
+        <item>83세</item>
+        <item>84세</item>
+        <item>85세</item>
+        <item>86세</item>
+        <item>87세</item>
+        <item>88세</item>
+        <item>89세</item>
+        <item>90세</item>
+        <item>91세</item>
+        <item>92세</item>
+        <item>93세</item>
+        <item>94세</item>
+        <item>95세</item>
+        <item>96세</item>
+        <item>97세</item>
+        <item>98세</item>
+        <item>99세</item>
+    </string-array>
+
+</resources>
