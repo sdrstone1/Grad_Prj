@@ -26,6 +26,8 @@ public class ActivitySplash extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
 
+        new cDbDcreater(this);  //TODO 나중에 웰컴 액티비티로 옮기기
+
         startActivity(new Intent(ActivitySplash.this, ActivityLogin.class));
 
         try {

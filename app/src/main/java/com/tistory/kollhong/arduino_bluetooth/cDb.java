@@ -45,6 +45,7 @@ class cDb {
         if (RW) {
             db = SQLiteDatabase.openDatabase(ROOT_DIR + "/database/" + database + ".db", null, SQLiteDatabase.OPEN_READWRITE | SQLiteDatabase.NO_LOCALIZED_COLLATORS);
         } else {
+            Log.d("Opening DB", ROOT_DIR + "/database/" + database + ".db");
             db = SQLiteDatabase.openDatabase(ROOT_DIR + "/database/" + database + ".db", null, SQLiteDatabase.OPEN_READONLY | SQLiteDatabase.NO_LOCALIZED_COLLATORS);
 
         }
@@ -58,10 +59,10 @@ class cDb {
     }
     */
     String Login(String id, String pw) { //기본 admin, admin
-        cursor = db.query(true, "user", new String[]{"id", "pw"}, "id='" + id + "'", null, null, null, null, null);
+        cursor = db.query(true, "user", new String[]{"loginid", "pw"}, "loginid='" + id + "'", null, null, null, null, null);
         if (cursor.getCount() == 1) {
             cursor.moveToNext();
-            if (pw == cursor.getString(1)) {
+            if (pw.equals(cursor.getString(1))) {
                 //TODO generate session id & return session id
                 return id;
             } else return "false";
@@ -70,7 +71,7 @@ class cDb {
 
     boolean Join(String id, String pw, String name, int age, float weight, float height, String email) {
         ContentValues values = new ContentValues();
-        values.put("id", id);
+        values.put("loginid", id);
         values.put("password", pw);
         values.put("name", name);
         values.put("age", age);
@@ -89,7 +90,7 @@ class cDb {
     }
 
     boolean IDredun(String id) {
-        cursor = db.query(true, "user", new String[]{"id"}, "id='" + id + "'", null, null, null, null, null);
+        cursor = db.query(true, "user", new String[]{"loginid"}, "loginid='" + id + "'", null, null, null, null, null);
         return cursor.getCount() != 0;
     }
 

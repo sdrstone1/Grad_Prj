@@ -17,6 +17,7 @@ package com.tistory.kollhong.arduino_bluetooth;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
@@ -38,13 +39,16 @@ public class ActivityLogin extends AppCompatActivity {
         loginButton.setOnClickListener(
                 new Button.OnClickListener() {
                     public void onClick(View v) {
-                        String session = mAcc.Login((String) id.getText(), (String) pw.getText());
+                        String session = mAcc.Login(id.getText().toString(), pw.getText().toString());
                         //Bundle bundle = new Bundle();
                         //bundle.putString("session", session);
-
-                        Intent intent = new Intent(v.getContext(), ActivityMain.class);
-                        intent.putExtra("session", session);
-                        startActivity(intent);
+                        if (session.equals(false)) {
+                            Snackbar.make(findViewById(R.id.LoginView), "Check ID & PW again", Snackbar.LENGTH_SHORT).show();
+                        } else {
+                            Intent intent = new Intent(v.getContext(), ActivityMain.class);
+                            intent.putExtra("session", session);
+                            startActivity(intent);
+                        }
                     }
                 });
 

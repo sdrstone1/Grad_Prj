@@ -18,6 +18,7 @@ package com.tistory.kollhong.arduino_bluetooth;
 import android.content.Context;
 import android.content.res.AssetManager;
 import android.os.Build;
+import android.util.Log;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -44,6 +45,7 @@ class cDbDcreater {
                 InputStream input = assetManager.open(DATABASE_acc, AssetManager.ACCESS_BUFFER);
                 long filesize = input.available();
                 byte[] tempdata = new byte[(int) filesize];
+                Log.d("DB creation", ROOT_DIR + "/database/" + DATABASE_acc);
                 input.read(tempdata);
                 input.close();
 
