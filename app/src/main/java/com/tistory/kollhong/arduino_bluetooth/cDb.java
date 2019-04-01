@@ -23,8 +23,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.Build;
 import android.util.Log;
 
-import java.util.ArrayList;
-
 class cDb {
     SQLiteDatabase db;
     Cursor cursor;
@@ -95,18 +93,33 @@ class cDb {
     }
 
 
-    ArrayList<Double> getRecord(String session, long startdate, long enddate) {
+    Double getRecord(String session, long startdate, long enddate) {
         cursor = db.query(true, session, new String[]{"measurement"}, "date BETWEEN '" + startdate + "' AND '" + enddate + "'", null, null, null, null, null);
-        ArrayList<Double> record = new ArrayList<>();
+        Double record = 0d;
         int count = cursor.getCount();
         if (count != 0) {
             for (int i = 0; i < count; i++) {
 
-                record.add(cursor.getDouble(0));
+                record = record + cursor.getDouble(0);
             }
         }
+
         return record;
 
+    }
+
+    boolean putRecord(String session, long date, Double measurement) {
+        ContentValues values = new ContentValues();
+        values.put("date", date);
+        values.put("measurement", measurement);
+
+        try {
+            db.insertOrThrow(session, null, values);
+        } catch (SQLiteConstraintException e) {
+            Log.e("PUT record error", e.getMessage());
+            return false;
+        }
+        return true;
     }
 
 /* table : record , col : userid, measurement, date

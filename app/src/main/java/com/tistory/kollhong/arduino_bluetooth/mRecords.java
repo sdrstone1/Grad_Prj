@@ -18,7 +18,6 @@ package com.tistory.kollhong.arduino_bluetooth;
 import android.content.Context;
 import android.icu.util.Calendar;
 
-import java.util.ArrayList;
 import java.util.Date;
 
 public class mRecords {
@@ -31,44 +30,58 @@ public class mRecords {
         this.context = context;
     }
 
-    public ArrayList<Double> getRecord(String session, Date date) {
-        //TODO 세션 , id로 바꾸기
-        //Date startdate = new Date(date), enddate = new Date(date);
+    Double getRecord(String session, Calendar cal, int loop) {
+        Double record = 0d;
 
-        Long startdate = date.getTime();
+        cal.set(Calendar.HOUR_OF_DAY, 12);
+/*
+        int Sunday = cal.getFirstDayOfWeek();
+        cal.set(Calendar.DAY_OF_MONTH, Sunday);
+        cal.set(Calendar.HOUR_OF_DAY, 12);      //낮 12시부터 다음 날 낮 12시까지
+        cal.set(Calendar.MINUTE, 0);
+        cal.set(Calendar.SECOND, 0);
 
-        Calendar cal = Calendar.getInstance();
-        cal.setTime(date);
-
-
-        cal.set(2019, Calendar.JANUARY, 1, 0, 0, 0);
-        cal.getTimeInMillis();
-        cal.set(2019, Calendar.FEBRUARY, 1);
-        cal.getTimeInMillis();
-
-
-        cal.add(Calendar.DATE, 2);
-        cal.add(Calendar.MONTH, 2);
-
-        Long enddate = cal.getTimeInMillis() - 1;
-
+ */
         mDb = new cDb(context, session, false);
-        ArrayList<Double> record = mDb.getRecord(session, startdate, enddate);
+
+        Long startdate = cal.getTimeInMillis();
+        cal.add(Calendar.DATE, 1);
+        Long enddate = cal.getTimeInMillis() - 1l;
+
+        for (int i = 0; i < loop; i++) {
+            record = record + mDb.getRecord(session, startdate, enddate);
+            startdate = enddate + 1l;
+            cal.add(Calendar.DATE, 1);
+            enddate = cal.getTimeInMillis() - 1l;
+
+        }
         return record;
     }
+
     //TODO 월별 통계, 주간 통계
-    public Double getWeekRecord(String session, Date date) {
-        return 0d;
+    public Double getWeekRecord(String session, Date date) {        //date => 일요일, 낮 12시 00분 00초 수신
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date);
+        Double record = 0d;
+        record = record + getRecord(session, cal, 7);
+        return record;
     }
 
-    public Double getMonthRecord(String session, Date date) {
-        return 0d;
+    public Double getMonthRecord(String session, Date date) {       //연,월 수신, 1일 12시 00분 00초
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date);
+        int lastDay = cal.getActualMaximum(Calendar.DAY_OF_MONTH);
+        Double record = 0d;
+        record = record + getRecord(session, cal, lastDay);
+        return record;
     }
 
-
-    //view returns String
 
     //add record
+    public boolean putRecord(String session, Date date, Double measurement) {
+        long datel = date.getTime();
+        return mDb.putRecord(session, datel, measurement);
+    }
 
     //edit record
 
