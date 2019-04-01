@@ -43,6 +43,7 @@ public class cPreferences {
             init = false;
     }
 
+    //TODO save session name ; used for auto login
     void setInit() {
         mPrefEdit = mPref.edit();
         mPrefEdit.putBoolean("initialized", true);
