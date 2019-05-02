@@ -171,23 +171,4 @@ public class ActivityWelcome extends AppCompatActivity {
         }
     }
 
-
-/*
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-
-        if(requestCode == 5651){
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)
-                Toast.makeText(this, R.string.toast_fl_sms_granted, Toast.LENGTH_LONG).show();
-            else
-                Toast.makeText(this, R.string.toast_fl_sms_not_granted, Toast.LENGTH_LONG).show();
-
-            finish();
-            return;
-        }
-
-        finish();
-    }
-    */
 }

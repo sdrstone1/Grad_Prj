@@ -19,33 +19,27 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
-import java.util.prefs.Preferences;
-
 /**
  * Created by KollHong on 14/04/2018.
  */
 
 public class mPreferences {
-    Preferences mPrefs;
-    Boolean init;
     private SharedPreferences mPref;
-    private SharedPreferences.Editor mPrefEdit;
-    private Context context;
 
-    mPreferences(Context appcontext) {
-        context = appcontext;
+    mPreferences(Context context) {
         mPref = PreferenceManager.getDefaultSharedPreferences(context);
+    }
 
-
+    boolean getInit() {
         if (mPref.contains("initialized")) {
-            init = mPref.getBoolean("initialized", false);
+            return mPref.getBoolean("initialized", false);
         } else
-            init = false;
+            return false;
     }
 
     //TODO save session name ; used for auto login
     void setInit() {
-        mPrefEdit = mPref.edit();
+        SharedPreferences.Editor mPrefEdit = mPref.edit();
         mPrefEdit.putBoolean("initialized", true);
         mPrefEdit.commit();
     }
@@ -56,20 +50,20 @@ public class mPreferences {
     }
 
     void setBTaddr(String addr) {
-        mPrefEdit = mPref.edit();
+        SharedPreferences.Editor mPrefEdit = mPref.edit();
         mPrefEdit.putString("BTaddr", addr);
         mPrefEdit.commit();
     }
 
 
     public void setSMSRegistered(boolean set) {
-        mPrefEdit = mPref.edit();
+        SharedPreferences.Editor mPrefEdit = mPref.edit();
         mPrefEdit.putBoolean("SMSReg", set);
         mPrefEdit.commit();
     }
 
     public void ClearSharedPref() {      //if(BuildConfig.isTest)
-        mPrefEdit = mPref.edit();
+        SharedPreferences.Editor mPrefEdit = mPref.edit();
         mPrefEdit.clear();
         mPrefEdit.commit();
     }

@@ -33,7 +33,7 @@ public class ActivitySplash extends AppCompatActivity {
         }
 
         mPreferences mPreferences = new mPreferences(getApplicationContext());
-        if (!mPreferences.init) {
+        if (!mPreferences.getInit()) {
 
             Intent firstlaunch_intent = new Intent(getApplicationContext(), ActivityWelcome.class);
             firstlaunch_intent.setFlags(Intent.FLAG_ACTIVITY_TASK_ON_HOME);
