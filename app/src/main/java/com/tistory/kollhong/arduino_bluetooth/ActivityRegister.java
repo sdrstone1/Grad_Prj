@@ -17,6 +17,7 @@ package com.tistory.kollhong.arduino_bluetooth;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 
@@ -41,5 +42,12 @@ public class ActivityRegister extends AppCompatActivity {
         spinner = findViewById(R.id.heightSpinner);
         adapter = ArrayAdapter.createFromResource(this, R.array.height, android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
+
+
+    }
+
+    public void OnRegister(View v) {
+
+
     }
 }

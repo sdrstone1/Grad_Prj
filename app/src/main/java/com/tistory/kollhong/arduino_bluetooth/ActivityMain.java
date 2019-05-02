@@ -27,13 +27,7 @@ public class ActivityMain extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
 
 
-        cPreferences cPreferences = new cPreferences(getApplicationContext());
-        if (!cPreferences.init) {
 
-            Intent firstlaunch_intent = new Intent(getApplicationContext(), ActivityWelcome.class);
-            firstlaunch_intent.setFlags(Intent.FLAG_ACTIVITY_TASK_ON_HOME);
-            startActivity(firstlaunch_intent);
-        }
 
 
         setTheme(R.style.AppTheme);

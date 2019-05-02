@@ -31,7 +31,7 @@ public class ActivityLogin extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        mAcc = new mAccounts(this);
+        mAcc = new mAccounts(this, true);
         final TextView id = findViewById(R.id.idText);
         final TextView pw = findViewById(R.id.passwordText);
 

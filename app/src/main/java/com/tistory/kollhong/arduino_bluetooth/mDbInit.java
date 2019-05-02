@@ -25,10 +25,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-class cDbDcreater {
-    cDbDcreater(Context context) {
-        String DATABASE_acc = "accounts.db";
-        String DATABASE_admin = "admin.db";
+class mDbInit {
+    static void Creater(Context context, String name) {
         String ROOT_DIR;
         if (Build.VERSION.SDK_INT >= 24) {
             ROOT_DIR = context.getDataDir().getAbsolutePath();
@@ -38,32 +36,14 @@ class cDbDcreater {
 
         File folder = new File(ROOT_DIR + "/database");
         folder.mkdirs();
-        File outfile = new File(ROOT_DIR + "/database/" + DATABASE_acc);
+        File outfile = new File(ROOT_DIR + "/database/" + name);
         if (outfile.length() <= 0) {
             AssetManager assetManager = context.getResources().getAssets();
             try {
-                InputStream input = assetManager.open(DATABASE_acc, AssetManager.ACCESS_BUFFER);
+                InputStream input = assetManager.open(name, AssetManager.ACCESS_BUFFER);
                 long filesize = input.available();
                 byte[] tempdata = new byte[(int) filesize];
-                Log.d("DB creation", ROOT_DIR + "/database/" + DATABASE_acc);
-                input.read(tempdata);
-                input.close();
-
-                outfile.createNewFile();
-                FileOutputStream fo = new FileOutputStream(outfile);
-                fo.write(tempdata);
-                fo.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        outfile = new File(ROOT_DIR + "/database/" + DATABASE_admin);
-        if (outfile.length() <= 0) {
-            AssetManager assetManager = context.getResources().getAssets();
-            try {
-                InputStream input = assetManager.open(DATABASE_admin, AssetManager.ACCESS_BUFFER);
-                long filesize = input.available();
-                byte[] tempdata = new byte[(int) filesize];
+                Log.d("DB creation", ROOT_DIR + "/database/" + name);
                 input.read(tempdata);
                 input.close();
 

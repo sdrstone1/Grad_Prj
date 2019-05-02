@@ -161,7 +161,8 @@
                     android:text="회원가입"
                     android:layout_marginTop="8dp"
                     android:layout_gravity="center"
-                    android:id="@+id/registerButton"/>
+                    android:id="@+id/registerButton"
+                    android:onClick="OnRegister"/>
 
         </LinearLayout>
 

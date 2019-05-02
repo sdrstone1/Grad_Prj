@@ -26,15 +26,23 @@ public class ActivitySplash extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
 
-        new cDbDcreater(this);  //TODO 나중에 웰컴 액티비티로 옮기기
-
-        startActivity(new Intent(ActivitySplash.this, ActivityLogin.class));
-
         try {
             Thread.sleep(1000);      //스플래시 보여주기
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+
+        mPreferences mPreferences = new mPreferences(getApplicationContext());
+        if (!mPreferences.init) {
+
+            Intent firstlaunch_intent = new Intent(getApplicationContext(), ActivityWelcome.class);
+            firstlaunch_intent.setFlags(Intent.FLAG_ACTIVITY_TASK_ON_HOME);
+            startActivity(firstlaunch_intent);
+        }
+
+        startActivity(new Intent(ActivitySplash.this, ActivityLogin.class));
+
+
         finish();
     }
 }

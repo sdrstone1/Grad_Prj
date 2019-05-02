@@ -68,12 +68,13 @@ public class ActivityWelcome extends AppCompatActivity {
         TabLayout tabLayout = findViewById(R.id.tabDots);
         tabLayout.setupWithViewPager(mViewPager, true);
 
-        new cDbDcreater(this);
+        mDbInit.Creater(this, "accounts");
+        mDbInit.Creater(this, "admin");
 
     }
 
     public void onFinish(View view) {
-        cPreferences mPref = new cPreferences(getApplicationContext());
+        mPreferences mPref = new mPreferences(getApplicationContext());
         mPref.setInit();
         finish();
 
@@ -169,6 +170,7 @@ public class ActivityWelcome extends AppCompatActivity {
             return 2;
         }
     }
+
 
 /*
     @Override

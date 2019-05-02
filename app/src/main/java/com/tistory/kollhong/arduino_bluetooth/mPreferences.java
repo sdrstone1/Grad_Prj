@@ -25,14 +25,14 @@ import java.util.prefs.Preferences;
  * Created by KollHong on 14/04/2018.
  */
 
-public class cPreferences {
+public class mPreferences {
     Preferences mPrefs;
     Boolean init;
     private SharedPreferences mPref;
     private SharedPreferences.Editor mPrefEdit;
     private Context context;
 
-    cPreferences(Context appcontext) {
+    mPreferences(Context appcontext) {
         context = appcontext;
         mPref = PreferenceManager.getDefaultSharedPreferences(context);
 

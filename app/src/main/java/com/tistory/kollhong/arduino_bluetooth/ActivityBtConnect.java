@@ -85,7 +85,7 @@ public class ActivityBtConnect extends AppCompatActivity {
             Intent intent = new Intent();
             intent.putExtra(EXTRA_DEVICE_ADDRESS, address);
 
-            cPreferences mPrefMan = new cPreferences(getApplicationContext());
+            mPreferences mPrefMan = new mPreferences(getApplicationContext());
             mPrefMan.setBTaddr(address);
 
             // Set result and finish this Activity
