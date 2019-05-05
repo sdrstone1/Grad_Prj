@@ -284,7 +284,7 @@ public class BTservices extends Service {
         public void handleMessage(Message msg) {
             switch (msg.what) {
                 case NEW_DEVICE_SELECTED:
-                    //TODO BT connect
+
                     String[] bTaddr = (String[]) msg.obj;
                     String address = bTaddr[0];
                     session = bTaddr[1];
