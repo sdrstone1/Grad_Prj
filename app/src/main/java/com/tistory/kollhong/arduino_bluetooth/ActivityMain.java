@@ -218,7 +218,6 @@ public class ActivityMain extends AppCompatActivity {
             } else if (requestCode == BTservices.REQUEST_CONNECT_DEVICE) {
                 if (resultCode == Activity.RESULT_OK) {
                     requestBtConnect();
-                    //TODO 이건 BTservices에서 할 것. 여기서는 메시지로 주소 또는 재 연결 신호만 보냄
                 /*
                 String address = data.getExtras()
 

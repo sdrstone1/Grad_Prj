@@ -19,11 +19,9 @@ package com.tistory.kollhong.arduino_bluetooth;
 import android.annotation.SuppressLint;
 import android.app.Service;
 import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
 import android.content.Intent;
-import android.os.Handler;
-import android.os.IBinder;
-import android.os.Message;
-import android.os.Messenger;
+import android.os.*;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.inputmethod.EditorInfo;
@@ -36,9 +34,10 @@ public class BTservices extends Service {
      * Command to the service to display a message
      */
     static final int NEW_DEVICE_SELECTED = 100;
+    static final int STATE_BT_NOT_ON = 101;
     // Intent request codes
-    static final int REQUEST_CONNECT_DEVICE = 1;
-    static final int REQUEST_ENABLE_BT = 2;
+    static final int REQUEST_CONNECT_DEVICE = 200;
+    static final int REQUEST_ENABLE_BT = 201;
     // Message types sent from the BluetoothChatService Handler
     private static final int MESSAGE_STATE_CHANGE = 1;
     private static final int MESSAGE_READ = 2;
@@ -111,11 +110,7 @@ public class BTservices extends Service {
                     // construct a string from the valid bytes in the buffer
                     String readMessage = new String(readBuf, 0, msg.arg1);
 
-/*
-                        todo
-                        수신값 /// -> 시작
-\\\ -> 종료 -> 줄내림; 하는 방식으로 바꾸기
-                        */
+
                     processMessage(readMessage);
                     //mConversationArrayAdapter.add(mConnectedDeviceName + ":  " + readMessage);
                     break;
@@ -175,6 +170,18 @@ public class BTservices extends Service {
         // If the adapter is null, then Bluetooth is not supported
         if (mBluetoothAdapter == null) {
             Toast.makeText(this, "Bluetooth is not available", Toast.LENGTH_LONG).show();
+        }
+        if (!mBluetoothAdapter.isEnabled()) {
+            Message msg = new Message();
+            msg.what = STATE_BT_NOT_ON;
+            try {
+                mMessenger.send(msg);
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
+            // Otherwise, setup the chat session
+        } else {
+            if (mChatService == null) setupChat();
         }
     }
 
@@ -279,8 +286,15 @@ public class BTservices extends Service {
                 case NEW_DEVICE_SELECTED:
                     //TODO BT connect
                     String[] bTaddr = (String[]) msg.obj;
-                    String addr = bTaddr[0];
+                    String address = bTaddr[0];
                     session = bTaddr[1];
+
+                    // Get the BLuetoothDevice object
+                    BluetoothDevice device = mBluetoothAdapter.getRemoteDevice(address);
+                    // Attempt to connect to the device
+                    mChatService.connect(device);
+
+
                     break;
                 default:
                     super.handleMessage(msg);

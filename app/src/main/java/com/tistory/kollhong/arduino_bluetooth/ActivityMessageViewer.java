@@ -99,11 +99,6 @@ public class ActivityMessageViewer extends AppCompatActivity {
                     // construct a string from the valid bytes in the buffer
                     String readMessage = new String(readBuf, 0, msg.arg1);
 
-/*
-                        todo
-                        수신값 /// -> 시작
-\\\ -> 종료 -> 줄내림; 하는 방식으로 바꾸기
-                        */
                     processMessage(readMessage);
                     //mConversationArrayAdapter.add(mConnectedDeviceName + ":  " + readMessage);
                     break;
