@@ -15,6 +15,7 @@
 
 package com.tistory.kollhong.arduino_bluetooth;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
@@ -25,46 +26,42 @@ import android.preference.PreferenceManager;
 
 public class mPreferences {
     private SharedPreferences mPref;
+    static final String APP_INIT = "initialized";
+    static final String BT_Automatic_Connect = "BTON";
+    static final String BT_ADDR = "BTaddr";
 
     mPreferences(Context context) {
         mPref = PreferenceManager.getDefaultSharedPreferences(context);
     }
 
-    boolean getInit() {
-        if (mPref.contains("initialized")) {
-            return mPref.getBoolean("initialized", false);
-        } else
-            return false;
+
+    String getStringValue(String name) {
+        return mPref.getString(name, null);
     }
 
-    //TODO save session name ; used for auto login
-    void setInit() {
+    @SuppressLint("ApplySharedPref")
+    void setStringValue(String name, String value) {
         SharedPreferences.Editor mPrefEdit = mPref.edit();
-        mPrefEdit.putBoolean("initialized", true);
+        mPrefEdit.putString(name, value);
         mPrefEdit.commit();
     }
 
-    public String getBTaddr() {
-        return mPref.getString("BTaddr", null);
-
+    boolean getBoolValue(String name) {
+        return mPref.getBoolean(name, false);
     }
 
-    void setBTaddr(String addr) {
+    @SuppressLint("ApplySharedPref")
+    void setBoolValue(String name, boolean set) {
         SharedPreferences.Editor mPrefEdit = mPref.edit();
-        mPrefEdit.putString("BTaddr", addr);
+        mPrefEdit.putBoolean(name, set);
         mPrefEdit.commit();
     }
 
-
-    public void setSMSRegistered(boolean set) {
-        SharedPreferences.Editor mPrefEdit = mPref.edit();
-        mPrefEdit.putBoolean("SMSReg", set);
-        mPrefEdit.commit();
-    }
-
+    @SuppressLint("ApplySharedPref")
     public void ClearSharedPref() {      //if(BuildConfig.isTest)
         SharedPreferences.Editor mPrefEdit = mPref.edit();
         mPrefEdit.clear();
         mPrefEdit.commit();
     }
+
 }

@@ -22,10 +22,13 @@ import android.icu.util.Calendar;
 
 import java.util.Date;
 
-public class mRecords {
+import static com.tistory.kollhong.arduino_bluetooth.mDbMan.recordTable;
+import static com.tistory.kollhong.arduino_bluetooth.mDbMan.recordTableVar;
+
+class mRecords {
     Context context;
-    SQLiteDatabase db;
-    String session; //지금은 로그인 아이디
+    private SQLiteDatabase db;
+    private String session; //지금은 로그인 아이디
 
 
     mRecords(Context context, String session, boolean RW) {
@@ -33,8 +36,8 @@ public class mRecords {
         db = mDbMan.DBinit(context, session, RW);
     }
 
-    Double getDrinkRecord(String session, Calendar cal, int loop) {
-        Double record = 0d;
+    private double getDrinkRecord(String session, Calendar cal, int loop) {
+        double record = 0d;
 
         cal.set(Calendar.HOUR_OF_DAY, 12);
 /*
@@ -45,48 +48,48 @@ public class mRecords {
         cal.set(Calendar.SECOND, 0);
 */
 
-        Long startdate = cal.getTimeInMillis();
+        long startdate = cal.getTimeInMillis();
         cal.add(Calendar.DATE, 1);
-        Long enddate = cal.getTimeInMillis() - 1l;
+        long enddate = cal.getTimeInMillis() - 1L;
 
         for (int i = 0; i < loop; i++) {
             record = record + getRecord(startdate, enddate);
-            startdate = enddate + 1l;
+            startdate = enddate + 1L;
             cal.add(Calendar.DATE, 1);
-            enddate = cal.getTimeInMillis() - 1l;
+            enddate = cal.getTimeInMillis() - 1L;
 
         }
         return record;
     }
 
     //TODO 월별 통계, 주간 통계
-    public Double getWeekRecord(Date date) {        //date => 일요일, 낮 12시 00분 00초 수신
+    double getWeekRecord(Date date) {        //date => 일요일, 낮 12시 00분 00초 수신
         Calendar cal = Calendar.getInstance();
         cal.setTime(date);
-        Double record = 0d;
+        double record = 0d;
         record = record + getDrinkRecord(session, cal, 7);
         return record;
     }
 
-    public Double getMonthRecord(Date date) {       //연,월 수신, 1일 12시 00분 00초
+    double getMonthRecord(Date date) {       //연,월 수신, 1일 12시 00분 00초
         Calendar cal = Calendar.getInstance();
         cal.setTime(date);
         int lastDay = cal.getActualMaximum(Calendar.DAY_OF_MONTH);
-        Double record = 0d;
+        double record = 0d;
         record = record + getDrinkRecord(session, cal, lastDay);
         return record;
     }
 
-    public double getRecord(long startdate, long enddate) {
-        return mDbMan.getDRecord(db, "record", new String[]{"date", "measurement"}, "date BETWEEN '" + startdate + "' AND '" + enddate + "'");
+    private double getRecord(long startdate, long enddate) {
+        return mDbMan.getDRecord(db, recordTable, new String[]{recordTableVar[0], recordTableVar[1]}, "date BETWEEN '" + startdate + "' AND '" + enddate + "'");
         //SQLiteDatabase db, String table, String[] col, String where
     }
     //add record
-    public boolean putRecord(Date date, Double measurement) {
+    boolean putRecord(Date date, Double measurement) {
         ContentValues values = new ContentValues();
-        values.put("date", date.getTime());
-        values.put("measurement", measurement);
-        return mDbMan.putRecord(db, "record", values);
+        values.put(recordTableVar[0], date.getTime());
+        values.put(recordTableVar[1], measurement);
+        return mDbMan.putRecord(db, recordTable, values);
     }
 
 }

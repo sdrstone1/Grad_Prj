@@ -24,21 +24,23 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
+import static com.tistory.kollhong.arduino_bluetooth.mDbMan.*;
+
 public class mAccounts {
 
     Context context;
     String session;
-    SQLiteDatabase mDb;
+    private SQLiteDatabase mDb;
 
     mAccounts(Context context, boolean RW) {
         this.context = context;
         mDb = mDbMan.DBinit(context, "accounts", RW);
     }
 
-    public String Login(String id, String pw) {
+    String Login(String id, String pw) {
         //TODO session ID를 저장하여 자동 로그인이 가능하도록
         //getDRecord(SQLiteDatabase db, String table, String[] col, String where)
-        Cursor cursor = mDbMan.getARecord(mDb, "user", new String[]{"loginid", "pw"}, "loginid='" + id + "'");
+        Cursor cursor = mDbMan.getARecord(mDb, userTable, new String[]{userTableVar[0], "pw"}, "'" + userTableVar[0] + "' = '" + id + "'");
         if (cursor.getCount() == 1) {
             cursor.moveToNext();
 
@@ -51,7 +53,7 @@ public class mAccounts {
     }
 
     public int Join(String id, String pw, String name, int age, float weight, float height, String email) {
-        Cursor cursor = mDbMan.getARecord(mDb, "user", new String[]{"loginid", "pw"}, "loginid='" + id + "'");
+        Cursor cursor = mDbMan.getARecord(mDb, userTable, new String[]{userTableVar[0], "pw"}, "'" + userTableVar[0] + "' = '" + id + "'");
         //check id redundancy
         if (cursor.getCount() != 0) {
             Log.e("Join Error", "ID is redundant");
@@ -68,22 +70,22 @@ public class mAccounts {
 
         //pw = encrypt(pw);
         ContentValues values = new ContentValues();
-        values.put("loginid", id);
-        values.put("password", pw);
-        values.put("name", name);
-        values.put("age", age);
-        values.put("weight", weight);
-        values.put("height", height);
-        values.put("email", email);
+        values.put(userTableVar[0], id);
+        values.put(userTableVar[1], pw);
+        values.put(userTableVar[2], name);
+        values.put(userTableVar[3], age);
+        values.put(userTableVar[4], weight);
+        values.put(userTableVar[5], height);
+        values.put(userTableVar[6], email);
 
-        if (!mDbMan.putRecord(mDb, "user", values)) {
+        if (!mDbMan.putRecord(mDb, userTable, values)) {
             Log.e("Join Error", "unexpected error");
             return 3;  //3 -> fail, 1 -> id redundant, 2-> pw condition not satisfied, 0->success
         }
 
         SQLiteDatabase mDbJoin = mDbMan.DBinit(context, id, true);
-        if (!mDbMan.Cretable(mDbJoin, "record", " date INTEGER NOT NULL, measurement REAL NOT NULL")) {
-            mDbMan.delRecord(mDb, "user", "loginid = '" + id + "'");
+        if (!mDbMan.Cretable(mDbJoin, recordTable, " date INTEGER NOT NULL, measurement REAL NOT NULL")) {
+            mDbMan.delRecord(mDb, userTable, "'" + userTableVar[0] + "' = '" + id + "'");
             return 3;
         }
         return 0;

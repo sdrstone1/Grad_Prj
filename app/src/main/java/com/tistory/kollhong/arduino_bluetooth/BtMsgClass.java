@@ -33,12 +33,12 @@ import java.util.UUID;
  * Created by seo on 2018. 9. 10..
  */
 
-public class BtService {
+class BtMsgClass {
     // Constants that indicate the current connection state
-    public static final int STATE_NONE = 0;       // we're doing nothing
-    public static final int STATE_LISTEN = 1;     // now listening for incoming connections
-    public static final int STATE_CONNECTING = 2; // now initiating an outgoing connection
-    public static final int STATE_CONNECTED = 3;  // now connected to a remote device
+    static final int STATE_NONE = 0;       // we're doing nothing
+    static final int STATE_LISTEN = 1;     // now listening for incoming connections
+    static final int STATE_CONNECTING = 2; // now initiating an outgoing connection
+    static final int STATE_CONNECTED = 3;  // now connected to a remote device
     // Debugging
     private static final String TAG = "BluetoothChatService";
     private static final boolean D = true;
@@ -60,7 +60,7 @@ public class BtService {
      * @param context The UI Activity Context
      * @param handler A Handler to send messages back to the UI Activity
      */
-    public BtService(Context context, Handler handler) {
+    BtMsgClass(Context context, Handler handler) {
         mAdapter = BluetoothAdapter.getDefaultAdapter();
         mState = STATE_NONE;
         mHandler = handler;
@@ -69,7 +69,7 @@ public class BtService {
     /**
      * Return the current connection state.
      */
-    public synchronized int getState() {
+    synchronized int getState() {
         return mState;
     }
 
@@ -90,7 +90,7 @@ public class BtService {
      * Start the chat service. Specifically start AcceptThread to begin a
      * session in listening (server) mode. Called by the Activity onResume()
      */
-    public synchronized void start() {
+    synchronized void start() {
         if (D) Log.d(TAG, "start");
 
         // Cancel any thread attempting to make a connection
@@ -118,7 +118,7 @@ public class BtService {
      *
      * @param device The BluetoothDevice to connect
      */
-    public synchronized void connect(BluetoothDevice device) {
+    synchronized void connect(BluetoothDevice device) {
         if (D) Log.d(TAG, "connect to: " + device);
 
         // Cancel any thread attempting to make a connection
@@ -147,7 +147,7 @@ public class BtService {
      * @param socket The BluetoothSocket on which the connection was made
      * @param device The BluetoothDevice that has been connected
      */
-    public synchronized void connected(BluetoothSocket socket, BluetoothDevice device) {
+    private synchronized void connected(BluetoothSocket socket, BluetoothDevice device) {
         if (D) Log.d(TAG, "connected");
 
         // Cancel the thread that completed the connection
@@ -185,7 +185,7 @@ public class BtService {
     /**
      * Stop all threads
      */
-    public synchronized void stop() {
+    synchronized void stop() {
         if (D) Log.d(TAG, "stop");
         if (mConnectThread != null) {
             mConnectThread.cancel();
@@ -208,7 +208,7 @@ public class BtService {
      * @param out The bytes to write
      * @see ConnectedThread#write(byte[])
      */
-    public void write(byte[] out) {
+    void write(byte[] out) {
         // Create temporary object
         ConnectedThread r;
         // Synchronize a copy of the ConnectedThread
@@ -257,7 +257,7 @@ public class BtService {
         // The local server socket
         private final BluetoothServerSocket mmServerSocket;
 
-        public AcceptThread() {
+        AcceptThread() {
             BluetoothServerSocket tmp = null;
 
             // Create a new listening server socket
@@ -272,7 +272,7 @@ public class BtService {
         public void run() {
             if (D) Log.d(TAG, "BEGIN mAcceptThread" + this);
             setName("AcceptThread");
-            BluetoothSocket socket = null;
+            BluetoothSocket socket;
 
             // Listen to the server socket if we're not connected
             while (mState != STATE_CONNECTED) {
@@ -287,7 +287,7 @@ public class BtService {
 
                 // If a connection was accepted
                 if (socket != null) {
-                    synchronized (BtService.this) {
+                    synchronized (BtMsgClass.this) {
                         switch (mState) {
                             case STATE_LISTEN:
                             case STATE_CONNECTING:
@@ -310,7 +310,7 @@ public class BtService {
             if (D) Log.i(TAG, "END mAcceptThread");
         }
 
-        public void cancel() {
+        void cancel() {
             if (D) Log.d(TAG, "cancel " + this);
             try {
                 mmServerSocket.close();
@@ -330,7 +330,7 @@ public class BtService {
         private final BluetoothSocket mmSocket;
         private final BluetoothDevice mmDevice;
 
-        public ConnectThread(BluetoothDevice device) {
+        ConnectThread(BluetoothDevice device) {
             mmDevice = device;
             BluetoothSocket tmp = null;
 
@@ -365,12 +365,12 @@ public class BtService {
                     Log.e(TAG, "unable to close() socket during connection failure", e2);
                 }
                 // Start the service over to restart listening mode
-                BtService.this.start();
+                BtMsgClass.this.start();
                 return;
             }
 
             // Reset the ConnectThread because we're done
-            synchronized (BtService.this) {
+            synchronized (BtMsgClass.this) {
                 mConnectThread = null;
             }
 
@@ -378,7 +378,7 @@ public class BtService {
             connected(mmSocket, mmDevice);
         }
 
-        public void cancel() {
+        void cancel() {
             try {
                 mmSocket.close();
             } catch (IOException e) {
@@ -396,7 +396,7 @@ public class BtService {
         private final InputStream mmInStream;
         private final OutputStream mmOutStream;
 
-        public ConnectedThread(BluetoothSocket socket) {
+        ConnectedThread(BluetoothSocket socket) {
             Log.d(TAG, "create ConnectedThread");
             mmSocket = socket;
             InputStream tmpIn = null;
@@ -416,7 +416,7 @@ public class BtService {
 
         public void run() {
             Log.i(TAG, "BEGIN mConnectedThread");
-            int bytes = 0;
+            int bytes;
             byte[] buffer = new byte[1024];
 
 
@@ -443,7 +443,7 @@ public class BtService {
          *
          * @param buffer The bytes to write
          */
-        public void write(byte[] buffer) {
+        void write(byte[] buffer) {
             try {
                 mmOutStream.write(buffer);
 
@@ -455,7 +455,7 @@ public class BtService {
             }
         }
 
-        public void cancel() {
+        void cancel() {
             try {
                 mmSocket.close();
             } catch (IOException e) {

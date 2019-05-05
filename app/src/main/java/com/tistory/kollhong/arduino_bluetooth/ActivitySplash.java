@@ -33,7 +33,7 @@ public class ActivitySplash extends AppCompatActivity {
         }
 
         mPreferences mPreferences = new mPreferences(getApplicationContext());
-        if (!mPreferences.getInit()) {
+        if (!mPreferences.getBoolValue(com.tistory.kollhong.arduino_bluetooth.mPreferences.APP_INIT)) {
 
             Intent firstlaunch_intent = new Intent(getApplicationContext(), ActivityWelcome.class);
             firstlaunch_intent.setFlags(Intent.FLAG_ACTIVITY_TASK_ON_HOME);

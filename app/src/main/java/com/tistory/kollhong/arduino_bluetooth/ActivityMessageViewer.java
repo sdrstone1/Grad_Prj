@@ -30,21 +30,23 @@ import android.view.*;
 import android.view.inputmethod.EditorInfo;
 import android.widget.*;
 
+import java.util.Objects;
+
 public class ActivityMessageViewer extends AppCompatActivity {
     // Message types sent from the BluetoothChatService Handler
-    public static final int MESSAGE_STATE_CHANGE = 1;
-    public static final int MESSAGE_READ = 2;
-    public static final int MESSAGE_WRITE = 3;
-    public static final int MESSAGE_DEVICE_NAME = 4;
-    public static final int MESSAGE_TOAST = 5;
+    static final int MESSAGE_STATE_CHANGE = 1;
+    static final int MESSAGE_READ = 2;
+    static final int MESSAGE_WRITE = 3;
+    static final int MESSAGE_DEVICE_NAME = 4;
+    static final int MESSAGE_TOAST = 5;
     // Key names received from the BluetoothChatService Handler
-    public static final String DEVICE_NAME = "device_list_name";
-    public static final String TOAST = "toast";
+    static final String DEVICE_NAME = "device_list_name";
+    static final String TOAST = "toast";
     // Debugging
     private static final String TAG = "BluetoothChat";
     private static final boolean D = true;
     // Intent request codes
-    private static final int REQUEST_CONNECT_DEVICE = 1;
+
     private static final int REQUEST_ENABLE_BT = 2;
 
     // Layout Views
@@ -69,17 +71,17 @@ public class ActivityMessageViewer extends AppCompatActivity {
                 case MESSAGE_STATE_CHANGE:
                     if (D) Log.i(TAG, "MESSAGE_STATE_CHANGE: " + msg.arg1);
                     switch (msg.arg1) {
-                        case BtService.STATE_CONNECTED:
+                        case BtMsgClass.STATE_CONNECTED:
 
                             getString(R.string.title_connected_to);
                             setTitle(getString(R.string.title_connected_to) + mConnectedDeviceName + "");
                             mConversationArrayAdapter.clear();
                             break;
-                        case BtService.STATE_CONNECTING:
+                        case BtMsgClass.STATE_CONNECTING:
                             setTitle(R.string.title_connecting);
                             break;
-                        case BtService.STATE_LISTEN:
-                        case BtService.STATE_NONE:
+                        case BtMsgClass.STATE_LISTEN:
+                        case BtMsgClass.STATE_NONE:
                             setTitle(R.string.title_not_connected);
                             break;
                     }
@@ -123,7 +125,7 @@ public class ActivityMessageViewer extends AppCompatActivity {
     // Local Bluetooth adapter
     private BluetoothAdapter mBluetoothAdapter = null;
     // Member object for the chat services
-    private BtService mChatService = null;
+    private BtMsgClass mChatService = null;
     // The action listener for the EditText widget, to listen for the return key
     private TextView.OnEditorActionListener mWriteListener =
             new TextView.OnEditorActionListener() {
@@ -171,7 +173,6 @@ public class ActivityMessageViewer extends AppCompatActivity {
         if (mBluetoothAdapter == null) {
             Toast.makeText(this, "Bluetooth is not available", Toast.LENGTH_LONG).show();
             finish();
-            return;
         }
     }
 
@@ -201,7 +202,7 @@ public class ActivityMessageViewer extends AppCompatActivity {
         // onResume() will be called when ACTION_REQUEST_ENABLE activity returns.
         if (mChatService != null) {
             // Only if the state is STATE_NONE, do we know that we haven't started already
-            if (mChatService.getState() == BtService.STATE_NONE) {
+            if (mChatService.getState() == BtMsgClass.STATE_NONE) {
                 // Start the Bluetooth chat services
                 mChatService.start();
             }
@@ -232,7 +233,7 @@ public class ActivityMessageViewer extends AppCompatActivity {
         });
 
         // Initialize the BluetoothChatService to perform bluetooth connections
-        mChatService = new BtService(this, mHandler);
+        mChatService = new BtMsgClass(this, mHandler);
 
         // Initialize the buffer for outgoing messages
         mOutStringBuffer = new StringBuffer();
@@ -275,7 +276,7 @@ public class ActivityMessageViewer extends AppCompatActivity {
      */
     private void sendMessage(String message) {
         // Check that we're actually connected before trying anything
-        if (mChatService.getState() != BtService.STATE_CONNECTED) {
+        if (mChatService.getState() != BtMsgClass.STATE_CONNECTED) {
             Toast.makeText(this, R.string.not_connected, Toast.LENGTH_SHORT).show();
             return;
         }
@@ -295,11 +296,11 @@ public class ActivityMessageViewer extends AppCompatActivity {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (D) Log.d(TAG, "onActivityResult " + resultCode);
         switch (requestCode) {
-            case REQUEST_CONNECT_DEVICE:
+            case BTservices.REQUEST_CONNECT_DEVICE:
                 // When DeviceListActivity returns with a device to connect
                 if (resultCode == Activity.RESULT_OK) {
                     // Get the device MAC address
-                    String address = data.getExtras()
+                    String address = Objects.requireNonNull(data.getExtras())
                             .getString(ActivityBtConnect.EXTRA_DEVICE_ADDRESS);
                     // Get the BLuetoothDevice object
                     BluetoothDevice device = mBluetoothAdapter.getRemoteDevice(address);
@@ -334,7 +335,7 @@ public class ActivityMessageViewer extends AppCompatActivity {
             case R.id.scan:
                 // Launch the DeviceListActivity to see devices and do scan
                 Intent serverIntent = new Intent(this, ActivityBtConnect.class);
-                startActivityForResult(serverIntent, REQUEST_CONNECT_DEVICE);
+                startActivityForResult(serverIntent, BTservices.REQUEST_CONNECT_DEVICE);
                 return true;
             case R.id.discoverable:
                 // Ensure this device is discoverable by others

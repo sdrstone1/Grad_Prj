@@ -25,6 +25,11 @@ import android.os.Build;
 import android.util.Log;
 
 class mDbMan {
+    static final String userTable = "user";
+    static final String recordTable = "record";
+    static final String[] userTableVar = {"loginid", "password", "name", "age", "weight", "height", "email"};
+    static final String[] recordTableVar = {"date", "measurement"};
+
     static SQLiteDatabase DBinit(Context context, String database, boolean RW) {
         String ROOT_DIR;
         if (Build.VERSION.SDK_INT >= 24) {
@@ -65,7 +70,7 @@ class mDbMan {
 
     static double getDRecord(SQLiteDatabase db, String table, String[] col, String where) {
         Cursor cursor = db.query(table, col, where, null, null, null, null);
-        Double record = 0d;
+        double record = 0d;
         int count = cursor.getCount();
         if (count != 0) {
             for (int i = 0; i < count; i++) {

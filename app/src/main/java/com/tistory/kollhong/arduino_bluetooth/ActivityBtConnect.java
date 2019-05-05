@@ -31,11 +31,10 @@ import android.widget.*;
 import java.util.Set;
 
 public class ActivityBtConnect extends AppCompatActivity {
-    private static final int REQUEST_ENABLE_BT = 33768;
-    static String EXTRA_DEVICE_ADDRESS = "device_address";
+    static final String EXTRA_DEVICE_ADDRESS = "device_address";
     //ListView BT_list;
     private Button searchBtn;
-    boolean mScan = false;
+    private boolean newDevice = false;
 
     private Switch bleSwitch;
     private Set<BluetoothDevice> pairedBTs;
@@ -80,16 +79,10 @@ public class ActivityBtConnect extends AppCompatActivity {
             String info = ((TextView) v).getText().toString();
             String address = info.substring(info.length() - 17);
 
-
-            // Create the result Intent and include the MAC address
-            Intent intent = new Intent();
-            intent.putExtra(EXTRA_DEVICE_ADDRESS, address);
-
             mPreferences mPrefMan = new mPreferences(getApplicationContext());
-            mPrefMan.setBTaddr(address);
+            mPrefMan.setStringValue(mPreferences.BT_ADDR, address);
 
-            // Set result and finish this Activity
-            setResult(Activity.RESULT_OK, intent);
+            newDevice = true;
 
             finish();
         }
@@ -102,6 +95,13 @@ public class ActivityBtConnect extends AppCompatActivity {
         if (mBtAdapter != null) {
             mBtAdapter.cancelDiscovery();
         }
+
+        // Create the result Intent and include the MAC address
+        Intent intent = new Intent();
+        // Set result and finish this Activity
+        if (newDevice) setResult(Activity.RESULT_OK, intent);
+        else setResult(Activity.RESULT_CANCELED, intent);
+
 
         // Unregister broadcast listeners
         this.unregisterReceiver(mReceiver);
@@ -179,14 +179,6 @@ public class ActivityBtConnect extends AppCompatActivity {
         }
 
 
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (REQUEST_ENABLE_BT == requestCode && resultCode == RESULT_OK) {
-
-        }
-        super.onActivityResult(requestCode, resultCode, data);
     }
 
     public void onSearchClicked(View v) {
