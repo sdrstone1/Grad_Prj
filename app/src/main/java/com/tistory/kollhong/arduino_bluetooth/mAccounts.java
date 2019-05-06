@@ -40,7 +40,7 @@ public class mAccounts {
     String Login(String id, String pw) {
         //TODO session ID를 저장하여 자동 로그인이 가능하도록
         //getDRecord(SQLiteDatabase db, String table, String[] col, String where)
-        Cursor cursor = mDbMan.getARecord(mDb, userTable, new String[]{userTableVar[0], "pw"}, "'" + userTableVar[0] + "' = '" + id + "'");
+        Cursor cursor = mDbMan.getARecord(mDb, userTable, new String[]{userTableVar[0], userTableVar[1]}, userTableVar[0] + " ='" + id + "'");
         if (cursor.getCount() == 1) {
             cursor.moveToNext();
 
@@ -53,7 +53,7 @@ public class mAccounts {
     }
 
     public int Join(String id, String pw, String name, int age, float weight, float height, String email) {
-        Cursor cursor = mDbMan.getARecord(mDb, userTable, new String[]{userTableVar[0], "pw"}, "'" + userTableVar[0] + "' = '" + id + "'");
+        Cursor cursor = mDbMan.getARecord(mDb, userTable, new String[]{userTableVar[0], userTableVar[1]}, userTableVar[0] + " = '" + id + "'");
         //check id redundancy
         if (cursor.getCount() != 0) {
             Log.e("Join Error", "ID is redundant");
@@ -85,7 +85,7 @@ public class mAccounts {
 
         SQLiteDatabase mDbJoin = mDbMan.DBinit(context, id, true);
         if (!mDbMan.Cretable(mDbJoin, recordTable, " date INTEGER NOT NULL, measurement REAL NOT NULL")) {
-            mDbMan.delRecord(mDb, userTable, "'" + userTableVar[0] + "' = '" + id + "'");
+            mDbMan.delRecord(mDb, userTable, userTableVar[0] + " = '" + id + "'");
             return 3;
         }
         return 0;
