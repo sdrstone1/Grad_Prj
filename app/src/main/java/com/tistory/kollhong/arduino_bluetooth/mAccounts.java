@@ -52,7 +52,7 @@ public class mAccounts {
         return "false";
     }
 
-    public int Join(String id, String pw, String name, int age, float weight, float height, String email) {
+    public int Join(String id, String pw, String name, int age, float weight, float height, String email, int gender) {
         Cursor cursor = mDbMan.getARecord(mDb, userTable, new String[]{userTableVar[0], userTableVar[1]}, userTableVar[0] + " = '" + id + "'");
         //check id redundancy
         if (cursor.getCount() != 0) {
@@ -77,6 +77,7 @@ public class mAccounts {
         values.put(userTableVar[4], weight);
         values.put(userTableVar[5], height);
         values.put(userTableVar[6], email);
+        values.put(userTableVar[7], gender);
 
         if (!mDbMan.putRecord(mDb, userTable, values)) {
             Log.e("Join Error", "unexpected error");

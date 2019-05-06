@@ -48,6 +48,8 @@ public class ActivityRegister extends AppCompatActivity {
 
     public void OnRegister(View v) {
 
+        //mAccounts mAcc = new mAccounts(this, true);
+        //mAcc.Join(id,pw,name,age,weight,height,email, gender);
 
     }
 }
