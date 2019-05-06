@@ -171,18 +171,7 @@ public class BTservices extends Service {
         if (mBluetoothAdapter == null) {
             Toast.makeText(this, "Bluetooth is not available", Toast.LENGTH_LONG).show();
         }
-        if (!mBluetoothAdapter.isEnabled()) {
-            Message msg = new Message();
-            msg.what = STATE_BT_NOT_ON;
-            try {
-                mMessenger.send(msg);
-            } catch (RemoteException e) {
-                e.printStackTrace();
-            }
-            // Otherwise, setup the chat session
-        } else {
-            if (mChatService == null) setupChat();
-        }
+
     }
 
     @Override
@@ -221,23 +210,37 @@ public class BTservices extends Service {
 
     private void setupChat() {
 
-        // Initialize the BluetoothChatService to perform bluetooth connections
-        mChatService = new BtMsgClass(this, mHandler);
+        if (!mBluetoothAdapter.isEnabled()) {
+            Message msg = new Message();
+            msg.what = STATE_BT_NOT_ON;
+            try {
+                mMessenger.send(msg);
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
+            // Otherwise, setup the chat session
+        } else {
+            if (mChatService == null) setupChat();
 
-        // Initialize the buffer for outgoing messages
-        mOutStringBuffer = new StringBuffer();
+            // Initialize the BluetoothChatService to perform bluetooth connections
+            mChatService = new BtMsgClass(this, mHandler);
+
+            // Initialize the buffer for outgoing messages
+            mOutStringBuffer = new StringBuffer();
+        }
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
         // Stop the Bluetooth chat services
-        if (mChatService != null) mChatService.stop();
-        mRecords mRecords = new mRecords(getApplicationContext(), session, true);
-        Date date = new Date();
+        if (mChatService != null) {
+            mChatService.stop();
+            mRecords mRecords = new mRecords(getApplicationContext(), session, true);
+            Date date = new Date();
 
-        mRecords.putRecord(date, (double) DrunkSum);
-
+            mRecords.putRecord(date, (double) DrunkSum);
+        }
         if (D) Log.e(TAG, "--- ON DESTROY ---");
     }
 

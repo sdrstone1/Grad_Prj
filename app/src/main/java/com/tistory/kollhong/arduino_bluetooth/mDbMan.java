@@ -27,7 +27,7 @@ import android.util.Log;
 class mDbMan {
     static final String userTable = "user";
     static final String recordTable = "record";
-    static final String[] userTableVar = {"loginid", "password", "name", "age", "weight", "height", "email"};
+    static final String[] userTableVar = {"loginid", "pw", "name", "age", "weight", "height", "email", "gender"};
     static final String[] recordTableVar = {"date", "measurement"};
 
     static SQLiteDatabase DBinit(Context context, String database, boolean RW) {

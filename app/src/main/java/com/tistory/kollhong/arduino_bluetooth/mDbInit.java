@@ -36,14 +36,14 @@ class mDbInit {
 
         File folder = new File(ROOT_DIR + "/database");
         folder.mkdirs();
-        File outfile = new File(ROOT_DIR + "/database/" + name);
+        File outfile = new File(ROOT_DIR + "/database/" + name + ".db");
         if (outfile.length() <= 0) {
             AssetManager assetManager = context.getResources().getAssets();
             try {
-                InputStream input = assetManager.open(name, AssetManager.ACCESS_BUFFER);
+                InputStream input = assetManager.open(name + ".db", AssetManager.ACCESS_BUFFER);
                 long filesize = input.available();
                 byte[] tempdata = new byte[(int) filesize];
-                Log.d("DB creation", ROOT_DIR + "/database/" + name);
+                Log.d("DB creation", ROOT_DIR + "/database/" + name + ".db");
                 input.read(tempdata);
                 input.close();
 
