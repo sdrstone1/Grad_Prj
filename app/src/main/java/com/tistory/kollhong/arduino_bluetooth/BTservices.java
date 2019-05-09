@@ -74,7 +74,7 @@ public class BTservices extends Service {
     //boolean	onUnbind(Intent intent)
     //Called when all clients have disconnected from a particular interface published by the service.
     // String for Socket commuication
-    private String tmpMessage = "";
+
     // The Handler that gets information back from the BluetoothChatService
     @SuppressLint("HandlerLeak")
     private final Handler mHandler = new Handler() {
@@ -97,6 +97,7 @@ public class BTservices extends Service {
                         case BtMsgClass.STATE_LISTEN:
                         case BtMsgClass.STATE_NONE:
                             Toast.makeText(getApplicationContext(), "Not Connected ", Toast.LENGTH_SHORT).show();
+                            //TODO 마신 양 저장
                             break;
                     }
                     break;
@@ -147,11 +148,6 @@ public class BTservices extends Service {
                 }
             };
 
-    public BTservices() {
-        super();
-
-    }
-
     /**
      * When binding to the service, we return an interface to our messenger
      * for sending messages to the service.
@@ -172,12 +168,19 @@ public class BTservices extends Service {
             Toast.makeText(this, "Bluetooth is not available", Toast.LENGTH_LONG).show();
         }
 
-    }
+        if (!mBluetoothAdapter.isEnabled()) {
 
-    @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
+            Message msg = Message.obtain(null, BTservices.STATE_BT_NOT_ON);
+            try {
+                mMessenger.send(msg);
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
+            // Otherwise, setup the chat session
+        } else {
+            if (mChatService == null) setupChat();
+        }
 
-        return super.onStartCommand(intent, flags, startId);
     }
 
     @Override
@@ -191,43 +194,21 @@ public class BTservices extends Service {
     }
 
     private void processMessage(String message) {
-        tmpMessage += message;      //메시지 수신- 타이밍이 맞지 않으므로 기존 메시지와 병합
-        String[] messages = tmpMessage.split("\\n");      //\n로 메시지 타이밍 구분
-        int size = messages.length - 1;     //메시지 갯수 확인
-        for (int i = 0; i < size; i++) {       //메시지에 대하여
-            milliLiterold = milliLiter;
-            milliLiter = Integer.parseInt(messages[i]);
-            if (milliLiter < milliLiterold) {
-                DrunkSum += (milliLiterold - milliLiter);
-                if (D) Log.i(TAG, "DRINK : " + DrunkSum);
-            }
-        }
+        String[] messages = message.split("\\n");      //\n로 메시지 타이밍 구분
+        int size = messages.length;     //메시지 갯수 확인
+        milliLiter = Integer.parseInt(messages[size - 1]);
+        Log.e("recieved msg : ", milliLiter + "");
         //마지막 배열은 다음 메시지와 연결될 수 있기 때문에
         //어레이에 추가하지 않음.
-
-        tmpMessage = messages[size];
     }
 
     private void setupChat() {
-
-        if (!mBluetoothAdapter.isEnabled()) {
-            Message msg = new Message();
-            msg.what = STATE_BT_NOT_ON;
-            try {
-                mMessenger.send(msg);
-            } catch (RemoteException e) {
-                e.printStackTrace();
-            }
-            // Otherwise, setup the chat session
-        } else {
-            if (mChatService == null) setupChat();
 
             // Initialize the BluetoothChatService to perform bluetooth connections
             mChatService = new BtMsgClass(this, mHandler);
 
             // Initialize the buffer for outgoing messages
             mOutStringBuffer = new StringBuffer();
-        }
     }
 
     @Override
@@ -242,16 +223,6 @@ public class BTservices extends Service {
             mRecords.putRecord(date, (double) DrunkSum);
         }
         if (D) Log.e(TAG, "--- ON DESTROY ---");
-    }
-
-    private void ensureDiscoverable() {
-        if (D) Log.d(TAG, "ensure discoverable");
-        if (mBluetoothAdapter.getScanMode() !=
-                BluetoothAdapter.SCAN_MODE_CONNECTABLE_DISCOVERABLE) {
-            Intent discoverableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
-            discoverableIntent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 300);
-            startActivity(discoverableIntent);
-        }
     }
 
     /**

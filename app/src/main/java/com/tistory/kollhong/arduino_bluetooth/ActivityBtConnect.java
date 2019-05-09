@@ -84,23 +84,28 @@ public class ActivityBtConnect extends AppCompatActivity {
 
             newDevice = true;
 
+            if (newDevice) setResult(Activity.RESULT_OK);
+            else setResult(Activity.RESULT_CANCELED);
+            //TODO setResult 안하는 이유 찾기
+            //TODO 혹시 onDestroy의 super.ondestroy를 먼저 해야 하나 
+
             finish();
         }
     };
 
     @Override
     protected void onDestroy() {
-        super.onDestroy();
+        //super.onDestroy();
         // Make sure we're not doing discovery anymore
         if (mBtAdapter != null) {
             mBtAdapter.cancelDiscovery();
         }
 
         // Create the result Intent and include the MAC address
-        Intent intent = new Intent();
+
         // Set result and finish this Activity
-        if (newDevice) setResult(Activity.RESULT_OK, intent);
-        else setResult(Activity.RESULT_CANCELED, intent);
+        if (newDevice) setResult(Activity.RESULT_OK);
+        else setResult(Activity.RESULT_CANCELED);
 
 
         // Unregister broadcast listeners

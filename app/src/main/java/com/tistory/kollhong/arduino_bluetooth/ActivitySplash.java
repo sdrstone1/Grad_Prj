@@ -37,12 +37,20 @@ public class ActivitySplash extends AppCompatActivity {
 
             Intent firstlaunch_intent = new Intent(getApplicationContext(), ActivityWelcome.class);
             firstlaunch_intent.setFlags(Intent.FLAG_ACTIVITY_TASK_ON_HOME);
-            startActivity(firstlaunch_intent);
+            startActivityForResult(firstlaunch_intent, 1);
+        } else {
+            startActivity(new Intent(ActivitySplash.this, ActivityLogin.class));
+            finish();
         }
 
-        startActivity(new Intent(ActivitySplash.this, ActivityLogin.class));
 
+    }
 
-        finish();
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == 1) {
+            startActivity(new Intent(ActivitySplash.this, ActivityLogin.class));
+            finish();
+        }
     }
 }

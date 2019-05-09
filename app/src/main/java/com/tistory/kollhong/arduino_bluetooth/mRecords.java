@@ -18,8 +18,8 @@ package com.tistory.kollhong.arduino_bluetooth;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
-import android.icu.util.Calendar;
 
+import java.util.Calendar;
 import java.util.Date;
 
 import static com.tistory.kollhong.arduino_bluetooth.mDbMan.recordTable;
