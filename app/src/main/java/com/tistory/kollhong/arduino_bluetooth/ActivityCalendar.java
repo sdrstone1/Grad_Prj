@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019. KollHong. All Rights Reserved.
+ * Copyright (c) 2019. Team 김우준. All Rights Reserved.
  * Copyright (c) 2018. KollHong. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -26,7 +26,7 @@ import java.util.Calendar;
 
 public class ActivityCalendar extends AppCompatActivity {
     //String session;
-    mRecords records;
+    private mRecords records;
     private ChartProgressBar mChart;
 
     @Override
@@ -45,8 +45,8 @@ public class ActivityCalendar extends AppCompatActivity {
 
         Calendar month = Calendar.getInstance();
 
-        Double record = records.getMonthRecord(month.getTime());
-        Float recordf = record.floatValue();
+        double record = records.getMonthRecord(month.getTime());
+        float recordf = (float) record;
 
         month.set(Calendar.MONTH, Calendar.JANUARY);
         BarData data = new BarData("JANUARY", recordf, recordf + "mL");
@@ -105,8 +105,8 @@ public class ActivityCalendar extends AppCompatActivity {
 
         Calendar week = Calendar.getInstance();
 
-        Double record1 = records.getWeekRecord(week.getTime());
-        Float recordf1 = record1.floatValue();
+        double record1 = records.getWeekRecord(week.getTime());
+        float recordf1 = (float) record1;
 
         week.set(Calendar.WEEK_OF_MONTH, 1);
         BarData data1 = new BarData("1주", recordf1, recordf1 + "mL");

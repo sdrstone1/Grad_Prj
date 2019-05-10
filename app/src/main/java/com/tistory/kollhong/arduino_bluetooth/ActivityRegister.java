@@ -1,6 +1,5 @@
 /*
- * Copyright (c) 2019. KollHong. All Rights Reserved.
- * Copyright (c) 2018. KollHong. All Rights Reserved.
+ * Copyright (c) 2019. Team 김우준. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -49,6 +48,11 @@ public class ActivityRegister extends AppCompatActivity {
         final EditText emailText = findViewById(R.id.emailText);
 
     }
+
+    /*
+     * Copyright (c) 2019. KollHong.
+     *
+     */
 
     public void OnRegister(View v) {
 

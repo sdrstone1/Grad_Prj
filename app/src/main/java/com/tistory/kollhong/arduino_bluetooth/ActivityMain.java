@@ -212,7 +212,7 @@ public class ActivityMain extends AppCompatActivity {
                     // User did not enable Bluetooth or an error occured
                     Toast.makeText(this, R.string.bt_not_enabled_leaving, Toast.LENGTH_SHORT).show();
                 }
-                break; 
+                break;
             case BTservices.REQUEST_CONNECT_DEVICE:
                 if (resultCode == Activity.RESULT_OK) {
                     Snackbar.make(findViewById(R.id.mainView), "BT Service is not bound", Snackbar.LENGTH_SHORT).show();

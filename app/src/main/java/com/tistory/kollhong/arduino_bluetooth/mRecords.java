@@ -61,7 +61,7 @@ class mRecords {
         }
         return record;
     }
-
+ 
     //TODO 월별 통계, 주간 통계
     double getWeekRecord(Date date) {        //date => 일요일, 낮 12시 00분 00초 수신
         Calendar cal = Calendar.getInstance();

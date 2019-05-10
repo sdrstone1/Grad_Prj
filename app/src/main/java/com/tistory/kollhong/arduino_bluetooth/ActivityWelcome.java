@@ -15,18 +15,13 @@
 
 package com.tistory.kollhong.arduino_bluetooth;
 
-import android.Manifest;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
@@ -80,15 +75,6 @@ public class ActivityWelcome extends AppCompatActivity {
         finish();
 
     }
-
-    public void SMSEnable(View view) {
-        radio_checked = 2;
-    }
-
-    public void SMSDisable(View view) {
-        radio_checked = 1;
-    }
-
     /*
     백버튼 잠금
      */
@@ -97,34 +83,6 @@ public class ActivityWelcome extends AppCompatActivity {
         //makeSnackbar(R.string.snackbar_fl_back_lock);
     }
 
-    private void makeSnackbar(int id) {
-        Snackbar.make(findViewById(R.id.main_content), id, Snackbar.LENGTH_LONG).show();
-    }
-
-    /**
-     * A placeholder fragment containing a simple view.
-     */
-
-    private void getSMSPerm() {
-        int SMS = ContextCompat.checkSelfPermission(this, Manifest.permission.RECEIVE_SMS);
-        if (SMS == PackageManager.PERMISSION_GRANTED) {
-            finish();
-        } else {
-            //makeSnackbar(R.string.snackbar_fl_req_sms_perm);
-
-            //ActivityCompat.shouldShowRequestPermissionRationale
-            //사용자에게 이전에 거부했다면 true
-
-            if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.RECEIVE_SMS)) {
-                //권한이 거부 되어 있음
-                //makeSnackbar(R.string.snackbar_fl_req_sms_perm);
-            } else {
-                //requestPermissions() 호출하여 권한 부여 요청
-                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.RECEIVE_SMS}, 5651);
-            }
-        }
-
-    }
 
     public static class welcomFragment extends Fragment {
         public welcomFragment() {
