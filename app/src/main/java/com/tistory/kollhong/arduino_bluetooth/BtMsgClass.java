@@ -83,7 +83,7 @@ class BtMsgClass {
         mState = state;
 
         // Give the new state to the Handler so the UI Activity can update
-        mHandler.obtainMessage(ActivityMessageViewer.MESSAGE_STATE_CHANGE, state, -1).sendToTarget();
+        mHandler.obtainMessage(BTservices.MESSAGE_STATE_CHANGE, state, -1).sendToTarget();
     }
 
     /**
@@ -173,9 +173,9 @@ class BtMsgClass {
         mConnectedThread.start();
 
         // Send the name of the connected device back to the UI Activity
-        Message msg = mHandler.obtainMessage(ActivityMessageViewer.MESSAGE_DEVICE_NAME);
+        Message msg = mHandler.obtainMessage(BTservices.MESSAGE_DEVICE_NAME);
         Bundle bundle = new Bundle();
-        bundle.putString(ActivityMessageViewer.DEVICE_NAME, device.getName());
+        bundle.putString(BTservices.DEVICE_NAME, device.getName());
         msg.setData(bundle);
         mHandler.sendMessage(msg);
 
@@ -227,9 +227,9 @@ class BtMsgClass {
         setState(STATE_LISTEN);
 
         // Send a failure msg_list_holder back to the Activity
-        Message msg = mHandler.obtainMessage(ActivityMessageViewer.MESSAGE_TOAST);
+        Message msg = mHandler.obtainMessage(BTservices.MESSAGE_TOAST);
         Bundle bundle = new Bundle();
-        bundle.putString(ActivityMessageViewer.TOAST, "Unable to connect device");
+        bundle.putString(BTservices.TOAST, "Unable to connect device");
         msg.setData(bundle);
         mHandler.sendMessage(msg);
     }
@@ -241,10 +241,7 @@ class BtMsgClass {
         setState(STATE_LISTEN);
 
         // Send a failure msg_list_holder back to the Activity
-        Message msg = mHandler.obtainMessage(ActivityMessageViewer.MESSAGE_TOAST);
-        Bundle bundle = new Bundle();
-        bundle.putString(ActivityMessageViewer.TOAST, "Device connection was lost");
-        msg.setData(bundle);
+        Message msg = mHandler.obtainMessage(BTservices.MESSAGE_CONN_LOST);
         mHandler.sendMessage(msg);
     }
 
@@ -428,7 +425,7 @@ class BtMsgClass {
 
 
                     // Send the obtained bytes to the UI Activity
-                    mHandler.obtainMessage(ActivityMessageViewer.MESSAGE_READ, bytes, -1, buffer)
+                    mHandler.obtainMessage(BTservices.MESSAGE_READ, bytes, -1, buffer)
                             .sendToTarget();
                 } catch (IOException e) {
                     Log.e(TAG, "disconnected", e);
@@ -448,7 +445,7 @@ class BtMsgClass {
                 mmOutStream.write(buffer);
 
                 // Share the sent msg_list_holder back to the UI Activity
-                mHandler.obtainMessage(ActivityMessageViewer.MESSAGE_WRITE, -1, -1, buffer)
+                mHandler.obtainMessage(BTservices.MESSAGE_WRITE, -1, -1, buffer)
                         .sendToTarget();
             } catch (IOException e) {
                 Log.e(TAG, "Exception during write", e);

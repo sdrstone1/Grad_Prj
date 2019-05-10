@@ -38,14 +38,13 @@ import android.widget.Toast;
  */
 
 public class ActivityMain extends AppCompatActivity {
-
+    BTserviceHandler bTserviceHandler = null;
 
     private String session;
     /**
      * Messenger for communicating with the service.
      */
     private Messenger BTMessenger = null;
-
     /**
      * Flag indicating whether we have called bind on the service.
      */
@@ -69,7 +68,7 @@ public class ActivityMain extends AppCompatActivity {
             Log.e("BTADDR : ", bTaddr);
 
             // Create and send a message to the service, using a supported 'what' value
-            Message msg = Message.obtain(null, BTservices.NEW_DEVICE_SELECTED, new String[]{bTaddr, session});
+            Message msg = Message.obtain(null, BTservices.BT_Callback_Object, bTserviceHandler);
 
             try {
                 BTMessenger.send(msg);
@@ -85,6 +84,7 @@ public class ActivityMain extends AppCompatActivity {
             BTBound = false;
         }
     };
+
 
     private void setBTServiceConnection(String bTaddr) {
         if (!BTBound) {
@@ -116,6 +116,9 @@ public class ActivityMain extends AppCompatActivity {
 
 
         super.onCreate(savedInstanceState);
+
+        bindService(new Intent(this, BTservices.class), BTServiceConnection,
+                Context.BIND_AUTO_CREATE);
 
         ImageButton calendarbutton = findViewById(R.id.calendarbutton);
         calendarbutton.setOnClickListener(
@@ -156,15 +159,18 @@ public class ActivityMain extends AppCompatActivity {
                     }
                 });
 
+        bTserviceHandler = new BTserviceHandler();
     }
 
     private void requestBtConnect() {
-        bindService(new Intent(this, BTservices.class), BTServiceConnection,
-                Context.BIND_AUTO_CREATE);
-        if (!BTBound) {
-            Snackbar.make(findViewById(R.id.mainView), "BT Service is not bound", Snackbar.LENGTH_SHORT).show();
-        }
+        // Create and send a message to the service, using a supported 'what' value
+        Message msg = Message.obtain(null, BTservices.NEW_DEVICE_SELECTED);
 
+        try {
+            BTMessenger.send(msg);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -190,6 +196,7 @@ public class ActivityMain extends AppCompatActivity {
         if (BTBound) {
             unbindService(BTServiceConnection);
             BTBound = false;
+
         }
     }
 
@@ -200,12 +207,27 @@ public class ActivityMain extends AppCompatActivity {
             if (resultCode != Activity.RESULT_OK) {
                 // User did not enable Bluetooth or an error occured
                 Toast.makeText(this, R.string.bt_not_enabled_leaving, Toast.LENGTH_SHORT).show();
-            } else if (requestCode == BTservices.REQUEST_CONNECT_DEVICE) {
-                if (resultCode == Activity.RESULT_OK) {
-                    Snackbar.make(findViewById(R.id.mainView), "BT Service is not bound", Snackbar.LENGTH_SHORT).show();
-                    requestBtConnect();
-                } else
-                    Snackbar.make(findViewById(R.id.mainView), "BT Service is not bound", Snackbar.LENGTH_SHORT).show();
             }
+        else if (requestCode == BTservices.REQUEST_CONNECT_DEVICE) {
+            if (resultCode == Activity.RESULT_OK) {
+                Snackbar.make(findViewById(R.id.mainView), "BT Service is not bound", Snackbar.LENGTH_SHORT).show();
+                requestBtConnect();
+            }
+            else Snackbar.make(findViewById(R.id.mainView), "BT Service is not bound", Snackbar.LENGTH_SHORT).show();
+        }
+    }
+
+    class BTserviceHandler implements BTservices.BTservice_CallBack{
+        @Override
+        public void BtNotOn() {
+            Intent enableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+            startActivityForResult(enableIntent, BTservices.REQUEST_ENABLE_BT);
+        }
+
+        @Override
+        public void ConnLost() {
+            Toast.makeText(getApplicationContext(), "Not Connected ", Toast.LENGTH_SHORT).show();
+            Snackbar.make(findViewById(R.id.mainView), "BT Service is not bound", Snackbar.LENGTH_SHORT).show();
+        }
     }
 }

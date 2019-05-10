@@ -95,7 +95,7 @@ public class ActivityBtConnect extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
-        //super.onDestroy();
+        super.onDestroy();
         // Make sure we're not doing discovery anymore
         if (mBtAdapter != null) {
             mBtAdapter.cancelDiscovery();
@@ -110,7 +110,7 @@ public class ActivityBtConnect extends AppCompatActivity {
 
         // Unregister broadcast listeners
         this.unregisterReceiver(mReceiver);
-        super.onDestroy();
+        //super.onDestroy();
     }
 
     @Override

@@ -22,6 +22,7 @@ import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.Intent;
 import android.os.*;
+import android.support.design.widget.Snackbar;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.inputmethod.EditorInfo;
@@ -35,18 +36,20 @@ public class BTservices extends Service {
      */
     static final int NEW_DEVICE_SELECTED = 100;
     static final int STATE_BT_NOT_ON = 101;
+    static final int BT_Callback_Object = 12;
     // Intent request codes
     static final int REQUEST_CONNECT_DEVICE = 200;
     static final int REQUEST_ENABLE_BT = 201;
     // Message types sent from the BluetoothChatService Handler
-    private static final int MESSAGE_STATE_CHANGE = 1;
-    private static final int MESSAGE_READ = 2;
-    private static final int MESSAGE_WRITE = 3;
-    private static final int MESSAGE_DEVICE_NAME = 4;
-    private static final int MESSAGE_TOAST = 5;
+    static final int MESSAGE_STATE_CHANGE = 1;
+    static final int MESSAGE_READ = 2;
+    static final int MESSAGE_WRITE = 3;
+    static final int MESSAGE_DEVICE_NAME = 4;
+    static final int MESSAGE_TOAST = 5;
+    static final int MESSAGE_CONN_LOST = 6;
     // Key names received from the BluetoothChatService Handler
-    private static final String DEVICE_NAME = "device_list_name";
-    private static final String TOAST = "toast";
+    static final String DEVICE_NAME = "device_list_name";
+    static final String TOAST = "toast";
     // Debugging
     private static final String TAG = "BluetoothChat";
     private static final boolean D = true;
@@ -61,6 +64,8 @@ public class BTservices extends Service {
     //private ArrayAdapter<String> mConversationArrayAdapter;
     private int DrunkSum = 0;
     // Layout Views
+
+    BTservice_CallBack bTserviceCallBack=null;
     private ListView mConversationView;
     private EditText mOutEditText;
     private Button mSendButton;
@@ -97,7 +102,7 @@ public class BTservices extends Service {
                         case BtMsgClass.STATE_LISTEN:
                         case BtMsgClass.STATE_NONE:
                             Toast.makeText(getApplicationContext(), "Not Connected ", Toast.LENGTH_SHORT).show();
-                            //TODO 마신 양 저장
+
                             break;
                     }
                     break;
@@ -125,6 +130,13 @@ public class BTservices extends Service {
                     Toast.makeText(getApplicationContext(), msg.getData().getString(TOAST),
                             Toast.LENGTH_SHORT).show();
                     break;
+                case MESSAGE_CONN_LOST:
+                    //TODO 마신 양 저장
+                    bTserviceCallBack.ConnLost();
+
+                    break;
+
+
             }
         }
     };
@@ -167,20 +179,6 @@ public class BTservices extends Service {
         if (mBluetoothAdapter == null) {
             Toast.makeText(this, "Bluetooth is not available", Toast.LENGTH_LONG).show();
         }
-
-        if (!mBluetoothAdapter.isEnabled()) {
-
-            Message msg = Message.obtain(null, BTservices.STATE_BT_NOT_ON);
-            try {
-                mMessenger.send(msg);
-            } catch (RemoteException e) {
-                e.printStackTrace();
-            }
-            // Otherwise, setup the chat session
-        } else {
-            if (mChatService == null) setupChat();
-        }
-
     }
 
     @Override
@@ -257,11 +255,19 @@ public class BTservices extends Service {
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what) {
-                case NEW_DEVICE_SELECTED:
+                case BT_Callback_Object:
+                    bTserviceCallBack = (BTservice_CallBack)msg.obj;
 
-                    String[] bTaddr = (String[]) msg.obj;
-                    String address = bTaddr[0];
-                    session = bTaddr[1];
+                    if (!mBluetoothAdapter.isEnabled()) {
+
+                        bTserviceCallBack.BtNotOn();
+                    } else {
+                        if (mChatService == null) setupChat();
+                    }
+                case NEW_DEVICE_SELECTED:
+                    mPreferences mPref = new mPreferences(getApplicationContext());
+                    String address = mPref.getStringValue(mPreferences.BT_ADDR);
+
 
                     // Get the BLuetoothDevice object
                     BluetoothDevice device = mBluetoothAdapter.getRemoteDevice(address);
@@ -273,7 +279,12 @@ public class BTservices extends Service {
                 default:
                     super.handleMessage(msg);
             }
+
         }
+    }
+    interface BTservice_CallBack{
+        void ConnLost();
+        void BtNotOn();
     }
 
 }
