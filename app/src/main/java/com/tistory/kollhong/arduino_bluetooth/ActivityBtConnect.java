@@ -58,7 +58,7 @@ public class ActivityBtConnect extends AppCompatActivity {
                 }
                 // When discovery is finished, change the Activity title
             } else if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(action)) {
-                setProgressBarIndeterminateVisibility(false);
+                //setProgressBarIndeterminateVisibility(false);
                 setTitle(R.string.select_device);
                 if (mNewDevicesArrayAdapter.getCount() == 0) {
                     String noDevices = getResources().getText(R.string.none_found).toString();
@@ -82,12 +82,7 @@ public class ActivityBtConnect extends AppCompatActivity {
             mPreferences mPrefMan = new mPreferences(getApplicationContext());
             mPrefMan.setStringValue(mPreferences.BT_ADDR, address);
 
-            newDevice = true;
-
-            if (newDevice) setResult(Activity.RESULT_OK);
-            else setResult(Activity.RESULT_CANCELED);
-            //TODO setResult 안하는 이유 찾기
-            //TODO 혹시 onDestroy의 super.ondestroy를 먼저 해야 하나 
+            setResult(Activity.RESULT_OK);
 
             finish();
         }
@@ -100,13 +95,6 @@ public class ActivityBtConnect extends AppCompatActivity {
         if (mBtAdapter != null) {
             mBtAdapter.cancelDiscovery();
         }
-
-        // Create the result Intent and include the MAC address
-
-        // Set result and finish this Activity
-        if (newDevice) setResult(Activity.RESULT_OK);
-        else setResult(Activity.RESULT_CANCELED);
-
 
         // Unregister broadcast listeners
         this.unregisterReceiver(mReceiver);
@@ -132,14 +120,11 @@ public class ActivityBtConnect extends AppCompatActivity {
         }
         pairedBTs = mBtAdapter.getBondedDevices();
         //switchStatus(cBleDTO.isEnabled());
-        bleSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                searchBtn.setClickable(isChecked);
-                if (isChecked)
-                    searchBtn.setVisibility(View.VISIBLE);
-                else searchBtn.setVisibility(View.INVISIBLE);
-            }
+        bleSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            searchBtn.setClickable(isChecked);
+            if (isChecked)
+                searchBtn.setVisibility(View.VISIBLE);
+            else searchBtn.setVisibility(View.INVISIBLE);
         });
 
 
@@ -194,7 +179,7 @@ public class ActivityBtConnect extends AppCompatActivity {
         if (BuildConfig.DEBUG) Log.d("Android test", "doDiscovery()");
 
         // Indicate scanning in the title
-        setProgressBarIndeterminateVisibility(true);
+        //setProgressBarIndeterminateVisibility(true);
         setTitle(R.string.scanning);
 
 

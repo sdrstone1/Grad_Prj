@@ -21,8 +21,10 @@ import android.app.Service;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.Intent;
-import android.os.*;
-import android.support.design.widget.Snackbar;
+import android.os.Handler;
+import android.os.IBinder;
+import android.os.Message;
+import android.os.Messenger;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.inputmethod.EditorInfo;
@@ -255,6 +257,11 @@ public class BTservices extends Service {
             switch (msg.what) {
                 case BT_Callback_Object:
                     bTserviceCallBack = (BTservice_CallBack)msg.obj;
+                    break;
+
+                case NEW_DEVICE_SELECTED:
+                    mPreferences mPref = new mPreferences(getApplicationContext());
+                    String address = mPref.getStringValue(mPreferences.BT_ADDR);
 
                     if (!mBluetoothAdapter.isEnabled()) {
 
@@ -262,10 +269,6 @@ public class BTservices extends Service {
                     } else {
                         if (mChatService == null) setupChat();
                     }
-                case NEW_DEVICE_SELECTED:
-                    mPreferences mPref = new mPreferences(getApplicationContext());
-                    String address = mPref.getStringValue(mPreferences.BT_ADDR);
-
 
                     // Get the BLuetoothDevice object
                     BluetoothDevice device = mBluetoothAdapter.getRemoteDevice(address);

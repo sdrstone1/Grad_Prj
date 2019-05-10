@@ -22,7 +22,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.*;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
@@ -66,9 +65,6 @@ public class ActivityMain extends AppCompatActivity {
             BTMessenger = new Messenger(service);
             BTBound = true;
 
-            mPreferences mPrefMan = new mPreferences(getApplicationContext());
-            String bTaddr = mPrefMan.getStringValue(mPreferences.BT_ADDR);
-            Log.e("BTADDR : ", bTaddr);
 
             // Create and send a message to the service, using a supported 'what' value
             Message msg = Message.obtain(null, BTservices.BT_Callback_Object, bTserviceHandler);
@@ -182,7 +178,9 @@ public class ActivityMain extends AppCompatActivity {
 
         mPreferences mPref = new mPreferences(getApplicationContext());
         BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        /*
         mPref.setBoolValue(mPreferences.BT_Automatic_Connect, true);
+
         if (mPref.getBoolValue(mPreferences.BT_Automatic_Connect))
             if (!mBluetoothAdapter.isEnabled()) {
                 Intent enableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
@@ -190,11 +188,12 @@ public class ActivityMain extends AppCompatActivity {
             } else {
                 requestBtConnect();
             }
+        */
     }
 
     @Override
-    protected void onStop() {
-        super.onStop();
+    protected void onDestroy() {
+        super.onDestroy();
         // Unbind from the service
         if (BTBound) {
             unbindService(BTServiceConnection);
@@ -215,12 +214,12 @@ public class ActivityMain extends AppCompatActivity {
                 break;
             case BTservices.REQUEST_CONNECT_DEVICE:
                 if (resultCode == Activity.RESULT_OK) {
-                    Snackbar.make(findViewById(R.id.mainView), "BT Service is not bound", Snackbar.LENGTH_SHORT).show();
+                    Snackbar.make(findViewById(R.id.mainView), "Start to Connect BT Device", Snackbar.LENGTH_SHORT).show();
                     requestBtConnect();
                 }
                 break;
             default :
-                Snackbar.make(findViewById(R.id.mainView), "BT Service is not bound", Snackbar.LENGTH_SHORT).show();
+                Snackbar.make(findViewById(R.id.mainView), "Unknown Activity Result", Snackbar.LENGTH_SHORT).show();
         }
     }
 
