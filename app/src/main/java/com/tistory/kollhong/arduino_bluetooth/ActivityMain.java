@@ -24,6 +24,7 @@ import android.content.ServiceConnection;
 import android.os.*;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.Toast;
@@ -62,6 +63,19 @@ public class ActivityMain extends AppCompatActivity {
             // representation of that from the raw IBinder object.
             BTMessenger = new Messenger(service);
             BTBound = true;
+
+            mPreferences mPrefMan = new mPreferences(getApplicationContext());
+            String bTaddr = mPrefMan.getStringValue(mPreferences.BT_ADDR);
+            Log.e("BTADDR : ", bTaddr);
+
+            // Create and send a message to the service, using a supported 'what' value
+            Message msg = Message.obtain(null, BTservices.NEW_DEVICE_SELECTED, new String[]{bTaddr, session});
+
+            try {
+                BTMessenger.send(msg);
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
         }
 
         public void onServiceDisconnected(ComponentName className) {
@@ -74,7 +88,7 @@ public class ActivityMain extends AppCompatActivity {
 
     private void setBTServiceConnection(String bTaddr) {
         if (!BTBound) {
-            Snackbar.make(findViewById(R.id.mainView), "Check ID & PW again", Snackbar.LENGTH_SHORT).show();
+            Snackbar.make(findViewById(R.id.mainView), "BT Service is not bound", Snackbar.LENGTH_SHORT).show();
             return;
         }
         // Create and send a message to the service, using a supported 'what' value
@@ -142,9 +156,24 @@ public class ActivityMain extends AppCompatActivity {
                     }
                 });
 
+    }
+
+    private void requestBtConnect() {
+        bindService(new Intent(this, BTservices.class), BTServiceConnection,
+                Context.BIND_AUTO_CREATE);
+        if (!BTBound) {
+            Snackbar.make(findViewById(R.id.mainView), "BT Service is not bound", Snackbar.LENGTH_SHORT).show();
+        }
+
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
         mPreferences mPref = new mPreferences(getApplicationContext());
         BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-
+        mPref.setBoolValue(mPreferences.BT_Automatic_Connect, true);
         if (mPref.getBoolValue(mPreferences.BT_Automatic_Connect))
             if (!mBluetoothAdapter.isEnabled()) {
                 Intent enableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
@@ -152,50 +181,6 @@ public class ActivityMain extends AppCompatActivity {
             } else {
                 requestBtConnect();
             }
-
-
-        // If BT is not on, request that it be enabled.
-        // setupChat() will then be called during onActivityResult
-
-        /*
-                if (D) Log.e(TAG, "+ ON RESUME +");
-
-        // Performing this check in onResume() covers the case in which BT was
-        // not enabled during onStart(), so we were paused to enable it...
-        // onResume() will be called when ACTION_REQUEST_ENABLE activity returns.
-        if (mChatService != null) {
-            // Only if the state is STATE_NONE, do we know that we haven't started already
-            if (mChatService.getState() == BtMsgClass.STATE_NONE) {
-                // Start the Bluetooth chat services
-                mChatService.start();
-            }
-        }
-         */
-    }
-
-    private void requestBtConnect() {
-        mPreferences mPrefMan = new mPreferences(getApplicationContext());
-        Message msg = new Message();
-        msg.what = BTservices.NEW_DEVICE_SELECTED;
-        msg.obj = new String[]{mPrefMan.getStringValue(mPreferences.BT_ADDR), session};
-
-        try {
-            BTMessenger.send(msg);
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        bindService(new Intent(this, BTservices.class), BTServiceConnection,
-                Context.BIND_AUTO_CREATE);
-        mPreferences mPref = new mPreferences(getApplicationContext());
-        String bTaddr = mPref.getStringValue(mPreferences.BT_ADDR);
-
-        if (bTaddr != null)
-            setBTServiceConnection(bTaddr);
     }
 
     @Override
@@ -217,18 +202,10 @@ public class ActivityMain extends AppCompatActivity {
                 Toast.makeText(this, R.string.bt_not_enabled_leaving, Toast.LENGTH_SHORT).show();
             } else if (requestCode == BTservices.REQUEST_CONNECT_DEVICE) {
                 if (resultCode == Activity.RESULT_OK) {
+                    Snackbar.make(findViewById(R.id.mainView), "BT Service is not bound", Snackbar.LENGTH_SHORT).show();
                     requestBtConnect();
-                /*
-                String address = data.getExtras()
-
-                        .getString(ActivityBtConnect.EXTRA_DEVICE_ADDRESS);
-                // Get the BLuetoothDevice object
-                BluetoothDevice device = mBluetoothAdapter.getRemoteDevice(address);
-                // Attempt to connect to the device
-                mChatService.connect(device);
-
-                 */
-                }
+                } else
+                    Snackbar.make(findViewById(R.id.mainView), "BT Service is not bound", Snackbar.LENGTH_SHORT).show();
             }
     }
 }
