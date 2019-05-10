@@ -23,14 +23,13 @@ import android.os.*;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.View;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
 import java.util.Calendar;
-import java.util.Date;
 
-import static com.tistory.kollhong.arduino_bluetooth.mDbMan.*;
+import static com.tistory.kollhong.arduino_bluetooth.mDbMan.recordTable;
+import static com.tistory.kollhong.arduino_bluetooth.mDbMan.recordTableVar;
 /*
 블루투스 구조
 메인 : 블루투스 켜기 및 주소 전달, 서비스와 통신
@@ -213,7 +212,7 @@ public class ActivityMain extends AppCompatActivity {
                     // User did not enable Bluetooth or an error occured
                     Toast.makeText(this, R.string.bt_not_enabled_leaving, Toast.LENGTH_SHORT).show();
                 }
-                break;
+                break; 
             case BTservices.REQUEST_CONNECT_DEVICE:
                 if (resultCode == Activity.RESULT_OK) {
                     Snackbar.make(findViewById(R.id.mainView), "BT Service is not bound", Snackbar.LENGTH_SHORT).show();
