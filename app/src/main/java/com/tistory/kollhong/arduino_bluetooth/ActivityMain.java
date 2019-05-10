@@ -17,10 +17,8 @@ package com.tistory.kollhong.arduino_bluetooth;
 
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
-import android.content.ComponentName;
-import android.content.Context;
-import android.content.Intent;
-import android.content.ServiceConnection;
+import android.content.*;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.*;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -28,6 +26,11 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.Toast;
+
+import java.util.Calendar;
+import java.util.Date;
+
+import static com.tistory.kollhong.arduino_bluetooth.mDbMan.*;
 /*
 블루투스 구조
 메인 : 블루투스 켜기 및 주소 전달, 서비스와 통신
@@ -38,7 +41,8 @@ import android.widget.Toast;
  */
 
 public class ActivityMain extends AppCompatActivity {
-    BTserviceHandler bTserviceHandler = null;
+    private BTserviceHandler bTserviceHandler = null;
+    private long timeinmillis =0L;
 
     private String session;
     /**
@@ -122,44 +126,44 @@ public class ActivityMain extends AppCompatActivity {
 
         ImageButton calendarbutton = findViewById(R.id.calendarbutton);
         calendarbutton.setOnClickListener(
-                new ImageButton.OnClickListener() {
-                    public void onClick(View v) {
-                        Intent intent = new Intent(v.getContext(), ActivityCalendar.class);
-                        intent.putExtra("session", session);
-                        startActivity(intent);
-                    }
+                v -> {
+                    Intent intent1 = new Intent(v.getContext(), ActivityCalendar.class);
+                    intent1.putExtra("session", session);
+                    startActivity(intent1);
                 });
 
         ImageButton mypagebutton = findViewById(R.id.mypagebutton);
         mypagebutton.setOnClickListener(
-                new ImageButton.OnClickListener() {
-                    public void onClick(View v) {
-                        Intent intent = new Intent(v.getContext(), ActivityMypage.class);
-                        intent.putExtra("session", session);
-                        startActivity(intent);
-                    }
+                v -> {
+                    Intent intent12 = new Intent(v.getContext(), ActivityMypage.class);
+                    intent12.putExtra("session", session);
+                    startActivity(intent12);
                 });
         ImageButton LEDbutton = findViewById(R.id.LEDbutton);
         LEDbutton.setOnClickListener(
-                new ImageButton.OnClickListener() {
-                    public void onClick(View v) {
-                        Intent intent = new Intent(v.getContext(), ActivityLEDsettings.class);
-                        intent.putExtra("session", session);
-                        startActivity(intent);
-                    }
+                v -> {
+                    Intent intent13 = new Intent(v.getContext(), ActivityLEDsettings.class);
+                    intent13.putExtra("session", session);
+                    startActivity(intent13);
                 });
         ImageButton Controlbutton = findViewById(R.id.Controlbutton);
         Controlbutton.setOnClickListener(
-                new ImageButton.OnClickListener() {
-                    public void onClick(View v) {
-                        //Intent intent = new Intent(v.getContext(), ActivitySetting.class);
-                        Intent intent = new Intent(v.getContext(), ActivityBtConnect.class);    //임시
-                        //intent.putExtra("session", session);
-                        startActivityForResult(intent, BTservices.REQUEST_CONNECT_DEVICE);
-                    }
+                v -> {
+                    //Intent intent = new Intent(v.getContext(), ActivitySetting.class);
+                    Intent intent14 = new Intent(v.getContext(), ActivityBtConnect.class);    //임시
+                    //intent.putExtra("session", session);
+                    startActivityForResult(intent14, BTservices.REQUEST_CONNECT_DEVICE);
                 });
 
         bTserviceHandler = new BTserviceHandler();
+
+        Calendar date = Calendar.getInstance();
+        date.set(Calendar.HOUR_OF_DAY,22);
+        date.set(Calendar.MINUTE,0);
+        date.set(Calendar.SECOND, 0 );
+        date.set(Calendar.MILLISECOND,0);
+        timeinmillis = date.getTimeInMillis();
+
     }
 
     private void requestBtConnect() {
@@ -202,18 +206,22 @@ public class ActivityMain extends AppCompatActivity {
 
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == BTservices.REQUEST_ENABLE_BT)
-            // When the request to enable Bluetooth returns
-            if (resultCode != Activity.RESULT_OK) {
-                // User did not enable Bluetooth or an error occured
-                Toast.makeText(this, R.string.bt_not_enabled_leaving, Toast.LENGTH_SHORT).show();
-            }
-        else if (requestCode == BTservices.REQUEST_CONNECT_DEVICE) {
-            if (resultCode == Activity.RESULT_OK) {
+        switch (requestCode){
+            case BTservices.REQUEST_ENABLE_BT:
+                // When the request to enable Bluetooth returns
+                if (resultCode != Activity.RESULT_OK) {
+                    // User did not enable Bluetooth or an error occured
+                    Toast.makeText(this, R.string.bt_not_enabled_leaving, Toast.LENGTH_SHORT).show();
+                }
+                break;
+            case BTservices.REQUEST_CONNECT_DEVICE:
+                if (resultCode == Activity.RESULT_OK) {
+                    Snackbar.make(findViewById(R.id.mainView), "BT Service is not bound", Snackbar.LENGTH_SHORT).show();
+                    requestBtConnect();
+                }
+                break;
+            default :
                 Snackbar.make(findViewById(R.id.mainView), "BT Service is not bound", Snackbar.LENGTH_SHORT).show();
-                requestBtConnect();
-            }
-            else Snackbar.make(findViewById(R.id.mainView), "BT Service is not bound", Snackbar.LENGTH_SHORT).show();
         }
     }
 
@@ -225,9 +233,15 @@ public class ActivityMain extends AppCompatActivity {
         }
 
         @Override
-        public void ConnLost() {
+        public void ConnLost(int sum) {
             Toast.makeText(getApplicationContext(), "Not Connected ", Toast.LENGTH_SHORT).show();
             Snackbar.make(findViewById(R.id.mainView), "BT Service is not bound", Snackbar.LENGTH_SHORT).show();
+
+            SQLiteDatabase mDb = mDbMan.DBinit(getApplicationContext(),session, true);
+            ContentValues value = new ContentValues();
+            value.put(recordTableVar[0], timeinmillis);
+            value.put(recordTableVar[1], sum);
+            mDbMan.putRecord(mDb,recordTable,value);
         }
     }
 }

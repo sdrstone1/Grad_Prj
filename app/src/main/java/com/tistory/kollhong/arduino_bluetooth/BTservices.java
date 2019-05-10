@@ -65,7 +65,7 @@ public class BTservices extends Service {
     private int DrunkSum = 0;
     // Layout Views
 
-    BTservice_CallBack bTserviceCallBack=null;
+    private BTservice_CallBack bTserviceCallBack=null;
     private ListView mConversationView;
     private EditText mOutEditText;
     private Button mSendButton;
@@ -132,7 +132,7 @@ public class BTservices extends Service {
                     break;
                 case MESSAGE_CONN_LOST:
                     //TODO 마신 양 저장
-                    bTserviceCallBack.ConnLost();
+                    bTserviceCallBack.ConnLost(milliLiter);
 
                     break;
 
@@ -148,16 +148,14 @@ public class BTservices extends Service {
     private BtMsgClass mChatService = null;
     // The action listener for the EditText widget, to listen for the return key
     private TextView.OnEditorActionListener mWriteListener =
-            new TextView.OnEditorActionListener() {
-                public boolean onEditorAction(TextView view, int actionId, KeyEvent event) {
-                    // If the action is a key-up event on the return key, send the msg_list_holder
-                    if (actionId == EditorInfo.IME_NULL && event.getAction() == KeyEvent.ACTION_UP) {
-                        String message = view.getText().toString();
-                        sendMessage(message);
-                    }
-                    if (D) Log.i(TAG, "END onEditorAction");
-                    return true;
+            (view, actionId, event) -> {
+                // If the action is a key-up event on the return key, send the msg_list_holder
+                if (actionId == EditorInfo.IME_NULL && event.getAction() == KeyEvent.ACTION_UP) {
+                    String message = view.getText().toString();
+                    sendMessage(message);
                 }
+                if (D) Log.i(TAG, "END onEditorAction");
+                return true;
             };
 
     /**
@@ -283,7 +281,7 @@ public class BTservices extends Service {
         }
     }
     interface BTservice_CallBack{
-        void ConnLost();
+        void ConnLost(int sum);
         void BtNotOn();
     }
 
