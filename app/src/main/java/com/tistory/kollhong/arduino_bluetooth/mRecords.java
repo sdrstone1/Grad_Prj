@@ -18,6 +18,7 @@ package com.tistory.kollhong.arduino_bluetooth;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -39,15 +40,6 @@ class mRecords {
     private double getDrinkRecord(String session, Calendar cal, int loop) {
         double record = 0d;
 
-        cal.set(Calendar.HOUR_OF_DAY, 12);
-/*
-        int Sunday = cal.getFirstDayOfWeek();
-        cal.set(Calendar.DAY_OF_MONTH, Sunday);
-        cal.set(Calendar.HOUR_OF_DAY, 12);      //낮 12시부터 다음 날 낮 12시까지
-        cal.set(Calendar.MINUTE, 0);
-        cal.set(Calendar.SECOND, 0);
-*/
-
         long startdate = cal.getTimeInMillis();
         cal.add(Calendar.DATE, 1);
         long enddate = cal.getTimeInMillis() - 1L;
@@ -57,7 +49,8 @@ class mRecords {
             startdate = enddate + 1L;
             cal.add(Calendar.DATE, 1);
             enddate = cal.getTimeInMillis() - 1L;
-
+            Log.d("time : ", startdate + " ~ " + enddate);
+            //Log.d("record : ", record+"");
         }
         return record;
     }
@@ -66,6 +59,12 @@ class mRecords {
     double getWeekRecord(Date date) {        //date => 일요일, 낮 12시 00분 00초 수신
         Calendar cal = Calendar.getInstance();
         cal.setTime(date);
+
+        cal.set(Calendar.HOUR_OF_DAY, 22);      //낮 12시부터 다음 날 낮 12시까지
+        cal.set(Calendar.MINUTE, 0);
+        cal.set(Calendar.SECOND, 0);
+
+
         double record = 0d;
         record = record + getDrinkRecord(session, cal, 7);
         return record;

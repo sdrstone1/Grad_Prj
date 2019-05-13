@@ -71,14 +71,16 @@ class mDbMan {
     static double getDRecord(SQLiteDatabase db, String table, String[] col, String where) {
         Cursor cursor = db.query(table, col, where, null, null, null, null);
         double record = 0d;
-        int count = cursor.getCount();
-        if (count != 0) {
-            for (int i = 0; i < count; i++) {
+        if (cursor.getCount() != 0) {
+            while (cursor.moveToNext()) {
 
-                record = record + cursor.getDouble(0);
+                record = record + cursor.getDouble(1);
             }
+
         }
         cursor.close();
+        //Log.d("time : ", where+"");
+        //Log.d("record : ", record+"");
         return record;
     }
 
