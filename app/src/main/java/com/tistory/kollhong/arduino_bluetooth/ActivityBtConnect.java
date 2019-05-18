@@ -36,7 +36,6 @@ public class ActivityBtConnect extends AppCompatActivity {
     private Button searchBtn;
     private Switch bleSwitch;
 
-    private Set<BluetoothDevice> pairedBTs;
     private BluetoothAdapter mBtAdapter;
 
     private ArrayAdapter<String> mPairedDevicesArrayAdapter;
@@ -125,7 +124,7 @@ public class ActivityBtConnect extends AppCompatActivity {
         switchStatus(mBtAdapter.isEnabled());
         // If the adapter is null, then Bluetooth is not supported
 
-        pairedBTs = mBtAdapter.getBondedDevices();
+        Set<BluetoothDevice> pairedBTs = mBtAdapter.getBondedDevices();
 
         bleSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
             searchBtn.setClickable(isChecked);
@@ -196,7 +195,7 @@ public class ActivityBtConnect extends AppCompatActivity {
         mBtAdapter.startDiscovery();
     }
 
-    public void switchStatus(boolean status) {
+    private void switchStatus(boolean status) {
         //int status = mBluetoothAdapter.getState();
         bleSwitch.setChecked(status);
         if (status) {

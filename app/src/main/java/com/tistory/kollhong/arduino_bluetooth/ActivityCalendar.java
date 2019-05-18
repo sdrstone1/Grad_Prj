@@ -31,9 +31,8 @@ public class ActivityCalendar extends AppCompatActivity {
     private static final String TAG = "CalendarActivity";
     //String session;
     private mRecords records;
-    float weekmax = 0;
-    private ChartProgressBar mChart;
-    float weeksum = 0;
+    private float weekmax = 0;
+    private float weeksum = 0;
     private mAccounts accounts;
 
     @Override
@@ -82,7 +81,7 @@ public class ActivityCalendar extends AppCompatActivity {
      * limitations under the License.
      */
 
-    void buildWeekGraph() {
+    private void buildWeekGraph() {
 
 
         ArrayList<BarData> WeekList = new ArrayList<>();
@@ -126,17 +125,17 @@ public class ActivityCalendar extends AppCompatActivity {
         }
 
 
-        mChart = findViewById(R.id.ChartProgressBar);
+        ChartProgressBar mChart = findViewById(R.id.ChartProgressBar);
         mChart.setMaxValue(weekmax);
         mChart.setDataList(WeekList);
         mChart.build();
     }
 
-    float buildWeekData(Calendar week) {
+    private float buildWeekData(Calendar week) {
         return (float) records.getWeekRecord(week.getTime());
     }
 
-    int alcoholLimit() {
+    private int alcoholLimit() {
         int gender = accounts.getInt();
         if (gender == 0) {
             return 370;

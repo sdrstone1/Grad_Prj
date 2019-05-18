@@ -28,8 +28,8 @@ import static com.tistory.kollhong.arduino_bluetooth.mDbMan.recordTable;
 import static com.tistory.kollhong.arduino_bluetooth.mDbMan.recordTableVar;
 
 class mRecords {
-    Context context;
-    private SQLiteDatabase db;
+    private final Context context;
+    private final SQLiteDatabase db;
     private String session; //지금은 로그인 아이디
 
 

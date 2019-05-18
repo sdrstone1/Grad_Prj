@@ -22,7 +22,6 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
-import android.widget.CompoundButton;
 import android.widget.Switch;
 import com.github.danielnilsson9.colorpickerview.dialog.ColorPickerDialogFragment;
 
@@ -33,7 +32,7 @@ public class ActivitySetting extends AppCompatActivity implements ColorPickerDia
     static final int REQUEST_COLOR_PICKER = 201;
 
 
-    private final String TAG = "Settings";
+    private static final String TAG = "Settings";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,13 +40,10 @@ public class ActivitySetting extends AppCompatActivity implements ColorPickerDia
         setContentView(R.layout.activity_control);
 
         Switch autoConnectswitch = findViewById(R.id.ConnectSwitch);
-        autoConnectswitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                mPreferences mPref = new mPreferences(getApplicationContext());
-                mPref.setValue(BT_Automatic_Connect, isChecked);
-                Log.i("Check Changed", isChecked + "");
-            }
+        autoConnectswitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            mPreferences mPref = new mPreferences(getApplicationContext());
+            mPref.setValue(BT_Automatic_Connect, isChecked);
+            Log.i("Check Changed", isChecked + "");
         });
         mPreferences mPref = new mPreferences(getApplicationContext());
         autoConnectswitch.setChecked(mPref.getBoolValue(BT_Automatic_Connect));

@@ -24,8 +24,8 @@ import android.preference.PreferenceManager;
  * Created by KollHong on 14/04/2018.
  */
 
-public class mPreferences {
-    private SharedPreferences mPref;
+class mPreferences {
+    private final SharedPreferences mPref;
     static final String APP_INIT = "initialized";
     static final String BT_Automatic_Connect = "BTON";
     static final String BT_ADDR = "BTaddr";

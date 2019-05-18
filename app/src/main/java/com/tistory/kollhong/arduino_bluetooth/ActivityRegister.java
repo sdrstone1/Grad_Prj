@@ -21,26 +21,44 @@ import android.widget.*;
 
 public class ActivityRegister extends AppCompatActivity {
     static final String isMyPage = "isMypage";
-    private ArrayAdapter adapter;
-    private Spinner spinner;
-    RadioGroup gender;
+
+    private Spinner ageSpinner;
+    private Spinner weightSpinner;
+    private Spinner heightSpinner;
+
+    private EditText nameText;
+    private EditText idText;
+    private EditText passwordText;
+    private EditText emailText;
+
+    private RadioGroup rg;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
 
-        spinner = findViewById(R.id.ageSpinner);
-        adapter = ArrayAdapter.createFromResource(this, R.array.age, android.R.layout.simple_spinner_dropdown_item);
-        spinner.setAdapter(adapter);
+        ageSpinner = findViewById(R.id.ageSpinner);
+        ArrayAdapter adapter = ArrayAdapter.createFromResource(this, R.array.age, android.R.layout.simple_spinner_dropdown_item);
+        ageSpinner.setAdapter(adapter);
 
-        spinner = findViewById(R.id.weightSpinner);
+        weightSpinner = findViewById(R.id.weightSpinner);
         adapter = ArrayAdapter.createFromResource(this, R.array.weight, android.R.layout.simple_spinner_dropdown_item);
-        spinner.setAdapter(adapter);
+        weightSpinner.setAdapter(adapter);
 
-        spinner = findViewById(R.id.heightSpinner);
+        heightSpinner = findViewById(R.id.heightSpinner);
         adapter = ArrayAdapter.createFromResource(this, R.array.height, android.R.layout.simple_spinner_dropdown_item);
-        spinner.setAdapter(adapter);
+        heightSpinner.setAdapter(adapter);
+
+        nameText = findViewById(R.id.nameText);
+
+        idText = findViewById(R.id.idText);
+
+        passwordText = findViewById(R.id.passwordText);
+
+        emailText = findViewById(R.id.emailText);
+
+        rg = findViewById(R.id.genderGroup);
 
         Button btn = findViewById(R.id.registerButton);
         btn.setOnClickListener(
@@ -53,38 +71,28 @@ public class ActivityRegister extends AppCompatActivity {
 
                     mAccounts mAcc = new mAccounts(this, true);
 
-                    EditText nameText = findViewById(R.id.nameText);
                     String name = nameText.getText().toString();
-
-                    EditText idText = findViewById(R.id.idText);
                     String id = idText.getText().toString();
-
-                    EditText passwordText = findViewById(R.id.passwordText);
                     String pw = passwordText.getText().toString();
-
-                    EditText emailText = findViewById(R.id.emailText);
                     String email = emailText.getText().toString();
 
-                    RadioGroup rd = findViewById(R.id.genderGroup);
-                    RadioButton rb = findViewById(rd.getCheckedRadioButtonId());
+                    RadioButton rb = findViewById(rg.getCheckedRadioButtonId());
                     int gender;
                     if (rb.getId() == R.id.genderWoman)
                         gender = 1;
                     else gender = 0;
 
 
-                    Spinner ageSpinner = findViewById(R.id.ageSpinner);
                     String[] array = getResources().getStringArray(R.array.age);
                     String string = array[ageSpinner.getSelectedItemPosition()];
                     int age = Integer.parseInt(string.substring(0, 1));
 
-                    Spinner weightSpinner = findViewById(R.id.weightSpinner);
                     array = getResources().getStringArray(R.array.weight);
                     string = array[weightSpinner.getSelectedItemPosition()];
                     float weight = Float.parseFloat(string.split("kg")[0]);
 
 
-                    Spinner heightSpinner = findViewById(R.id.heightSpinner);
+
                     array = getResources().getStringArray(R.array.height);
                     string = array[heightSpinner.getSelectedItemPosition()];
                     float height = Float.parseFloat(string.split("cm")[0]);
@@ -131,21 +139,13 @@ public class ActivityRegister extends AppCompatActivity {
             TextView title = findViewById(R.id.register_title);
             title.setText(R.string.Mypage);
 
-            EditText nameText = findViewById(R.id.nameText);
             nameText.setText(accinfo.getAsString(mDbMan.userTableVar[2]));
-
-            EditText idText = findViewById(R.id.idText);
             idText.setText(session);
-
-            EditText emailText = findViewById(R.id.emailText);
             emailText.setText(accinfo.getAsString(mDbMan.userTableVar[6]));
 
-            RadioGroup rd = findViewById(R.id.genderGroup);
-            if (accinfo.getAsInteger(mDbMan.userTableVar[7]) == 0) rd.check(R.id.genderMan);
-            else if (accinfo.getAsInteger(mDbMan.userTableVar[7]) == 1) rd.check(R.id.genderWoman);
+            if (accinfo.getAsInteger(mDbMan.userTableVar[7]) == 0) rg.check(R.id.genderMan);
+            else if (accinfo.getAsInteger(mDbMan.userTableVar[7]) == 1) rg.check(R.id.genderWoman);
 
-
-            Spinner ageSpinner = findViewById(R.id.ageSpinner);
             String[] array = getResources().getStringArray(R.array.age);
             int position = 0;
             for (int i = 0; i < array.length; i++) {
@@ -156,7 +156,6 @@ public class ActivityRegister extends AppCompatActivity {
             }
             ageSpinner.setSelection(position);
 
-            Spinner weightSpinner = findViewById(R.id.weightSpinner);
             array = getResources().getStringArray(R.array.weight);
             position = 0;
             for (int i = 0; i < array.length; i++) {
@@ -169,7 +168,6 @@ public class ActivityRegister extends AppCompatActivity {
             weightSpinner.setSelection(position);
 
 
-            Spinner heightSpinner = findViewById(R.id.heightSpinner);
             array = getResources().getStringArray(R.array.height);
             position = 0;
             for (int i = 0; i < array.length; i++) {

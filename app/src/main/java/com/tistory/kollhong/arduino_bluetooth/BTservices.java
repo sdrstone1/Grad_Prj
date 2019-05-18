@@ -35,7 +35,7 @@ import java.util.Date;
 import static com.tistory.kollhong.arduino_bluetooth.mPreferences.Color;
 
 public class BTservices extends Service {
-    static final String TAG = "BT_Services";
+    private static final String TAG = "BT_Services";
     /**
      * Command to the service to display a message
      */
@@ -54,7 +54,7 @@ public class BTservices extends Service {
     static final int BT_REMOTE_DEVICE_NAME = 4;
     static final int BT_SERVICE_TOAST = 5;
     static final int BT_CONN_LOST = 6;
-    String tmpString = "";
+    private String tmpString = "";
 
     // Key names received from the BluetoothChatService Handler
     static final String DEVICE_NAME = "device_list_name";

@@ -26,11 +26,11 @@ import android.util.Log;
 
 import static com.tistory.kollhong.arduino_bluetooth.mDbMan.*;
 
-public class mAccounts {
+class mAccounts {
 
-    Context context;
-    String session;
-    private SQLiteDatabase mDb;
+    private final Context context;
+    private final SQLiteDatabase mDb;
+    private String session;
 
     mAccounts(Context context, boolean RW) {
         this.context = context;
@@ -93,9 +93,7 @@ public class mAccounts {
     }
 
     ContentValues getAccountInfo() {
-
-        String[] tables = recordTableVar;
-        Cursor cursor = mDbMan.getRecordCursor(mDb, userTable, tables, " '" + userTableVar[0] + "' is '" + session + "' ");
+        Cursor cursor = mDbMan.getRecordCursor(mDb, userTable, recordTableVar, " '" + userTableVar[0] + "' is '" + session + "' ");
         ContentValues values = new ContentValues();
         if (cursor.getCount() == 1) {
             cursor.moveToNext();

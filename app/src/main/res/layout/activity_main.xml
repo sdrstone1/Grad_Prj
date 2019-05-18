@@ -20,7 +20,6 @@
               android:layout_height="match_parent"
               tools:context=".ActivityMain"
               android:id="@+id/mainView"
-              android:background="#FFFFFF"
               android:orientation="vertical">
 
         <LinearLayout
