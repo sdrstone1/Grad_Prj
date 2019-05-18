@@ -14,17 +14,14 @@
   ~ limitations under the License.
   -->
 
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:tools="http://schemas.android.com/tools"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                tools:context=".ActivityMain"
-                android:id="@+id/mainView">
-
-    <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              tools:context=".ActivityMain"
+              android:id="@+id/mainView"
+              android:background="#FFFFFF"
+              android:orientation="vertical">
 
         <LinearLayout
                 android:layout_width="match_parent"
@@ -44,7 +41,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_marginTop="10dp"
-                    android:text="주량 관리 프로젝트"
+                    android:text="현재 혈중 알콜 농도"
                     android:textColor="#ffffff"
                     android:textSize="25sp"
                     android:textStyle="bold"
@@ -71,7 +68,7 @@
                     android:src="@drawable/monthly"/>
 
             <View
-                    android:layout_width="10dp"
+                    android:layout_width="20dp"
                     android:layout_height="0dp"/>
 
             <ImageButton
@@ -93,7 +90,21 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:orientation="horizontal"
-                android:paddingTop="10dp">
+                android:paddingTop="15dp">
+
+            <ImageButton
+                    android:id="@+id/Controlbutton"
+                    android:layout_width="150dp"
+                    android:layout_height="150dp"
+                    android:adjustViewBounds="true"
+                    android:background="@drawable/button"
+                    android:padding="7dp"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/control"/>
+
+            <View
+                    android:layout_width="20dp"
+                    android:layout_height="0dp"/>
 
             <ImageButton
                     android:id="@+id/LEDbutton"
@@ -105,25 +116,8 @@
                     android:padding="7dp"
                     android:background="@drawable/button"/>
 
-            <View
-                    android:layout_width="10dp"
-                    android:layout_height="0dp"/>
-
-            <ImageButton
-                    android:id="@+id/Controlbutton"
-                    android:layout_width="150dp"
-                    android:layout_height="150dp"
-                    android:adjustViewBounds="true"
-                    android:scaleType="fitCenter"
-                    android:padding="7dp"
-                    android:src="@drawable/control"
-                    android:background="@drawable/button"/>
-
 
         </LinearLayout>
 
 
     </LinearLayout>
-
-
-</RelativeLayout>

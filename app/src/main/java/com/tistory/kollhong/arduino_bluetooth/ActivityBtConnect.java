@@ -32,22 +32,23 @@ import java.util.Set;
 
 public class ActivityBtConnect extends AppCompatActivity {
     static final String EXTRA_DEVICE_ADDRESS = "device_address";
-    //ListView BT_list;
-    private Button searchBtn;
-    private boolean newDevice = false;
 
+    private Button searchBtn;
     private Switch bleSwitch;
+
     private Set<BluetoothDevice> pairedBTs;
     private BluetoothAdapter mBtAdapter;
+
     private ArrayAdapter<String> mPairedDevicesArrayAdapter;
     private ArrayAdapter<String> mNewDevicesArrayAdapter;
+
+
     // The BroadcastReceiver that listens for discovered devices and
     // changes the title when discovery is finished
     private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
-
             // When discovery finds a device
             if (BluetoothDevice.ACTION_FOUND.equals(action)) {
                 // Get the BluetoothDevice object from the Intent
@@ -68,7 +69,6 @@ public class ActivityBtConnect extends AppCompatActivity {
         }
     };
 
-
     // The on-click listener for all devices in the ListViews
     private AdapterView.OnItemClickListener mDeviceClickListener = new AdapterView.OnItemClickListener() {
         public void onItemClick(AdapterView<?> av, View v, int arg2, long arg3) {
@@ -88,6 +88,10 @@ public class ActivityBtConnect extends AppCompatActivity {
         }
     };
 
+    public void onSearchClicked(View v) {
+        scanBLE();
+    }
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -106,20 +110,23 @@ public class ActivityBtConnect extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_bt_connect);
 
+        if (mBtAdapter == null) {
+            Toast.makeText(this, "Bluetooth is not available", Toast.LENGTH_LONG).show();
+            finish();
+            return;
+        }
+
         bleSwitch = findViewById(R.id.switch1);
         //BT_list = findViewById(R.id.BT_devices);
         searchBtn = findViewById(R.id.search);
 
         mBtAdapter = BluetoothAdapter.getDefaultAdapter();
 
+        switchStatus(mBtAdapter.isEnabled());
         // If the adapter is null, then Bluetooth is not supported
-        if (mBtAdapter == null) {
-            Toast.makeText(this, "Bluetooth is not available", Toast.LENGTH_LONG).show();
-            finish();
-            return;
-        }
+
         pairedBTs = mBtAdapter.getBondedDevices();
-        //switchStatus(cBleDTO.isEnabled());
+
         bleSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
             searchBtn.setClickable(isChecked);
             if (isChecked)
@@ -171,12 +178,9 @@ public class ActivityBtConnect extends AppCompatActivity {
 
     }
 
-    public void onSearchClicked(View v) {
-        scanBLE();
-    }
 
     private void scanBLE() {
-        if (BuildConfig.DEBUG) Log.d("Android test", "doDiscovery()");
+        if (BuildConfig.DEBUG) Log.i("Android test", "doDiscovery()");
 
         // Indicate scanning in the title
         //setProgressBarIndeterminateVisibility(true);

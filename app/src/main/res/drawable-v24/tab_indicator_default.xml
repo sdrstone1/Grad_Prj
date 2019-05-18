@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  ~ Copyright (c) 2019. KollHong. All Rights Reserved.
   ~ Copyright (c) 2018. KollHong. All Rights Reserved.
   ~
   ~ Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,10 +13,14 @@
   ~ limitations under the License.
   -->
 
-<resources>
-    <color name="colorPrimary">#87CEEB</color>
-    <color name="colorPrimaryDark">#00574B</color>
-    <color name="colorAccent">#D81B60</color>
-    <color name="black_overlay">#66000000</color>
-    <color name="colorWarning">#ED00C8</color>
-</resources>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <shape
+                android:innerRadius="0dp"
+                android:shape="ring"
+                android:thickness="2dp"
+                android:useLevel="false">
+            <solid android:color="@android:color/darker_gray"/>
+        </shape>
+    </item>
+</layer-list>

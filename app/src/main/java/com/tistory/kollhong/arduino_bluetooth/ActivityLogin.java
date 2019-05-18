@@ -21,6 +21,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.widget.Button;
 import android.widget.TextView;
 
+import static com.tistory.kollhong.arduino_bluetooth.ActivityRegister.isMyPage;
+
 public class ActivityLogin extends AppCompatActivity {
     private mAccounts mAcc;
 
@@ -36,9 +38,12 @@ public class ActivityLogin extends AppCompatActivity {
         Button loginButton = findViewById(R.id.loginButton);
         loginButton.setOnClickListener(
                 v -> {
+                    /*
+                     * Copyright (c) 2019. KollHong. All Rights Reserved.
+                     */
                     String session = mAcc.Login(id.getText().toString(), pw.getText().toString());
                     if (session.equals("false")) {
-                        Snackbar.make(findViewById(R.id.LoginView), "Check ID & PW again", Snackbar.LENGTH_SHORT).show();
+                        Snackbar.make(findViewById(R.id.LoginView), R.string.login_failed, Snackbar.LENGTH_SHORT).show();
                     } else {
                         Intent intent = new Intent(v.getContext(), ActivityMain.class);
                         intent.putExtra("session", session);
@@ -52,6 +57,9 @@ public class ActivityLogin extends AppCompatActivity {
         registerButton.setOnClickListener(
                 v -> {
                     Intent intent = new Intent(v.getContext(), ActivityRegister.class);
+                    Bundle bd = new Bundle();
+                    bd.putBoolean(isMyPage, false);
+                    intent.putExtra("bundle", bd);
                     startActivity(intent);
                 });
 

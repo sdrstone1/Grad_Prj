@@ -19,6 +19,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
+import static com.tistory.kollhong.arduino_bluetooth.ActivityWelcome.FIRST_LAUNCH;
+
 public class ActivitySplash extends AppCompatActivity {
 
     @Override
@@ -26,18 +28,13 @@ public class ActivitySplash extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
 
-        try {
-            Thread.sleep(1000);      //스플래시 보여주기
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
         mPreferences mPreferences = new mPreferences(getApplicationContext());
         if (!mPreferences.getBoolValue(com.tistory.kollhong.arduino_bluetooth.mPreferences.APP_INIT)) {
 
-            Intent firstlaunch_intent = new Intent(getApplicationContext(), ActivityWelcome.class);
-            firstlaunch_intent.setFlags(Intent.FLAG_ACTIVITY_TASK_ON_HOME);
-            startActivityForResult(firstlaunch_intent, 1);
+            startActivityForResult(
+                    new Intent(getApplicationContext(), ActivityWelcome.class).
+                            setFlags(Intent.FLAG_ACTIVITY_TASK_ON_HOME),
+                    FIRST_LAUNCH);
         } else {
             startActivity(new Intent(ActivitySplash.this, ActivityLogin.class));
             finish();
@@ -46,7 +43,9 @@ public class ActivitySplash extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == 1) {
+        if (requestCode == FIRST_LAUNCH) {
+            mPreferences mPref = new mPreferences(getApplicationContext());
+            mPref.setValue(mPreferences.APP_INIT, true);
             startActivity(new Intent(ActivitySplash.this, ActivityLogin.class));
             finish();
         }

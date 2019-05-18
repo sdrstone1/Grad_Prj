@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="bt_connected_to">Connected to </string>
+    <string name="bt_connecting_to">Started to Connect to </string>
+</resources>

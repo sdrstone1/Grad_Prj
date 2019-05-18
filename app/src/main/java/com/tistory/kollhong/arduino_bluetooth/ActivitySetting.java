@@ -31,13 +31,9 @@ import static com.tistory.kollhong.arduino_bluetooth.mPreferences.BT_Automatic_C
 public class ActivitySetting extends AppCompatActivity implements ColorPickerDialogFragment.ColorPickerDialogListener {
     static final int REQUEST_SETTINGS = 200;
     static final int REQUEST_COLOR_PICKER = 201;
-    static final String Color = "Color";
 
-    private int color;
 
-    private static String colorToHexString(int color) {
-        return String.format("#%06X", 0xFFFFFFFF & color);
-    }
+    private final String TAG = "Settings";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,9 +46,11 @@ public class ActivitySetting extends AppCompatActivity implements ColorPickerDia
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 mPreferences mPref = new mPreferences(getApplicationContext());
                 mPref.setValue(BT_Automatic_Connect, isChecked);
-                Log.d("Check Changed", isChecked + "");
+                Log.i("Check Changed", isChecked + "");
             }
         });
+        mPreferences mPref = new mPreferences(getApplicationContext());
+        autoConnectswitch.setChecked(mPref.getBoolValue(BT_Automatic_Connect));
     }
 
     public void onSensorConnectBtn(View v) {
@@ -61,59 +59,16 @@ public class ActivitySetting extends AppCompatActivity implements ColorPickerDia
 
     }
 
-    public void onChangeColorButton(View v) {
-        mPreferences mPref = new mPreferences(getApplicationContext());
-        mPref.getIntValue(mPreferences.Color);
+    public void onLEDSettingsBtn(View v) {
 
+        mPreferences mPref = new mPreferences(getApplicationContext());
         ColorPickerDialogFragment f = ColorPickerDialogFragment
                 .newInstance(REQUEST_COLOR_PICKER, null, null, mPref.getIntValue(mPreferences.Color), true);
         f.setStyle(DialogFragment.STYLE_NORMAL, 0);
         f.show(getFragmentManager(), "d");
 
-
-        //Intent colorIntent = new Intent();
-        //FragmentManager fm = getFragmentManager();
-        //FragmentTransaction transaction = fm.beginTransaction();
-        //Fragment colorpicker = new ColorPickerDialogFragment();
-        //Bundle bd = colorpicker.getArguments();
-        //bd.putInt("init_color",)
-        //colorpicker.setArguments(bd);
-
-        //transaction.add(colorpicker,"id");
-        //transaction.addToBackStack(null);
-        //transaction.commit();
-
-        /*
-        Bundle bd = new Bundle();
-        bd.putInt("id",REQUEST_COLOR_PICKER );
-        fm.frag
-        fm.putFragment(bd,"id",colorpicker);
-
-        colorpicker.show(fm, Color);
-        */
-
     }
 
-    @Override
-    public void onColorSelected(int dialogId, int color) {
-        switch (dialogId) {
-
-            case REQUEST_COLOR_PICKER:
-                // We got result from the other dialog, the one that is
-                // shown when clicking on the icon in the action bar.
-                String colorS = colorToHexString(color);
-                Log.d("ColorPicker", colorS);
-                mPreferences mPref = new mPreferences(getApplicationContext());
-                mPref.setValue(mPreferences.Color, color);
-                setResult(Activity.RESULT_OK);
-                break;
-        }
-    }
-
-    @Override
-    public void onDialogDismissed(int dialogId) {
-
-    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -124,5 +79,33 @@ public class ActivitySetting extends AppCompatActivity implements ColorPickerDia
                 }
                 break;
         }
+    }
+
+
+    @Override
+    public void onColorSelected(int dialogId, int color) {
+        switch (dialogId) {
+
+            case REQUEST_COLOR_PICKER:
+                // We got result from the other dialog, the one that is
+                // shown when clicking on the icon in the action bar.
+                String colorS = colorToHexString(color);
+                if (BuildConfig.DEBUG) Log.i(TAG, "Color Picker : " + colorS);
+
+                mPreferences mPref = new mPreferences(getApplicationContext());
+                mPref.setValue(mPreferences.Color, color);
+
+                setResult(Activity.RESULT_OK);
+                break;
+        }
+    }
+
+    @Override
+    public void onDialogDismissed(int dialogId) {
+
+    }
+
+    private String colorToHexString(int color) {
+        return String.format("#%06X", 0xFFFFFFFF & color);
     }
 }

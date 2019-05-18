@@ -42,7 +42,7 @@ class mDbMan {
         if (RW) {
             return SQLiteDatabase.openDatabase(ROOT_DIR + "/database/" + database + ".db", null, SQLiteDatabase.CREATE_IF_NECESSARY | SQLiteDatabase.OPEN_READWRITE | SQLiteDatabase.NO_LOCALIZED_COLLATORS);
         } else {
-            Log.d("Opening DB", ROOT_DIR + "/database/" + database + ".db");
+            Log.i("Opening DB", ROOT_DIR + "/database/" + database + ".db");
             return SQLiteDatabase.openDatabase(ROOT_DIR + "/database/" + database + ".db", null, SQLiteDatabase.CREATE_IF_NECESSARY | SQLiteDatabase.OPEN_READONLY | SQLiteDatabase.NO_LOCALIZED_COLLATORS);
 
         }
@@ -68,23 +68,8 @@ class mDbMan {
         return true;
     }
 
-    static double getDRecord(SQLiteDatabase db, String table, String[] col, String where) {
-        Cursor cursor = db.query(table, col, where, null, null, null, null);
-        double record = 0d;
-        if (cursor.getCount() != 0) {
-            while (cursor.moveToNext()) {
 
-                record = record + cursor.getDouble(1);
-            }
-
-        }
-        cursor.close();
-        //Log.d("time : ", where+"");
-        //Log.d("record : ", record+"");
-        return record;
-    }
-
-    static Cursor getARecord(SQLiteDatabase db, String table, String[] col, String where) {
+    static Cursor getRecordCursor(SQLiteDatabase db, String table, String[] col, String where) {
         return db.query(table, col, where, null, null, null, null);
     }
 

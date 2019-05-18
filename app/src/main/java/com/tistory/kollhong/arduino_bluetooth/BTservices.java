@@ -26,43 +26,45 @@ import android.os.IBinder;
 import android.os.Message;
 import android.os.Messenger;
 import android.util.Log;
-import android.view.KeyEvent;
-import android.view.inputmethod.EditorInfo;
-import android.widget.*;
+import android.widget.Button;
+import android.widget.ListView;
+import android.widget.Toast;
 
 import java.util.Date;
 
 import static com.tistory.kollhong.arduino_bluetooth.mPreferences.Color;
 
 public class BTservices extends Service {
+    static final String TAG = "BT_Services";
     /**
      * Command to the service to display a message
      */
     static final int BT_Options_Changed = 100;
     static final int STATE_BT_NOT_ON = 101;
-    static final int BT_Callback_Object = 12;
+    static final int BT_Callback_Object = 102;
+    static final int BT_LED_OFF = 103;
+    // Message types sent from the BluetoothChatService Handler
+    static final int BT_STATE_CHANGE = 1;
+
     // Intent request codes
     static final int REQUEST_CONNECT_DEVICE = 200;
     static final int REQUEST_ENABLE_BT = 201;
-    // Message types sent from the BluetoothChatService Handler
-    static final int MESSAGE_STATE_CHANGE = 1;
-    static final int MESSAGE_READ = 2;
-    static final int MESSAGE_WRITE = 3;
-    static final int MESSAGE_DEVICE_NAME = 4;
-    static final int MESSAGE_TOAST = 5;
-    static final int MESSAGE_CONN_LOST = 6;
+    static final int BT_MESSAGE_READ = 2;
+    static final int BT_MESSAGE_WRITE = 3;
+    static final int BT_REMOTE_DEVICE_NAME = 4;
+    static final int BT_SERVICE_TOAST = 5;
+    static final int BT_CONN_LOST = 6;
+    String tmpString = "";
+
     // Key names received from the BluetoothChatService Handler
     static final String DEVICE_NAME = "device_list_name";
     static final String TOAST = "toast";
-    // Debugging
-    private static final String TAG = "BluetoothChat";
-    private static final boolean D = true;
+
     /**
      * Target we publish for clients to send messages to IncomingHandler.
      */
     private final Messenger mMessenger = new Messenger(new IncomingHandler());
     private String session;
-    private int milliLiterold = 0;
     private int milliLiter = 0;
     // Array adapter for the conversation thread
     //private ArrayAdapter<String> mConversationArrayAdapter;
@@ -71,48 +73,49 @@ public class BTservices extends Service {
 
     private BTservice_CallBack bTserviceCallBack=null;
     private ListView mConversationView;
-    private EditText mOutEditText;
-    private Button mSendButton;
+    private boolean BT_LED_STATUS;
     // Name of the connected device
     private String mConnectedDeviceName = null;
-
-    //int	onStartCommand(Intent intent, int flags, int startId)
-    //Called by the system every time a client explicitly starts the service by calling Context.startService(Intent), providing the arguments it supplied and a unique integer token representing the start request.
-    //void	onTaskRemoved(Intent rootIntent)
-    //This is called if the service is currently running and the user has removed a task that comes from the service's application.
-    //boolean	onUnbind(Intent intent)
-    //Called when all clients have disconnected from a particular interface published by the service.
-    // String for Socket commuication
-
+    //    private EditText mOutEditText;
+    private Button mSendButton;
+    // String buffer for outgoing messages
+    private StringBuffer mOutStringBuffer;
+    // Local Bluetooth adapter
+    private BluetoothAdapter mBluetoothAdapter = null;
+    // The action listener for the EditText widget, to listen for the return key
+    // Member object for the chat services
+    private BtMsgClass mChatService = null;
     // The Handler that gets information back from the BluetoothChatService
     @SuppressLint("HandlerLeak")
     private final Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what) {
-                case MESSAGE_STATE_CHANGE:
-                    if (D) Log.i(TAG, "MESSAGE_STATE_CHANGE: " + msg.arg1);
+                case BT_STATE_CHANGE:
+                    if (BuildConfig.DEBUG) Log.i(TAG, "BT_STATE_CHANGE: " + msg.arg1);
                     switch (msg.arg1) {
                         case BtMsgClass.STATE_CONNECTED:
 
-                            Toast.makeText(getApplicationContext(), "Connected to "
+                            Toast.makeText(getApplicationContext(), getString(R.string.bt_connected_to)
                                     + mConnectedDeviceName, Toast.LENGTH_SHORT).show();
+
+                            RGBON();
                             break;
                         case BtMsgClass.STATE_CONNECTING:
 
-                            Toast.makeText(getApplicationContext(), "Connectting ", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getApplicationContext(), getString(R.string.bt_connecting_to), Toast.LENGTH_SHORT).show();
                             break;
                         case BtMsgClass.STATE_LISTEN:
                         case BtMsgClass.STATE_NONE:
-                            Toast.makeText(getApplicationContext(), "Not Connected ", Toast.LENGTH_SHORT).show();
+                            //Toast.makeText(getApplicationContext(), "Not Connected ", Toast.LENGTH_SHORT).show();
 
                             break;
                     }
                     break;
-                case MESSAGE_WRITE:
-                    if (D) Log.i(TAG, "MESSAGE_SENT: " + msg.arg1);
+                case BT_MESSAGE_WRITE:
+                    if (BuildConfig.DEBUG) Log.i(TAG, "MESSAGE_SENT: " + msg.arg1);
                     break;
-                case MESSAGE_READ:
+                case BT_MESSAGE_READ:
                     byte[] readBuf = (byte[]) msg.obj;
 
 
@@ -123,17 +126,15 @@ public class BTservices extends Service {
                     processMessage(readMessage);
                     //mConversationArrayAdapter.add(mConnectedDeviceName + ":  " + readMessage);
                     break;
-                case MESSAGE_DEVICE_NAME:
+                case BT_REMOTE_DEVICE_NAME:
                     // save the connected device's name
                     mConnectedDeviceName = msg.getData().getString(DEVICE_NAME);
-                    Toast.makeText(getApplicationContext(), "Connected to "
-                            + mConnectedDeviceName, Toast.LENGTH_SHORT).show();
                     break;
-                case MESSAGE_TOAST:
+                case BT_SERVICE_TOAST:
                     Toast.makeText(getApplicationContext(), msg.getData().getString(TOAST),
                             Toast.LENGTH_SHORT).show();
                     break;
-                case MESSAGE_CONN_LOST:
+                case BT_CONN_LOST:
                     //TODO 마신 양 저장
                     bTserviceCallBack.ConnLost(milliLiter);
 
@@ -143,23 +144,16 @@ public class BTservices extends Service {
             }
         }
     };
-    // String buffer for outgoing messages
-    private StringBuffer mOutStringBuffer;
-    // Local Bluetooth adapter
-    private BluetoothAdapter mBluetoothAdapter = null;
-    // Member object for the chat services
-    private BtMsgClass mChatService = null;
-    // The action listener for the EditText widget, to listen for the return key
-    private TextView.OnEditorActionListener mWriteListener =
-            (view, actionId, event) -> {
-                // If the action is a key-up event on the return key, send the msg_list_holder
-                if (actionId == EditorInfo.IME_NULL && event.getAction() == KeyEvent.ACTION_UP) {
-                    String message = view.getText().toString();
-                    sendMessage(message);
-                }
-                if (D) Log.i(TAG, "END onEditorAction");
-                return true;
-            };
+
+    private void setupChat() {
+
+        // Initialize the BluetoothChatService to perform bluetooth connections
+        if (mChatService == null) mChatService = new BtMsgClass(this, mHandler);
+
+        // Initialize the buffer for outgoing messages
+        mOutStringBuffer = new StringBuffer();
+    }
+
 
     /**
      * When binding to the service, we return an interface to our messenger
@@ -192,38 +186,6 @@ public class BTservices extends Service {
         super.onTaskRemoved(rootIntent);
     }
 
-    private void processMessage(String message) {
-        String[] messages = message.split("\\n");      //\n로 메시지 타이밍 구분
-        int size = messages.length;     //메시지 갯수 확인
-        milliLiter = Integer.parseInt(messages[size - 1]);
-        Log.e("recieved msg : ", milliLiter + "");
-        //마지막 배열은 다음 메시지와 연결될 수 있기 때문에
-        //어레이에 추가하지 않음.
-    }
-
-    private void setupChat() {
-
-            // Initialize the BluetoothChatService to perform bluetooth connections
-        if (mChatService == null) mChatService = new BtMsgClass(this, mHandler);
-
-            // Initialize the buffer for outgoing messages
-            mOutStringBuffer = new StringBuffer();
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        // Stop the Bluetooth chat services
-        if (mChatService != null) {
-            mChatService.stop();
-            mRecords mRecords = new mRecords(getApplicationContext(), session, true);
-            Date date = new Date();
-
-            mRecords.putRecord(date, (double) DrunkSum);
-        }
-        if (D) Log.e(TAG, "--- ON DESTROY ---");
-    }
-
     /**
      * Sends a msg_list_holder.
      *
@@ -244,8 +206,67 @@ public class BTservices extends Service {
 
             // Reset out string buffer to zero and clear the edit text field
             mOutStringBuffer.setLength(0);
-            mOutEditText.setText(mOutStringBuffer);
+//            mOutEditText.setText(mOutStringBuffer);
         }
+    }
+
+    private void processMessage(String message) {
+        if (message.contains("/")) {
+
+            String[] messages = message.split("/");      //\n로 메시지 타이밍 구분
+            int size = messages.length;     //메시지 갯수 확인
+            if (BuildConfig.DEBUG) {
+                for (int i = 0; i < size; i++)
+                    Log.i(TAG, "Message " + i + " : " + messages[i]);
+            }
+            tmpString += messages[size - 1];
+            milliLiter = Integer.parseInt(tmpString);
+            tmpString = "";
+            Log.i(TAG, "recieved msg : " + milliLiter);
+        } else {
+            tmpString = tmpString + message;
+            Log.i(TAG, "Message 00 : " + tmpString);
+        }
+
+        //마지막 배열은 다음 메시지와 연결될 수 있기 때문에
+        //어레이에 추가하지 않음.
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        // Stop the Bluetooth chat services
+        if (mChatService != null) {
+            mChatService.stop();
+            mRecords mRecords = new mRecords(getApplicationContext(), session, true);
+            Date date = new Date();
+
+            mRecords.putRecord(date, (double) DrunkSum);
+        }
+        if (BuildConfig.DEBUG) Log.i(TAG, "--- ON DESTROY ---");
+    }
+
+    private void RGBON() {
+
+        mPreferences mPref = new mPreferences(getApplicationContext());
+        int color = mPref.getIntValue(Color);
+        if (BuildConfig.DEBUG) Log.i(TAG, "Color Picker : " + color + "");
+        String RGB = String.format("#%06X", 0xFFFFFFFF & color);
+        Log.i(TAG, "Color from mPref : " + RGB);
+        int red = Integer.parseInt(RGB.substring(3, 5), 16);
+        int green = Integer.parseInt(RGB.substring(5, 7), 16);
+        int blue = Integer.parseInt(RGB.substring(7, 9), 16);
+
+
+        Log.i(TAG, "RGB substring : " + red + "rx");
+        Log.i(TAG, "RGB substring : " + green + "gx");
+        Log.i(TAG, "RGB substring : " + blue + "bx");
+        //값(0~255)색(rgb) x
+        BTservices.this.sendMessage(red + "rx");
+        BTservices.this.sendMessage(green + "gx");
+        BTservices.this.sendMessage(blue + "bx");
+
+        BT_LED_STATUS = true;
     }
 
     /**
@@ -268,21 +289,8 @@ public class BTservices extends Service {
 
                         bTserviceCallBack.BtNotOn();
                     } else {
-                        if (mChatService == null) setupChat();
+                        setupChat();
 
-                        
-                        int color = mPref.getIntValue(Color);
-                        String RGB = String.format("#%09D", 0xFFFFFFFF & color);
-                        Log.d("Color from mPref : ", RGB);
-                        String red = RGB.substring(0, 3);
-                        String green = RGB.substring(3, 6);
-                        String blue = RGB.substring(6, 9);
-
-                        Log.d("RGB substring :", red + "r x");
-                        //값(0~255)색(rgb) x
-                        BTservices.this.sendMessage(red + "r x");
-                        BTservices.this.sendMessage(green + "g x");
-                        BTservices.this.sendMessage(blue + "b x");
 
                     }
 
@@ -291,14 +299,21 @@ public class BTservices extends Service {
                     // Attempt to connect to the device
                     mChatService.connect(device);
 
-
                     break;
+                case BT_LED_OFF:
+                    if (BT_LED_STATUS) {
+                        BTservices.this.sendMessage("ax");
+                        BT_LED_STATUS = false;
+                        Log.i(TAG, "RGB substring : ax");
+                    } else RGBON();
+
                 default:
                     super.handleMessage(msg);
             }
 
         }
     }
+
     interface BTservice_CallBack{
         void ConnLost(int sum);
         void BtNotOn();

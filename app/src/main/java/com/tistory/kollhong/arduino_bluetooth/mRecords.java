@@ -17,6 +17,7 @@ package com.tistory.kollhong.arduino_bluetooth;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
@@ -49,8 +50,8 @@ class mRecords {
             startdate = enddate + 1L;
             cal.add(Calendar.DATE, 1);
             enddate = cal.getTimeInMillis() - 1L;
-            Log.d("time : ", startdate + " ~ " + enddate);
-            //Log.d("record : ", record+"");
+            Log.i("time : ", startdate + " ~ " + enddate);
+            //Log.i("record : ", record+"");
         }
         return record;
     }
@@ -80,8 +81,18 @@ class mRecords {
     }
 
     private double getRecord(long startdate, long enddate) {
-        return mDbMan.getDRecord(db, recordTable, new String[]{recordTableVar[0], recordTableVar[1]}, "date BETWEEN '" + startdate + "' AND '" + enddate + "'");
+        Cursor cursor = mDbMan.getRecordCursor(db, recordTable, new String[]{recordTableVar[0], recordTableVar[1]}, " '" + recordTableVar[0] + "' BETWEEN '" + startdate + "' AND '" + enddate + "'");
         //SQLiteDatabase db, String table, String[] col, String where
+        double record = 0d;
+        if (cursor.getCount() != 0) {
+            while (cursor.moveToNext()) {
+
+                record = record + cursor.getDouble(1);
+            }
+
+        }
+        cursor.close();
+        return record;
     }
     //add record
     boolean putRecord(Date date, Double measurement) {

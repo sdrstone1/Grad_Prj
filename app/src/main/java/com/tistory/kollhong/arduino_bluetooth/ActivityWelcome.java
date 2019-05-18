@@ -18,6 +18,7 @@ package com.tistory.kollhong.arduino_bluetooth;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -29,6 +30,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 public class ActivityWelcome extends AppCompatActivity {
+    static final int FIRST_LAUNCH = 1;
     private int radio_checked = 0;
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -50,8 +52,6 @@ public class ActivityWelcome extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_welcome);
 
-        //Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        //setSupportActionBar(toolbar);
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
@@ -69,18 +69,16 @@ public class ActivityWelcome extends AppCompatActivity {
     }
 
     public void onFinish(View view) {
-        mPreferences mPref = new mPreferences(getApplicationContext());
-        mPref.setValue(mPreferences.APP_INIT, true);
-        setResult(1);
+        setResult(FIRST_LAUNCH);
         finish();
-
     }
+
     /*
     백버튼 잠금
      */
     @Override
     public void onBackPressed() {
-        //makeSnackbar(R.string.snackbar_fl_back_lock);
+        Snackbar.make(findViewById(R.id.main_content), R.string.backbtnLocked, Snackbar.LENGTH_SHORT).show();
     }
 
 

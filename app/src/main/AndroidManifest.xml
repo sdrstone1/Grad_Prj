@@ -42,8 +42,6 @@
             </intent-filter>
 
         </activity>
-        <activity android:name=".ActivitySettingsobs">
-        </activity>
         <activity
                 android:name=".ActivityBtConnect"
                 android:label="@string/title_activity_bt_connect"
@@ -55,16 +53,9 @@
                 android:theme="@style/AppTheme">
         </activity>
 
-        <activity
-                android:name=".ActivityMessageViewer"
-                android:theme="@style/AppTheme">
-
-        </activity>
 
         <activity android:name=".ActivityCalendar"/>
-        <activity android:name=".ActivityMypage"/>
         <activity android:name=".ActivitySetting"/>
-        <activity android:name=".ActivityLEDsettings"/>
         <activity
                 android:name=".ActivityMain"
                 android:theme="@style/SplashTheme"/>

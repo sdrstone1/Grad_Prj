@@ -38,13 +38,13 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                android:textOff="Turn on Bluetooth"
-                android:textOn="Turn off Bluetooth"
-                android:text="Bluetooth"
+                android:textOff="@string/turn_on_bluetooth"
+                android:textOn="@string/turn_off_bluetooth"
+                android:text="@string/connect_bluetooth"
                 android:layout_weight="1"/>
 
         <Button
-                android:text="Search"
+                android:text="@string/search"
                 android:layout_height="match_parent"
                 android:id="@+id/search"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -75,7 +75,7 @@
                 android:background="#666"
                 android:textColor="#fff"
                 android:paddingLeft="5dp"
-                />
+                android:paddingRight="5dp"/>
 
         <ListView
                 android:id="@+id/paired_devices"
@@ -94,7 +94,7 @@
                 android:background="#666"
                 android:textColor="#fff"
                 android:paddingLeft="5dp"
-                />
+                android:paddingRight="5dp"/>
 
         <ListView
                 android:id="@+id/new_devices"

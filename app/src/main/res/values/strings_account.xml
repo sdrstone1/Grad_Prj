@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="login_failed">Check ID &amp; PW again</string>
+    <string name="Mypage">내 정보 설정</string>
+    <string name="Register">회원 가입</string>
+    <string name="login">Login</string>
+
+
+    <string name="name">Name</string>
+    <string name="account_id">ID</string>
+    <string name="account_pw">PW</string>
+    <string name="email">Email</string>
+    <string name="gender">Gender</string>
+    <string name="female">Female</string>
+    <string name="male">male</string>
+
+    <string name="submit_btn">Submit</string>
+</resources>

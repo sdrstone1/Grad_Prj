@@ -1,17 +1,3 @@
-/*
- * Copyright (c) 2018. KollHong. All Rights Reserved.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * http://www.apache.org/licenses/LICENSE-2.0
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package com.tistory.kollhong.arduino_bluetooth;
 
 import android.bluetooth.BluetoothAdapter;
@@ -41,7 +27,6 @@ class BtMsgClass {
     static final int STATE_CONNECTED = 3;  // now connected to a remote device
     // Debugging
     private static final String TAG = "BluetoothChatService";
-    private static final boolean D = true;
     // Name for the SDP record when creating server socket
     private static final String NAME = "BluetoothChat";
     // Unique UUID for this application
@@ -79,11 +64,11 @@ class BtMsgClass {
      * @param state An integer defining the current connection state
      */
     private synchronized void setState(int state) {
-        if (D) Log.d(TAG, "setState() " + mState + " -> " + state);
+        if (BuildConfig.DEBUG) Log.i(TAG, "setState() " + mState + " -> " + state);
         mState = state;
 
         // Give the new state to the Handler so the UI Activity can update
-        mHandler.obtainMessage(BTservices.MESSAGE_STATE_CHANGE, state, -1).sendToTarget();
+        mHandler.obtainMessage(BTservices.BT_STATE_CHANGE, state, -1).sendToTarget();
     }
 
     /**
@@ -91,7 +76,7 @@ class BtMsgClass {
      * session in listening (server) mode. Called by the Activity onResume()
      */
     synchronized void start() {
-        if (D) Log.d(TAG, "start");
+        if (BuildConfig.DEBUG) Log.i(TAG, "start");
 
         // Cancel any thread attempting to make a connection
         if (mConnectThread != null) {
@@ -119,7 +104,7 @@ class BtMsgClass {
      * @param device The BluetoothDevice to connect
      */
     synchronized void connect(BluetoothDevice device) {
-        if (D) Log.d(TAG, "connect to: " + device);
+        if (BuildConfig.DEBUG) Log.i(TAG, "connect to: " + device);
 
         // Cancel any thread attempting to make a connection
         if (mState == STATE_CONNECTING) {
@@ -148,7 +133,7 @@ class BtMsgClass {
      * @param device The BluetoothDevice that has been connected
      */
     private synchronized void connected(BluetoothSocket socket, BluetoothDevice device) {
-        if (D) Log.d(TAG, "connected");
+        if (BuildConfig.DEBUG) Log.i(TAG, "connected");
 
         // Cancel the thread that completed the connection
         if (mConnectThread != null) {
@@ -173,7 +158,7 @@ class BtMsgClass {
         mConnectedThread.start();
 
         // Send the name of the connected device back to the UI Activity
-        Message msg = mHandler.obtainMessage(BTservices.MESSAGE_DEVICE_NAME);
+        Message msg = mHandler.obtainMessage(BTservices.BT_REMOTE_DEVICE_NAME);
         Bundle bundle = new Bundle();
         bundle.putString(BTservices.DEVICE_NAME, device.getName());
         msg.setData(bundle);
@@ -186,7 +171,7 @@ class BtMsgClass {
      * Stop all threads
      */
     synchronized void stop() {
-        if (D) Log.d(TAG, "stop");
+        if (BuildConfig.DEBUG) Log.i(TAG, "stop");
         if (mConnectThread != null) {
             mConnectThread.cancel();
             mConnectThread = null;
@@ -227,7 +212,7 @@ class BtMsgClass {
         setState(STATE_LISTEN);
 
         // Send a failure msg_list_holder back to the Activity
-        Message msg = mHandler.obtainMessage(BTservices.MESSAGE_TOAST);
+        Message msg = mHandler.obtainMessage(BTservices.BT_SERVICE_TOAST);
         Bundle bundle = new Bundle();
         bundle.putString(BTservices.TOAST, "Unable to connect device");
         msg.setData(bundle);
@@ -241,7 +226,7 @@ class BtMsgClass {
         setState(STATE_LISTEN);
 
         // Send a failure msg_list_holder back to the Activity
-        Message msg = mHandler.obtainMessage(BTservices.MESSAGE_CONN_LOST);
+        Message msg = mHandler.obtainMessage(BTservices.BT_CONN_LOST);
         mHandler.sendMessage(msg);
     }
 
@@ -267,7 +252,7 @@ class BtMsgClass {
         }
 
         public void run() {
-            if (D) Log.d(TAG, "BEGIN mAcceptThread" + this);
+            if (BuildConfig.DEBUG) Log.i(TAG, "BEGIN mAcceptThread" + this);
             setName("AcceptThread");
             BluetoothSocket socket;
 
@@ -304,11 +289,11 @@ class BtMsgClass {
                     }
                 }
             }
-            if (D) Log.i(TAG, "END mAcceptThread");
+            if (BuildConfig.DEBUG) Log.i(TAG, "END mAcceptThread");
         }
 
         void cancel() {
-            if (D) Log.d(TAG, "cancel " + this);
+            if (BuildConfig.DEBUG) Log.i(TAG, "cancel " + this);
             try {
                 mmServerSocket.close();
             } catch (IOException e) {
@@ -394,7 +379,7 @@ class BtMsgClass {
         private final OutputStream mmOutStream;
 
         ConnectedThread(BluetoothSocket socket) {
-            Log.d(TAG, "create ConnectedThread");
+            Log.i(TAG, "create ConnectedThread");
             mmSocket = socket;
             InputStream tmpIn = null;
             OutputStream tmpOut = null;
@@ -425,7 +410,7 @@ class BtMsgClass {
 
 
                     // Send the obtained bytes to the UI Activity
-                    mHandler.obtainMessage(BTservices.MESSAGE_READ, bytes, -1, buffer)
+                    mHandler.obtainMessage(BTservices.BT_MESSAGE_READ, bytes, -1, buffer)
                             .sendToTarget();
                 } catch (IOException e) {
                     Log.e(TAG, "disconnected", e);
@@ -445,7 +430,7 @@ class BtMsgClass {
                 mmOutStream.write(buffer);
 
                 // Share the sent msg_list_holder back to the UI Activity
-                mHandler.obtainMessage(BTservices.MESSAGE_WRITE, -1, -1, buffer)
+                mHandler.obtainMessage(BTservices.BT_MESSAGE_WRITE, -1, -1, buffer)
                         .sendToTarget();
             } catch (IOException e) {
                 Log.e(TAG, "Exception during write", e);

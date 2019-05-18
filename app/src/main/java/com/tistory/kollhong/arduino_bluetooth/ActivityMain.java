@@ -20,13 +20,14 @@ import android.bluetooth.BluetoothAdapter;
 import android.content.*;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.*;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
 import java.util.Calendar;
 
+import static com.tistory.kollhong.arduino_bluetooth.ActivityRegister.isMyPage;
 import static com.tistory.kollhong.arduino_bluetooth.ActivitySetting.REQUEST_SETTINGS;
 import static com.tistory.kollhong.arduino_bluetooth.mDbMan.recordTable;
 import static com.tistory.kollhong.arduino_bluetooth.mDbMan.recordTableVar;
@@ -42,22 +43,15 @@ import static com.tistory.kollhong.arduino_bluetooth.mPreferences.BT_Automatic_C
 
 public class ActivityMain extends AppCompatActivity {
 
-    private BTserviceHandler bTserviceHandler = null;
-    private long timeinmillis =0L;
-
+    private final String TAG = "MAIN";
     private String session;
-    /**
-     * Messenger for communicating with the service.
-     */
+
+    private BTserviceHandler bTserviceHandler = null;
     private Messenger BTMessenger = null;
-    /**
-     * Flag indicating whether we have called bind on the service.
-     */
     private boolean BTBound;
-    private boolean BTON = false;
 
     /**
-     * Class for interacting with the main interface of the service.
+     * Create connection with service.
      */
     private ServiceConnection BTServiceConnection = new ServiceConnection() {
         public void onServiceConnected(ComponentName className, IBinder service) {
@@ -70,16 +64,26 @@ public class ActivityMain extends AppCompatActivity {
             BTBound = true;
 
 
+            if (BuildConfig.DEBUG) Log.i(TAG, "Service Connected");
             // Create and send a message to the service, using a supported 'what' value
+
+            bTserviceHandler = new BTserviceHandler();
+
             Message msg = Message.obtain(null, BTservices.BT_Callback_Object, bTserviceHandler);
             try {
                 BTMessenger.send(msg);
             } catch (RemoteException e) {
                 e.printStackTrace();
             }
+
+
+            mPreferences mPref = new mPreferences(getApplicationContext());
+            if (mPref.getBoolValue(BT_Automatic_Connect)) requestBtConnect();
+
         }
 
         public void onServiceDisconnected(ComponentName className) {
+            if (BuildConfig.DEBUG) Log.i(TAG, "Service Disconnected");
             // This is called when the connection with the service has been
             // unexpectedly disconnected -- that is, its process crashed.
             BTMessenger = null;
@@ -87,20 +91,18 @@ public class ActivityMain extends AppCompatActivity {
         }
     };
 
-
-    private void setBTServiceConnection(String bTaddr) {
-        if (!BTBound) {
-            Snackbar.make(findViewById(R.id.mainView), "BT Service is not bound", Snackbar.LENGTH_SHORT).show();
-            return;
-        }
+    private void requestBtConnect() {
+        if (BuildConfig.DEBUG) Log.i(TAG, "Request BT Connect");
         // Create and send a message to the service, using a supported 'what' value
-        Message msg = Message.obtain(null, BTservices.BT_Options_Changed, bTaddr);
+
+        Message msg = Message.obtain(null, BTservices.BT_Options_Changed);
 
         try {
             BTMessenger.send(msg);
         } catch (RemoteException e) {
             e.printStackTrace();
         }
+
     }
 
     @Override
@@ -108,14 +110,15 @@ public class ActivityMain extends AppCompatActivity {
         setTheme(R.style.AppTheme);
         setContentView(R.layout.activity_main);
 
-        Intent intent = getIntent();
-        session = intent.getStringExtra("session");
+        session = getIntent().getStringExtra("session");
 
 
         super.onCreate(savedInstanceState);
 
+
         bindService(new Intent(this, BTservices.class), BTServiceConnection,
                 Context.BIND_AUTO_CREATE);
+
 
         ImageButton calendarbutton = findViewById(R.id.calendarbutton);
         calendarbutton.setOnClickListener(
@@ -128,17 +131,24 @@ public class ActivityMain extends AppCompatActivity {
         ImageButton mypagebutton = findViewById(R.id.mypagebutton);
         mypagebutton.setOnClickListener(
                 v -> {
-                    Intent intent12 = new Intent(v.getContext(), ActivityMypage.class);
-                    intent12.putExtra("session", session);
+                    Intent intent12 = new Intent(v.getContext(), ActivityRegister.class);
+                    Bundle bd = new Bundle();
+                    bd.putBoolean(isMyPage, true);
+                    bd.putString("session", session);
+                    intent12.putExtra("bundle", bd);
                     startActivity(intent12);
                 });
         ImageButton LEDbutton = findViewById(R.id.LEDbutton);
-        LEDbutton.setOnClickListener(
-                v -> {
-                    Intent intent13 = new Intent(v.getContext(), ActivityLEDsettings.class);
-                    intent13.putExtra("session", session);
-                    startActivity(intent13);
-                });
+        LEDbutton.setOnClickListener(v -> {
+            if (BTBound) {
+                Message msg = Message.obtain(null, BTservices.BT_LED_OFF, bTserviceHandler);
+                try {
+                    BTMessenger.send(msg);
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
         ImageButton Controlbutton = findViewById(R.id.Controlbutton);
         Controlbutton.setOnClickListener(
                 v -> {
@@ -148,33 +158,30 @@ public class ActivityMain extends AppCompatActivity {
                     startActivityForResult(intent14, REQUEST_SETTINGS);
                 });
 
-        bTserviceHandler = new BTserviceHandler();
-
-        Calendar date = Calendar.getInstance();
-        date.set(Calendar.HOUR_OF_DAY, 22);
-        date.set(Calendar.MINUTE, 0);
-        date.set(Calendar.SECOND, 0);
-        date.set(Calendar.MILLISECOND, 0);
-        timeinmillis = date.getTimeInMillis();
-
-        mPreferences mPref = new mPreferences(getApplicationContext());
-        if (mPref.getBoolValue(BT_Automatic_Connect))
-            requestBtConnect();
-
     }
 
-    private void requestBtConnect() {
-        // Create and send a message to the service, using a supported 'what' value
-        if (BTON) {
-            Message msg = Message.obtain(null, BTservices.BT_Options_Changed);
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode) {
+            case BTservices.REQUEST_ENABLE_BT:
+                // When the request to enable Bluetooth returns
+                if (resultCode != Activity.RESULT_OK) {
+                    // User did not enable Bluetooth or an error occured
+                    Toast.makeText(this, R.string.bt_not_enabled_leaving, Toast.LENGTH_SHORT).show();
+                }
+                break;
+            case REQUEST_SETTINGS:
 
-            try {
-                BTMessenger.send(msg);
-            } catch (RemoteException e) {
-                e.printStackTrace();
-            }
+                switch (resultCode) {
+                    case Activity.RESULT_OK:
+                        requestBtConnect();
+                        if (BuildConfig.DEBUG) Log.i(TAG, "REQUESTING BT CONNECT");
+                        break;
+                    default:
+                        break;
+                }
         }
     }
+
 
     @Override
     protected void onDestroy() {
@@ -187,42 +194,27 @@ public class ActivityMain extends AppCompatActivity {
         }
     }
 
-
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        switch (requestCode) {
-            case BTservices.REQUEST_ENABLE_BT:
-                // When the request to enable Bluetooth returns
-                if (resultCode != Activity.RESULT_OK) {
-                    // User did not enable Bluetooth or an error occured
-                    Toast.makeText(this, R.string.bt_not_enabled_leaving, Toast.LENGTH_SHORT).show();
-                } else {
-                    BTON = true;
-                }
-                break;
-            case REQUEST_SETTINGS:
-
-                switch (resultCode) {
-                    case Activity.RESULT_OK:
-                        Snackbar.make(findViewById(R.id.mainView), "Start to Connect BT Device", Snackbar.LENGTH_SHORT).show();
-                        requestBtConnect();
-                        break;
-                    default:
-                        break;
-                }
-        }
-    }
-
     class BTserviceHandler implements BTservices.BTservice_CallBack{
         @Override
         public void BtNotOn() {
-            Intent enableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-            startActivityForResult(enableIntent, BTservices.REQUEST_ENABLE_BT);
+            if (BuildConfig.DEBUG) Log.i(TAG, "BT not ON");
+            startActivityForResult(new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE), BTservices.REQUEST_ENABLE_BT);
         }
 
         @Override
         public void ConnLost(int sum) {
             Toast.makeText(getApplicationContext(), "Not Connected ", Toast.LENGTH_SHORT).show();
-            Snackbar.make(findViewById(R.id.mainView), "BT Service is not bound", Snackbar.LENGTH_SHORT).show();
+
+            Calendar date = Calendar.getInstance();
+            if (date.get(Calendar.AM_PM) == Calendar.AM) {
+                date.add(Calendar.DATE, -1);
+            }
+            date.set(Calendar.HOUR_OF_DAY, 22);
+            date.set(Calendar.MINUTE, 0);
+            date.set(Calendar.SECOND, 0);
+            date.set(Calendar.MILLISECOND, 0);
+            long timeinmillis = date.getTimeInMillis();
+
 
             SQLiteDatabase mDb = mDbMan.DBinit(getApplicationContext(),session, true);
             ContentValues value = new ContentValues();

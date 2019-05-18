@@ -14,17 +14,13 @@
   ~ limitations under the License.
   -->
 
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:app="http://schemas.android.com/apk/res-auto"
-                xmlns:tools="http://schemas.android.com/tools"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                tools:context=".ActivityCalendar">
-
-    <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              tools:context=".ActivityCalendar"
+              android:orientation="vertical">
 
         <LinearLayout
                 android:layout_width="match_parent"
@@ -37,16 +33,17 @@
                     android:layout_height="125dp"
                     android:layout_gravity="center"
                     android:layout_marginTop="20dp"
-                    android:src="@drawable/cactivity"/>
+                    android:src="@drawable/monthly"
+                    android:contentDescription="CalendarImage"/>
 
             <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_marginTop="10dp"
-                    android:text="월간, 주간 현황"
+                    android:text="@string/showCalendar"
                     android:textColor="#ffffff"
-                    android:textSize="25dp"
+                    android:textSize="25sp"
                     android:textStyle="bold"/>
 
         </LinearLayout>
@@ -79,7 +76,16 @@
                 app:hdProgressDisableColor="@color/progress_disable"
                 app:hdBarTitleSelectedColor="@color/bar_title_selected_color"/>
 
-    </LinearLayout>
+    <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/alcRecom"/>
 
-</RelativeLayout>
+    <ProgressBar
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/alcRecomBar"/>
+
+</LinearLayout>
 

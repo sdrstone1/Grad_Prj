@@ -1,3 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE resources [
+        <!ENTITY launchBtn "Start!!">
+        ]>
+
+
 <!--
   ~ Copyright (c) 2019. KollHong. All Rights Reserved.
   ~ Copyright (c) 2018. KollHong. All Rights Reserved.
@@ -13,6 +19,7 @@
   ~ limitations under the License.
   -->
 
+
 <resources>
     <!-- Don't change this Parameter name & value-->
     <!-- This string value is for system work cycle-->
@@ -22,13 +29,16 @@
     <string name="app_name">Arduino_Bluetooth</string>
 
     <string name="title_activity_splash">Arduino_Bluetooth</string>
-    <string name="title_activity_bt_connect">cBleConnect</string>
+    <string name="title_activity_bt_connect">BleConnect</string>
     <string name="title_activity_welcome">FirstLaunch</string>
     <string name="title_connected_to"> Connected to : </string>
     <string name="title_connecting"> Connecting to : </string>
     <string name="title_not_connected"> No connection </string>
     <string name="title_paired_devices"> Paired Devices </string>
     <string name="title_other_devices"> Devices </string>
+    <string name="drink_management_project">주량 관리 프로젝트</string>
+    <string name="showCalendar">월간, 주간 현황</string>
+    <string name="Settings">세부 설정</string>
 
     <string name="imageDescription_welcomeimg">Welcome_Image</string>
     <string name="Welcome_Message">Thank you to using my app.</string>
@@ -39,19 +49,32 @@
     <string name="none_paired"> No paired device </string>
     <string name="scanning"> Scanning </string>
     <string name="none_found"> No devices found </string>
+    <string name="turn_on_bluetooth">Turn on Bluetooth</string>
+    <string name="turn_off_bluetooth">Turn off Bluetooth</string>
 
 
+    <string name="connect_bluetooth">Connect Bluetooth</string>
     <string name="select_device">Select Device.</string>
+    <string name="search">Search</string>
+
     <string name="send">Send</string>
 
     <string name="button_scan">Scan</string>
     <string name="discoverable">찾기가능 </string>
     <string name="connect">연결</string>
 
-    <string name="launchBtn">Start!!</string>
+    <string name="launchBtn">&launchBtn;</string>
     <string name="messageBtn">Messages</string>
     <string name="settingsBtn">Settings</string>
-    <string name="connect_bluetooth">ConnectBluetooth</string>
+    <string name="backbtnLocked">Proceed to next page &amp; press &launchBtn; </string>
+
+
     <string name="set_color">Change Device Color</string>
     <string name="auto_coonect">Automatically Connect to the Module</string>
+
+
+    <string name="alcohol_limit">알코올 권고량</string>
+
+    <string name="week">주</string>
+
 </resources>

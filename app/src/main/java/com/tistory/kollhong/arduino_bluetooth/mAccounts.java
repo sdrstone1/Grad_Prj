@@ -40,7 +40,7 @@ public class mAccounts {
     String Login(String id, String pw) {
         //TODO session ID를 저장하여 자동 로그인이 가능하도록
         //getDRecord(SQLiteDatabase db, String table, String[] col, String where)
-        Cursor cursor = mDbMan.getARecord(mDb, userTable, new String[]{userTableVar[0], userTableVar[1]}, userTableVar[0] + " ='" + id + "'");
+        Cursor cursor = mDbMan.getRecordCursor(mDb, userTable, new String[]{userTableVar[0], userTableVar[1]}, userTableVar[0] + " ='" + id + "'");
         if (cursor.getCount() == 1) {
             cursor.moveToNext();
 
@@ -53,7 +53,7 @@ public class mAccounts {
     }
 
     public int Join(String id, String pw, String name, int age, float weight, float height, String email, int gender) {
-        Cursor cursor = mDbMan.getARecord(mDb, userTable, new String[]{userTableVar[0], userTableVar[1]}, userTableVar[0] + " = '" + id + "'");
+        Cursor cursor = mDbMan.getRecordCursor(mDb, userTable, new String[]{userTableVar[0], userTableVar[1]}, userTableVar[0] + " = '" + id + "'");
         //check id redundancy
         if (cursor.getCount() != 0) {
             Log.e("Join Error", "ID is redundant");
@@ -85,13 +85,41 @@ public class mAccounts {
         }
 
         SQLiteDatabase mDbJoin = mDbMan.DBinit(context, id, true);
-        if (!mDbMan.Cretable(mDbJoin, recordTable, " date INTEGER NOT NULL, measurement REAL NOT NULL")) {
+        if (!mDbMan.Cretable(mDbJoin, recordTable, " '" + recordTableVar[0] + "' INTEGER NOT NULL, '" + recordTableVar[1] + "' REAL NOT NULL")) {
             mDbMan.delRecord(mDb, userTable, userTableVar[0] + " = '" + id + "'");
             return 3;
         }
         return 0;
     }
 
+    ContentValues getAccountInfo() {
+
+        String[] tables = recordTableVar;
+        Cursor cursor = mDbMan.getRecordCursor(mDb, userTable, tables, " '" + userTableVar[0] + "' is '" + session + "' ");
+        ContentValues values = new ContentValues();
+        if (cursor.getCount() == 1) {
+            cursor.moveToNext();
+            values.put(userTableVar[2], cursor.getString(2));
+            values.put(userTableVar[3], cursor.getInt(3));
+            values.put(userTableVar[4], cursor.getFloat(4));
+            values.put(userTableVar[5], cursor.getFloat(5));
+            values.put(userTableVar[6], cursor.getString(6));
+            values.put(userTableVar[7], cursor.getInt(7));
+        }
+        cursor.close();
+        return values;
+    }
+
+    int getInt() {
+        Cursor cursor = mDbMan.getRecordCursor(mDb, userTable, new String[]{userTableVar[7]}, " '" + userTableVar[0] + "' is '" + session + "' ");
+        int gender = 0;
+        if (cursor.getCount() == 1) {
+            cursor.moveToNext();
+            gender = cursor.getInt(0);
+        }
+        cursor.close();
+        return gender;
+    }
 
     public String encrypt(String pw) {
         //TODO crypto

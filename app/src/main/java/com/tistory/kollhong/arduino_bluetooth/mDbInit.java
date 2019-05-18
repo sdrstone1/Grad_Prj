@@ -43,7 +43,7 @@ class mDbInit {
                 InputStream input = assetManager.open(name + ".db", AssetManager.ACCESS_BUFFER);
                 long filesize = input.available();
                 byte[] tempdata = new byte[(int) filesize];
-                Log.d("DB creation", ROOT_DIR + "/database/" + name + ".db");
+                Log.i("DB creation", ROOT_DIR + "/database/" + name + ".db");
                 input.read(tempdata);
                 input.close();
 
