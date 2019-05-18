@@ -165,6 +165,10 @@ public class ActivityCalendar extends AppCompatActivity {
         mChart.build();
 
 */
+
+        /*
+        Copyright (c) 2019. KollHong. All Rights Reserved.
+         */
         ArrayList<BarData> WeekList = new ArrayList<>();
 
         Calendar week = Calendar.getInstance();
