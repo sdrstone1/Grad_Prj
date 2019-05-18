@@ -29,6 +29,7 @@ public class mPreferences {
     static final String APP_INIT = "initialized";
     static final String BT_Automatic_Connect = "BTON";
     static final String BT_ADDR = "BTaddr";
+    static final String Color = "Color";
 
     mPreferences(Context context) {
         mPref = PreferenceManager.getDefaultSharedPreferences(context);
@@ -39,21 +40,33 @@ public class mPreferences {
         return mPref.getString(name, null);
     }
 
+    boolean getBoolValue(String name) {
+        return mPref.getBoolean(name, false);
+    }
+
+    int getIntValue(String name) {
+        return mPref.getInt(name, R.color.colorPrimary);
+    }
+
+
     @SuppressLint("ApplySharedPref")
-    void setStringValue(String name, String value) {
+    void setValue(String name, boolean set) {
+        SharedPreferences.Editor mPrefEdit = mPref.edit();
+        mPrefEdit.putBoolean(name, set);
+        mPrefEdit.commit();
+    }
+
+    @SuppressLint("ApplySharedPref")
+    void setValue(String name, String value) {
         SharedPreferences.Editor mPrefEdit = mPref.edit();
         mPrefEdit.putString(name, value);
         mPrefEdit.commit();
     }
 
-    boolean getBoolValue(String name) {
-        return mPref.getBoolean(name, false);
-    }
-
     @SuppressLint("ApplySharedPref")
-    void setBoolValue(String name, boolean set) {
+    void setValue(String name, int value) {
         SharedPreferences.Editor mPrefEdit = mPref.edit();
-        mPrefEdit.putBoolean(name, set);
+        mPrefEdit.putInt(name, value);
         mPrefEdit.commit();
     }
 

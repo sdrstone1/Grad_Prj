@@ -80,7 +80,7 @@ public class ActivityBtConnect extends AppCompatActivity {
             String address = info.substring(info.length() - 17);
 
             mPreferences mPrefMan = new mPreferences(getApplicationContext());
-            mPrefMan.setStringValue(mPreferences.BT_ADDR, address);
+            mPrefMan.setValue(mPreferences.BT_ADDR, address);
 
             setResult(Activity.RESULT_OK);
 

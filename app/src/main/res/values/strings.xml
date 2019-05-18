@@ -52,4 +52,6 @@
     <string name="messageBtn">Messages</string>
     <string name="settingsBtn">Settings</string>
     <string name="connect_bluetooth">ConnectBluetooth</string>
+    <string name="set_color">Change Device Color</string>
+    <string name="auto_coonect">Automatically Connect to the Module</string>
 </resources>

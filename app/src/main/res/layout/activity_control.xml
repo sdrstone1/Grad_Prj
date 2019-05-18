@@ -15,6 +15,7 @@
   -->
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
                 xmlns:tools="http://schemas.android.com/tools"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -49,6 +50,52 @@
                     android:textStyle="bold"/>
 
         </LinearLayout>
+
+        <Switch
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/ConnectSwitch"
+                android:text="auto_coonect"
+                android:textAppearance="@style/Base.TextAppearance.AppCompat.Button"
+                android:layout_marginBottom="1dp"
+                android:layout_marginEnd="1dp"
+                android:layout_marginLeft="1dp"
+                android:layout_marginRight="1dp"
+                android:padding="11dp"/>
+
+        <Button
+                android:text="@string/connect_bluetooth"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/button2"
+                style="@style/Widget.AppCompat.Button.Borderless"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:padding="11dp"
+                android:gravity="left|center_vertical|start"
+                android:onClick="onSensorConnectBtn"
+                android:layout_marginTop="1dp"
+                android:layout_marginStart="1dp"
+                android:layout_marginEnd="1dp"
+                android:layout_marginBottom="1dp"/>
+
+        <Button
+                android:text="@string/set_color"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/button5"
+                style="@style/Widget.AppCompat.Button.Borderless"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:padding="11dp"
+                android:gravity="left|center_vertical|start"
+                android:onClick="onChangeColorButton"
+                android:layout_marginTop="1dp"
+                android:layout_marginStart="1dp"
+                android:layout_marginEnd="1dp"
+                android:layout_marginBottom="1dp"/>
 
     </LinearLayout>
 

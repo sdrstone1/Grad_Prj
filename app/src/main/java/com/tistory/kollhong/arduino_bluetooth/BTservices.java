@@ -32,11 +32,13 @@ import android.widget.*;
 
 import java.util.Date;
 
+import static com.tistory.kollhong.arduino_bluetooth.mPreferences.Color;
+
 public class BTservices extends Service {
     /**
      * Command to the service to display a message
      */
-    static final int NEW_DEVICE_SELECTED = 100;
+    static final int BT_Options_Changed = 100;
     static final int STATE_BT_NOT_ON = 101;
     static final int BT_Callback_Object = 12;
     // Intent request codes
@@ -95,7 +97,6 @@ public class BTservices extends Service {
 
                             Toast.makeText(getApplicationContext(), "Connected to "
                                     + mConnectedDeviceName, Toast.LENGTH_SHORT).show();
-
                             break;
                         case BtMsgClass.STATE_CONNECTING:
 
@@ -203,7 +204,7 @@ public class BTservices extends Service {
     private void setupChat() {
 
             // Initialize the BluetoothChatService to perform bluetooth connections
-            mChatService = new BtMsgClass(this, mHandler);
+        if (mChatService == null) mChatService = new BtMsgClass(this, mHandler);
 
             // Initialize the buffer for outgoing messages
             mOutStringBuffer = new StringBuffer();
@@ -259,7 +260,7 @@ public class BTservices extends Service {
                     bTserviceCallBack = (BTservice_CallBack)msg.obj;
                     break;
 
-                case NEW_DEVICE_SELECTED:
+                case BT_Options_Changed:
                     mPreferences mPref = new mPreferences(getApplicationContext());
                     String address = mPref.getStringValue(mPreferences.BT_ADDR);
 
@@ -268,6 +269,21 @@ public class BTservices extends Service {
                         bTserviceCallBack.BtNotOn();
                     } else {
                         if (mChatService == null) setupChat();
+
+                        
+                        int color = mPref.getIntValue(Color);
+                        String RGB = String.format("#%09D", 0xFFFFFFFF & color);
+                        Log.d("Color from mPref : ", RGB);
+                        String red = RGB.substring(0, 3);
+                        String green = RGB.substring(3, 6);
+                        String blue = RGB.substring(6, 9);
+
+                        Log.d("RGB substring :", red + "r x");
+                        //값(0~255)색(rgb) x
+                        BTservices.this.sendMessage(red + "r x");
+                        BTservices.this.sendMessage(green + "g x");
+                        BTservices.this.sendMessage(blue + "b x");
+
                     }
 
                     // Get the BLuetoothDevice object

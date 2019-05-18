@@ -15,20 +15,15 @@
 
 package com.tistory.kollhong.arduino_bluetooth;
 
-import android.content.Intent;
+import android.app.Fragment;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-import android.view.View;
+import android.support.annotation.Nullable;
 
-public class ActivitySettingsobs extends AppCompatActivity {
+public class ActivitySettingsobs extends Fragment {
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_settings);
-    }
-
-    public void onSensorConnectBtn(View v) {
-        startActivity(new Intent(getApplicationContext(), ActivityBtConnect.class));
+        getArguments();
     }
 }

@@ -70,7 +70,7 @@ public class ActivityWelcome extends AppCompatActivity {
 
     public void onFinish(View view) {
         mPreferences mPref = new mPreferences(getApplicationContext());
-        mPref.setBoolValue(mPreferences.APP_INIT, true);
+        mPref.setValue(mPreferences.APP_INIT, true);
         setResult(1);
         finish();
 

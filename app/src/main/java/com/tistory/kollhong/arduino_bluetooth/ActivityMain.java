@@ -27,8 +27,10 @@ import android.widget.Toast;
 
 import java.util.Calendar;
 
+import static com.tistory.kollhong.arduino_bluetooth.ActivitySetting.REQUEST_SETTINGS;
 import static com.tistory.kollhong.arduino_bluetooth.mDbMan.recordTable;
 import static com.tistory.kollhong.arduino_bluetooth.mDbMan.recordTableVar;
+import static com.tistory.kollhong.arduino_bluetooth.mPreferences.BT_Automatic_Connect;
 /*
 블루투스 구조
 메인 : 블루투스 켜기 및 주소 전달, 서비스와 통신
@@ -39,6 +41,7 @@ import static com.tistory.kollhong.arduino_bluetooth.mDbMan.recordTableVar;
  */
 
 public class ActivityMain extends AppCompatActivity {
+
     private BTserviceHandler bTserviceHandler = null;
     private long timeinmillis =0L;
 
@@ -51,6 +54,7 @@ public class ActivityMain extends AppCompatActivity {
      * Flag indicating whether we have called bind on the service.
      */
     private boolean BTBound;
+    private boolean BTON = false;
 
     /**
      * Class for interacting with the main interface of the service.
@@ -68,7 +72,6 @@ public class ActivityMain extends AppCompatActivity {
 
             // Create and send a message to the service, using a supported 'what' value
             Message msg = Message.obtain(null, BTservices.BT_Callback_Object, bTserviceHandler);
-
             try {
                 BTMessenger.send(msg);
             } catch (RemoteException e) {
@@ -91,18 +94,13 @@ public class ActivityMain extends AppCompatActivity {
             return;
         }
         // Create and send a message to the service, using a supported 'what' value
-        Message msg = Message.obtain(null, BTservices.NEW_DEVICE_SELECTED, bTaddr);
+        Message msg = Message.obtain(null, BTservices.BT_Options_Changed, bTaddr);
 
         try {
             BTMessenger.send(msg);
         } catch (RemoteException e) {
             e.printStackTrace();
         }
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
     }
 
     @Override
@@ -144,51 +142,38 @@ public class ActivityMain extends AppCompatActivity {
         ImageButton Controlbutton = findViewById(R.id.Controlbutton);
         Controlbutton.setOnClickListener(
                 v -> {
-                    //Intent intent = new Intent(v.getContext(), ActivitySetting.class);
-                    Intent intent14 = new Intent(v.getContext(), ActivityBtConnect.class);    //임시
+                    Intent intent14 = new Intent(v.getContext(), ActivitySetting.class);
+                    //Intent intent14 = new Intent(v.getContext(), ActivityBtConnect.class);    //임시
                     //intent.putExtra("session", session);
-                    startActivityForResult(intent14, BTservices.REQUEST_CONNECT_DEVICE);
+                    startActivityForResult(intent14, REQUEST_SETTINGS);
                 });
 
         bTserviceHandler = new BTserviceHandler();
 
         Calendar date = Calendar.getInstance();
-        date.set(Calendar.HOUR_OF_DAY,22);
-        date.set(Calendar.MINUTE,0);
-        date.set(Calendar.SECOND, 0 );
-        date.set(Calendar.MILLISECOND,0);
+        date.set(Calendar.HOUR_OF_DAY, 22);
+        date.set(Calendar.MINUTE, 0);
+        date.set(Calendar.SECOND, 0);
+        date.set(Calendar.MILLISECOND, 0);
         timeinmillis = date.getTimeInMillis();
+
+        mPreferences mPref = new mPreferences(getApplicationContext());
+        if (mPref.getBoolValue(BT_Automatic_Connect))
+            requestBtConnect();
 
     }
 
     private void requestBtConnect() {
         // Create and send a message to the service, using a supported 'what' value
-        Message msg = Message.obtain(null, BTservices.NEW_DEVICE_SELECTED);
+        if (BTON) {
+            Message msg = Message.obtain(null, BTservices.BT_Options_Changed);
 
-        try {
-            BTMessenger.send(msg);
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-
-        mPreferences mPref = new mPreferences(getApplicationContext());
-        BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-        /*
-        mPref.setBoolValue(mPreferences.BT_Automatic_Connect, true);
-
-        if (mPref.getBoolValue(mPreferences.BT_Automatic_Connect))
-            if (!mBluetoothAdapter.isEnabled()) {
-                Intent enableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-                startActivityForResult(enableIntent, BTservices.REQUEST_ENABLE_BT);
-            } else {
-                requestBtConnect();
+            try {
+                BTMessenger.send(msg);
+            } catch (RemoteException e) {
+                e.printStackTrace();
             }
-        */
+        }
     }
 
     @Override
@@ -204,22 +189,26 @@ public class ActivityMain extends AppCompatActivity {
 
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        switch (requestCode){
+        switch (requestCode) {
             case BTservices.REQUEST_ENABLE_BT:
                 // When the request to enable Bluetooth returns
                 if (resultCode != Activity.RESULT_OK) {
                     // User did not enable Bluetooth or an error occured
                     Toast.makeText(this, R.string.bt_not_enabled_leaving, Toast.LENGTH_SHORT).show();
+                } else {
+                    BTON = true;
                 }
                 break;
-            case BTservices.REQUEST_CONNECT_DEVICE:
-                if (resultCode == Activity.RESULT_OK) {
-                    Snackbar.make(findViewById(R.id.mainView), "Start to Connect BT Device", Snackbar.LENGTH_SHORT).show();
-                    requestBtConnect();
+            case REQUEST_SETTINGS:
+
+                switch (resultCode) {
+                    case Activity.RESULT_OK:
+                        Snackbar.make(findViewById(R.id.mainView), "Start to Connect BT Device", Snackbar.LENGTH_SHORT).show();
+                        requestBtConnect();
+                        break;
+                    default:
+                        break;
                 }
-                break;
-            default :
-                Snackbar.make(findViewById(R.id.mainView), "Unknown Activity Result", Snackbar.LENGTH_SHORT).show();
         }
     }
 
