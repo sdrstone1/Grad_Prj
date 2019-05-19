@@ -140,7 +140,7 @@ public class ActivityMain extends AppCompatActivity {
                 });
         ImageButton LEDbutton = findViewById(R.id.LEDbutton);
         LEDbutton.setOnClickListener(v -> {
-            if (BTBound) {
+            if (bTserviceHandler != null) {
                 Message msg = Message.obtain(null, BTservices.BT_LED_OFF, bTserviceHandler);
                 try {
                     BTMessenger.send(msg);

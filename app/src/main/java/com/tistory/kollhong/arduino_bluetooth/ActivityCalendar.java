@@ -29,7 +29,7 @@ import java.util.Calendar;
 
 public class ActivityCalendar extends AppCompatActivity {
     private static final String TAG = "CalendarActivity";
-    //String session;
+    private String session;
     private mRecords records;
     private float weekmax = 0;
     private float weeksum = 0;
@@ -42,7 +42,7 @@ public class ActivityCalendar extends AppCompatActivity {
 
 
         Intent intent = getIntent();
-        String session = intent.getStringExtra("session");
+        session = intent.getStringExtra("session");
 
         //TODO session을 복호화 해서 id찾기
         records = new mRecords(this, session, true);
@@ -136,7 +136,7 @@ public class ActivityCalendar extends AppCompatActivity {
     }
 
     private int alcoholLimit() {
-        int gender = accounts.getInt();
+        int gender = accounts.getInt(session);
         if (gender == 0) {
             return 370;
         } else return 221;

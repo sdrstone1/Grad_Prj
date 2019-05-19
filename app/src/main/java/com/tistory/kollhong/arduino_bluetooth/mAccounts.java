@@ -30,7 +30,7 @@ class mAccounts {
 
     private final Context context;
     private final SQLiteDatabase mDb;
-    private String session;
+    //private String session;
 
     mAccounts(Context context, boolean RW) {
         this.context = context;
@@ -52,7 +52,7 @@ class mAccounts {
         return "false";
     }
 
-    public int Join(String id, String pw, String name, int age, float weight, float height, String email, int gender) {
+    int Join(String id, String pw, String name, int age, int weight, int height, String email, int gender) {
         Cursor cursor = mDbMan.getRecordCursor(mDb, userTable, new String[]{userTableVar[0], userTableVar[1]}, userTableVar[0] + " = '" + id + "'");
         //check id redundancy
         if (cursor.getCount() != 0) {
@@ -92,15 +92,15 @@ class mAccounts {
         return 0;
     }
 
-    ContentValues getAccountInfo() {
-        Cursor cursor = mDbMan.getRecordCursor(mDb, userTable, recordTableVar, " '" + userTableVar[0] + "' is '" + session + "' ");
+    ContentValues getAccountInfo(String session) {
+        Cursor cursor = mDbMan.getRecordCursor(mDb, userTable, userTableVar, userTableVar[0] + " like '%" + session + "%' ");
         ContentValues values = new ContentValues();
         if (cursor.getCount() == 1) {
             cursor.moveToNext();
             values.put(userTableVar[2], cursor.getString(2));
             values.put(userTableVar[3], cursor.getInt(3));
-            values.put(userTableVar[4], cursor.getFloat(4));
-            values.put(userTableVar[5], cursor.getFloat(5));
+            values.put(userTableVar[4], cursor.getInt(4));
+            values.put(userTableVar[5], cursor.getInt(5));
             values.put(userTableVar[6], cursor.getString(6));
             values.put(userTableVar[7], cursor.getInt(7));
         }
@@ -108,8 +108,8 @@ class mAccounts {
         return values;
     }
 
-    int getInt() {
-        Cursor cursor = mDbMan.getRecordCursor(mDb, userTable, new String[]{userTableVar[7]}, " '" + userTableVar[0] + "' is '" + session + "' ");
+    int getInt(String session) {
+        Cursor cursor = mDbMan.getRecordCursor(mDb, userTable, new String[]{userTableVar[7]}, userTableVar[0] + " like '%" + session + "%' ");
         int gender = 0;
         if (cursor.getCount() == 1) {
             cursor.moveToNext();

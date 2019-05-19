@@ -301,11 +301,13 @@ public class BTservices extends Service {
 
                     break;
                 case BT_LED_OFF:
-                    if (BT_LED_STATUS) {
-                        BTservices.this.sendMessage("ax");
-                        BT_LED_STATUS = false;
-                        Log.i(TAG, "RGB substring : ax");
-                    } else RGBON();
+                    if (mChatService != null) {
+                        if (BT_LED_STATUS) {
+                            BTservices.this.sendMessage("ax");
+                            BT_LED_STATUS = false;
+                            Log.i(TAG, "RGB substring : ax");
+                        } else RGBON();
+                    }
 
                 default:
                     super.handleMessage(msg);

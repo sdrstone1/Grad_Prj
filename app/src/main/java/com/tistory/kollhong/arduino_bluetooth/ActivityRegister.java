@@ -89,13 +89,13 @@ public class ActivityRegister extends AppCompatActivity {
 
                     array = getResources().getStringArray(R.array.weight);
                     string = array[weightSpinner.getSelectedItemPosition()];
-                    float weight = Float.parseFloat(string.split("kg")[0]);
+                    int weight = Integer.parseInt(string.split("kg")[0]);
 
 
 
                     array = getResources().getStringArray(R.array.height);
                     string = array[heightSpinner.getSelectedItemPosition()];
-                    float height = Float.parseFloat(string.split("cm")[0]);
+                    int height = Integer.parseInt(string.split("cm")[0]);
 
                     switch (mAcc.Join(id, pw, name, age, weight, height, email, gender)) {
                         //3 -> fail, 1 -> id redundant, 2-> pw condition not satisfied, 0->success
@@ -129,11 +129,11 @@ public class ActivityRegister extends AppCompatActivity {
             String session = bd.getString("session");
 
             mAccounts accounts = new mAccounts(getApplicationContext(), true);
-            ContentValues accinfo = accounts.getAccountInfo();
+            ContentValues accinfo = accounts.getAccountInfo(session);
 
             int age = accinfo.getAsInteger(mDbMan.userTableVar[3]);
-            float weight = accinfo.getAsFloat(mDbMan.userTableVar[4]);
-            float height = accinfo.getAsFloat(mDbMan.userTableVar[5]);
+            int weight = accinfo.getAsInteger(mDbMan.userTableVar[4]);
+            int height = accinfo.getAsInteger(mDbMan.userTableVar[5]);
 
 
             TextView title = findViewById(R.id.register_title);

@@ -97,10 +97,11 @@ public class ActivityBtConnect extends AppCompatActivity {
         // Make sure we're not doing discovery anymore
         if (mBtAdapter != null) {
             mBtAdapter.cancelDiscovery();
+            this.unregisterReceiver(mReceiver);
         }
 
         // Unregister broadcast listeners
-        this.unregisterReceiver(mReceiver);
+
         //super.onDestroy();
     }
 
@@ -121,17 +122,10 @@ public class ActivityBtConnect extends AppCompatActivity {
 
         mBtAdapter = BluetoothAdapter.getDefaultAdapter();
 
-        switchStatus(mBtAdapter.isEnabled());
+        bleSwitch.setChecked(mBtAdapter.isEnabled());
         // If the adapter is null, then Bluetooth is not supported
 
         Set<BluetoothDevice> pairedBTs = mBtAdapter.getBondedDevices();
-
-        bleSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            searchBtn.setClickable(isChecked);
-            if (isChecked)
-                searchBtn.setVisibility(View.VISIBLE);
-            else searchBtn.setVisibility(View.INVISIBLE);
-        });
 
 
         // Initialize array adapters. One for already paired devices and
@@ -181,25 +175,19 @@ public class ActivityBtConnect extends AppCompatActivity {
     private void scanBLE() {
         if (BuildConfig.DEBUG) Log.i("Android test", "doDiscovery()");
 
-        // Indicate scanning in the title
-        //setProgressBarIndeterminateVisibility(true);
-        setTitle(R.string.scanning);
+        if (mBtAdapter.isEnabled()) {
+            // Indicate scanning in the title
+            //setProgressBarIndeterminateVisibility(true);
+            setTitle(R.string.scanning);
 
 
-        // If we're already discovering, stop it
-        if (mBtAdapter.isDiscovering()) {
-            mBtAdapter.cancelDiscovery();
-        }
+            // If we're already discovering, stop it
+            if (mBtAdapter.isDiscovering()) {
+                mBtAdapter.cancelDiscovery();
+            }
 
-        // Request discover from BluetoothAdapter
-        mBtAdapter.startDiscovery();
-    }
-
-    private void switchStatus(boolean status) {
-        //int status = mBluetoothAdapter.getState();
-        bleSwitch.setChecked(status);
-        if (status) {
-            //scanBLE();
+            // Request discover from BluetoothAdapter
+            mBtAdapter.startDiscovery();
         }
     }
 

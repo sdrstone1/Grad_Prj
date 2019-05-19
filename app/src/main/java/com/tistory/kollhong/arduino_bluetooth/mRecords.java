@@ -81,7 +81,7 @@ class mRecords {
     }
 
     private double getRecord(long startdate, long enddate) {
-        Cursor cursor = mDbMan.getRecordCursor(db, recordTable, new String[]{recordTableVar[0], recordTableVar[1]}, " '" + recordTableVar[0] + "' BETWEEN '" + startdate + "' AND '" + enddate + "'");
+        Cursor cursor = mDbMan.getRecordCursor(db, recordTable, new String[]{recordTableVar[0], recordTableVar[1]}, recordTableVar[0] + " BETWEEN '" + startdate + "' AND '" + enddate + "'");
         //SQLiteDatabase db, String table, String[] col, String where
         double record = 0d;
         if (cursor.getCount() != 0) {
