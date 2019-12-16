@@ -16,6 +16,8 @@
 apply plugin: 'com.android.application'
 
 android {
+    signingConfigs {
+    }
     compileSdkVersion 27
     buildToolsVersion '28.0.3'
     defaultConfig {
@@ -36,7 +38,6 @@ android {
             crunchPngs false
         }
     }
-
     flavorDimensions "stage"
     productFlavors {
         beta {
@@ -49,7 +50,6 @@ android {
             minSdkVersion 22
             resConfigs "ko", "xxxhdpi"
             ext.enableCrashlytics = false
-            ext.alwaysUpdateBuildId = false
         }
         rel {
             dimension "stage"
@@ -72,18 +72,16 @@ android {
     }
     variantFilter{ variant ->
         def flavorName = variant.getFlavors().get(0).name
+        def buildName = variant.buildType.name;
         splits.abi.enable = (flavorName == 'rel')
-    }
-
-    dexOptions {
-        preDexLibraries true
+        if (flavorName == 'beta' && buildName == 'release' || flavorName == 'rel' && buildName == 'debug') {
+            variant.setIgnore(true);
+        }
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
-
-
 }
 
 
