@@ -31,13 +31,59 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+        debug{
+            minifyEnabled false
+            crunchPngs false
+        }
     }
+
+    flavorDimensions "stage"
     productFlavors {
+        beta {
+            dimension "stage"
+            applicationIdSuffix ".beta"
+            versionCode 100
+            versionName "1.0.0"
+            buildConfigField 'boolean', 'isTEST', "true"
+            //Log.d, Toast에 if(BuildConfig.isTEST) 로 분기
+            minSdkVersion 22
+            resConfigs "ko", "xxxhdpi"
+            ext.enableCrashlytics = false
+            ext.alwaysUpdateBuildId = false
+        }
+        rel {
+            dimension "stage"
+            applicationIdSuffix ".rel"
+            versionCode new Date().format('yyMMddHHmm').toInteger()
+            versionName "1.0.0"
+            buildConfigField 'boolean', 'isTEST', "false"
+            //Log.d, Toast에 if(BuildConfig.isTEST) 로 분기
+            minSdkVersion 22
+        }
+
+    }
+    splits {
+        abi {
+            enable true
+            reset()
+            include 'x86', 'x86_64', 'armeabi-v7a', 'arm64-v8a'
+            universalApk false
+        }
+    }
+    variantFilter{ variant ->
+        def flavorName = variant.getFlavors().get(0).name
+        splits.abi.enable = (flavorName == 'rel')
+    }
+
+    dexOptions {
+        preDexLibraries true
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+
+
 }
 
 
