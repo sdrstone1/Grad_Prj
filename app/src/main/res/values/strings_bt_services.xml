@@ -2,4 +2,5 @@
 <resources>
     <string name="bt_connected_to">Connected to </string>
     <string name="bt_connecting_to">Started to Connect to </string>
+    <string name="bt_connection_lost">Connection Lost</string>
 </resources>

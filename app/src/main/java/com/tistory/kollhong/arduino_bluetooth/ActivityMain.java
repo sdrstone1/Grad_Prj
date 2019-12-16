@@ -153,8 +153,6 @@ public class ActivityMain extends AppCompatActivity {
         Controlbutton.setOnClickListener(
                 v -> {
                     Intent intent14 = new Intent(v.getContext(), ActivitySetting.class);
-                    //Intent intent14 = new Intent(v.getContext(), ActivityBtConnect.class);    //임시
-                    //intent.putExtra("session", session);
                     startActivityForResult(intent14, REQUEST_SETTINGS);
                 });
 
@@ -203,9 +201,12 @@ public class ActivityMain extends AppCompatActivity {
 
         @Override
         public void ConnLost(int sum) {
-            Toast.makeText(getApplicationContext(), "Not Connected ", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), getString(R.string.bt_connection_lost), Toast.LENGTH_SHORT).show();
 
             Calendar date = Calendar.getInstance();
+            if (BuildConfig.DEBUG) {
+                date.set(2019, Calendar.MAY, 2, 11, 34, 0);
+            }
             if (date.get(Calendar.AM_PM) == Calendar.AM) {
                 date.add(Calendar.DATE, -1);
             }

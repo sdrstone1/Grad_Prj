@@ -36,6 +36,7 @@ import static com.tistory.kollhong.arduino_bluetooth.mPreferences.Color;
 
 public class BTservices extends Service {
     private static final String TAG = "BT_Services";
+    String addr;
     /**
      * Command to the service to display a message
      */
@@ -169,7 +170,7 @@ public class BTservices extends Service {
         super.onCreate();
         // Get local Bluetooth adapter
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-
+       
         // If the adapter is null, then Bluetooth is not supported
         if (mBluetoothAdapter == null) {
             Toast.makeText(this, "Bluetooth is not available", Toast.LENGTH_LONG).show();
@@ -293,12 +294,13 @@ public class BTservices extends Service {
 
 
                     }
-
-                    // Get the BLuetoothDevice object
-                    BluetoothDevice device = mBluetoothAdapter.getRemoteDevice(address);
-                    // Attempt to connect to the device
-                    mChatService.connect(device);
-
+                    if ( !addr.equals(address)) {
+                        addr = address;
+                        // Get the BLuetoothDevice object
+                        BluetoothDevice device = mBluetoothAdapter.getRemoteDevice(address);
+                        // Attempt to connect to the device
+                        mChatService.connect(device);
+                    }
                     break;
                 case BT_LED_OFF:
                     if (mChatService != null) {
