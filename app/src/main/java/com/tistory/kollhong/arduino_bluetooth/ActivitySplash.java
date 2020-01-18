@@ -28,6 +28,12 @@ public class ActivitySplash extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
 
+        try {
+            Thread.sleep(300);      //스플래시 보여주기
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
         mPreferences mPreferences = new mPreferences(getApplicationContext());
         if (!mPreferences.getBoolValue(com.tistory.kollhong.arduino_bluetooth.mPreferences.APP_INIT)) {
 

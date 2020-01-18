@@ -28,6 +28,7 @@ import android.widget.Toast;
 import java.util.Calendar;
 
 import static com.tistory.kollhong.arduino_bluetooth.ActivityRegister.isMyPage;
+import static com.tistory.kollhong.arduino_bluetooth.ActivitySetting.REQUEST_SETTINGS;
 import static com.tistory.kollhong.arduino_bluetooth.mDbMan.recordTable;
 import static com.tistory.kollhong.arduino_bluetooth.mDbMan.recordTableVar;
 import static com.tistory.kollhong.arduino_bluetooth.mPreferences.BT_Automatic_Connect;
@@ -110,6 +111,7 @@ public class ActivityMain extends AppCompatActivity {
 
         session = getIntent().getStringExtra("session");
 
+
         super.onCreate(savedInstanceState);
 
         Intent service = new Intent(this, BTservices.class);
@@ -178,7 +180,6 @@ public class ActivityMain extends AppCompatActivity {
                         break;
                 }
                 */
-
         }
     }
 
@@ -189,9 +190,7 @@ public class ActivityMain extends AppCompatActivity {
             stopService();
         }
         super.onDestroy();
-
     }
-
 
     @Override
     public void onBackPressed() {
@@ -211,7 +210,7 @@ public class ActivityMain extends AppCompatActivity {
     }
 
 
-    class BTserviceHandler implements BTservices.BTservice_CallBack {
+    class BTserviceHandler implements BTservices.BTservice_CallBack{
         @Override
         public void BtNotOn() {
             if (BuildConfig.DEBUG) Log.i(TAG, "BT not ON");
@@ -220,7 +219,7 @@ public class ActivityMain extends AppCompatActivity {
 
         @Override
         public void ConnLost(int sum) {
-            Toast.makeText(getApplicationContext(), "Not Connected ", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), getString(R.string.not_connected), Toast.LENGTH_SHORT).show();
 
             Calendar date = Calendar.getInstance();
             if (date.get(Calendar.AM_PM) == Calendar.AM) {
