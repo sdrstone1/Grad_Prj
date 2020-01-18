@@ -27,6 +27,7 @@
 
 
     <string name="app_name">Arduino_Bluetooth</string>
+    <string name="back_button">앱을 종료하시려면 한 번 더 누르세요</string>
 
     <string name="title_activity_splash">Arduino_Bluetooth</string>
     <string name="title_activity_bt_connect">BleConnect</string>

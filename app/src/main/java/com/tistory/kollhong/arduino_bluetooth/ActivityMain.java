@@ -28,7 +28,6 @@ import android.widget.Toast;
 import java.util.Calendar;
 
 import static com.tistory.kollhong.arduino_bluetooth.ActivityRegister.isMyPage;
-import static com.tistory.kollhong.arduino_bluetooth.ActivitySetting.REQUEST_SETTINGS;
 import static com.tistory.kollhong.arduino_bluetooth.mDbMan.recordTable;
 import static com.tistory.kollhong.arduino_bluetooth.mDbMan.recordTableVar;
 import static com.tistory.kollhong.arduino_bluetooth.mPreferences.BT_Automatic_Connect;
@@ -63,7 +62,6 @@ public class ActivityMain extends AppCompatActivity {
             BTMessenger = new Messenger(service);
             BTBound = true;
 
-
             if (BuildConfig.DEBUG) Log.i(TAG, "Service Connected");
             // Create and send a message to the service, using a supported 'what' value
 
@@ -95,7 +93,7 @@ public class ActivityMain extends AppCompatActivity {
         if (BuildConfig.DEBUG) Log.i(TAG, "Request BT Connect");
         // Create and send a message to the service, using a supported 'what' value
 
-        Message msg = Message.obtain(null, BTservices.BT_Options_Changed);
+        Message msg = Message.obtain(null, BTservices.BT_Device_Changed);
 
         try {
             BTMessenger.send(msg);
@@ -112,12 +110,11 @@ public class ActivityMain extends AppCompatActivity {
 
         session = getIntent().getStringExtra("session");
 
-
         super.onCreate(savedInstanceState);
 
-
-        bindService(new Intent(this, BTservices.class), BTServiceConnection,
-                Context.BIND_AUTO_CREATE);
+        Intent service = new Intent(this, BTservices.class);
+        startService(service);
+        bindService(service, BTServiceConnection, Context.BIND_AUTO_CREATE);
 
 
         ImageButton calendarbutton = findViewById(R.id.calendarbutton);
@@ -141,7 +138,7 @@ public class ActivityMain extends AppCompatActivity {
         ImageButton LEDbutton = findViewById(R.id.LEDbutton);
         LEDbutton.setOnClickListener(v -> {
             if (bTserviceHandler != null) {
-                Message msg = Message.obtain(null, BTservices.BT_LED_OFF, bTserviceHandler);
+                Message msg = Message.obtain(null, BTservices.BT_LED_OFF);
                 try {
                     BTMessenger.send(msg);
                 } catch (RemoteException e) {
@@ -155,20 +152,21 @@ public class ActivityMain extends AppCompatActivity {
                     Intent intent14 = new Intent(v.getContext(), ActivitySetting.class);
                     //Intent intent14 = new Intent(v.getContext(), ActivityBtConnect.class);    //임시
                     //intent.putExtra("session", session);
-                    startActivityForResult(intent14, REQUEST_SETTINGS);
+                    startActivity(intent14);
                 });
 
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
-            case BTservices.REQUEST_ENABLE_BT:
+            case BTservices.REQUEST_BT_POWER_ON:
                 // When the request to enable Bluetooth returns
                 if (resultCode != Activity.RESULT_OK) {
                     // User did not enable Bluetooth or an error occured
                     Toast.makeText(this, R.string.bt_not_enabled_leaving, Toast.LENGTH_SHORT).show();
                 }
                 break;
+                /*
             case REQUEST_SETTINGS:
 
                 switch (resultCode) {
@@ -179,26 +177,45 @@ public class ActivityMain extends AppCompatActivity {
                     default:
                         break;
                 }
+                */
+
         }
     }
 
 
     @Override
     protected void onDestroy() {
+        if (isFinishing()) {
+            stopService();
+        }
         super.onDestroy();
-        // Unbind from the service
-        if (BTBound) {
-            unbindService(BTServiceConnection);
-            BTBound = false;
 
+    }
+
+
+    @Override
+    public void onBackPressed() {
+        long backKeyPressedTime = 0L;
+        if (System.currentTimeMillis() > backKeyPressedTime + 2000) {
+            backKeyPressedTime = System.currentTimeMillis();
+            Toast.makeText(this, getString(R.string.back_button), Toast.LENGTH_SHORT).show();
+        } else {
+            stopService();
+            finish();
         }
     }
 
-    class BTserviceHandler implements BTservices.BTservice_CallBack{
+    private void stopService() {
+        Intent service = new Intent(this, BTservices.class);
+        stopService(service);
+    }
+
+
+    class BTserviceHandler implements BTservices.BTservice_CallBack {
         @Override
         public void BtNotOn() {
             if (BuildConfig.DEBUG) Log.i(TAG, "BT not ON");
-            startActivityForResult(new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE), BTservices.REQUEST_ENABLE_BT);
+            startActivityForResult(new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE), BTservices.REQUEST_BT_POWER_ON);
         }
 
         @Override

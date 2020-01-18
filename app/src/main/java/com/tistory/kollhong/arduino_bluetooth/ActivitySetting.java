@@ -17,8 +17,10 @@ package com.tistory.kollhong.arduino_bluetooth;
 
 import android.app.Activity;
 import android.app.DialogFragment;
+import android.content.ComponentName;
 import android.content.Intent;
-import android.os.Bundle;
+import android.content.ServiceConnection;
+import android.os.*;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -33,6 +35,38 @@ public class ActivitySetting extends AppCompatActivity implements ColorPickerDia
 
 
     private static final String TAG = "Settings";
+
+
+    //private ActivityMain.BTserviceHandler bTserviceHandler = null;
+    private Messenger BTMessenger = null;
+    private boolean BTBound;
+
+    /**
+     * Create connection with service.
+     */
+    private ServiceConnection BTServiceConnection = new ServiceConnection() {
+        public void onServiceConnected(ComponentName className, IBinder service) {
+            // This is called when the connection with the service has been
+            // established, giving us the object we can use to
+            // interact with the service.  We are communicating with the
+            // service using a Messenger, so here we get a client-side
+            // representation of that from the raw IBinder object.
+            BTMessenger = new Messenger(service);
+            BTBound = true;
+
+            if (BuildConfig.DEBUG) Log.i(TAG, "Service Connected");
+
+        }
+
+        public void onServiceDisconnected(ComponentName className) {
+            if (BuildConfig.DEBUG) Log.i(TAG, "Service Disconnected");
+            // This is called when the connection with the service has been
+            // unexpectedly disconnected -- that is, its process crashed.
+            BTMessenger = null;
+            BTBound = false;
+        }
+    };
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,10 +83,9 @@ public class ActivitySetting extends AppCompatActivity implements ColorPickerDia
         autoConnectswitch.setChecked(mPref.getBoolValue(BT_Automatic_Connect));
     }
 
-    public void onSensorConnectBtn(View v) {
+    public void onSensorPairingBtn(View v) {
         Intent intent = new Intent(v.getContext(), ActivityBtConnect.class);    //임시
         startActivityForResult(intent, BTservices.REQUEST_CONNECT_DEVICE);
-
     }
 
     public void onLEDSettingsBtn(View v) {
@@ -71,7 +104,13 @@ public class ActivitySetting extends AppCompatActivity implements ColorPickerDia
         switch (requestCode) {
             case BTservices.REQUEST_CONNECT_DEVICE:
                 if (resultCode == Activity.RESULT_OK) {
-                    setResult(Activity.RESULT_OK);
+                    Message msg = Message.obtain(null, BTservices.BT_Device_Changed);
+
+                    try {
+                        BTMessenger.send(msg);
+                    } catch (RemoteException e) {
+                        e.printStackTrace();
+                    }
                 }
                 break;
         }
@@ -91,7 +130,14 @@ public class ActivitySetting extends AppCompatActivity implements ColorPickerDia
                 mPreferences mPref = new mPreferences(getApplicationContext());
                 mPref.setValue(mPreferences.Color, color);
 
-                setResult(Activity.RESULT_OK);
+                Message msg = Message.obtain(null, BTservices.BT_LED_COLOR_CHANGED);
+
+                try {
+                    BTMessenger.send(msg);
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                }
+
                 break;
         }
     }

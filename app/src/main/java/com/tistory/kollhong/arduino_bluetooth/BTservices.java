@@ -39,16 +39,17 @@ public class BTservices extends Service {
     /**
      * Command to the service to display a message
      */
-    static final int BT_Options_Changed = 100;
-    static final int STATE_BT_NOT_ON = 101;
-    static final int BT_Callback_Object = 102;
-    static final int BT_LED_OFF = 103;
+    static final int BT_Device_Changed = 100;
+    static final int BT_LED_COLOR_CHANGED = 101;
+    static final int STATE_BT_NOT_ON = 110;
+    static final int BT_Callback_Object = 111;
+    static final int BT_LED_OFF = 112;
     // Message types sent from the BluetoothChatService Handler
     static final int BT_STATE_CHANGE = 1;
 
     // Intent request codes
     static final int REQUEST_CONNECT_DEVICE = 200;
-    static final int REQUEST_ENABLE_BT = 201;
+    static final int REQUEST_BT_POWER_ON = 201;
     static final int BT_MESSAGE_READ = 2;
     static final int BT_MESSAGE_WRITE = 3;
     static final int BT_REMOTE_DEVICE_NAME = 4;
@@ -63,7 +64,7 @@ public class BTservices extends Service {
     /**
      * Target we publish for clients to send messages to IncomingHandler.
      */
-    private final Messenger mMessenger = new Messenger(new IncomingHandler());
+    private final Messenger mMessenger = new Messenger(new mActivityHandler());
     private String session;
     private int milliLiter = 0;
     // Array adapter for the conversation thread
@@ -84,10 +85,11 @@ public class BTservices extends Service {
     private BluetoothAdapter mBluetoothAdapter = null;
     // The action listener for the EditText widget, to listen for the return key
     // Member object for the chat services
-    private BtMsgClass mChatService = null;
+    private BtMsgClass mBTMsgService = null;
+
     // The Handler that gets information back from the BluetoothChatService
     @SuppressLint("HandlerLeak")
-    private final Handler mHandler = new Handler() {
+    private final Handler mBTHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what) {
@@ -123,7 +125,7 @@ public class BTservices extends Service {
                     String readMessage = new String(readBuf, 0, msg.arg1);
 
 
-                    processMessage(readMessage);
+                    processBTMessage(readMessage);
                     //mConversationArrayAdapter.add(mConnectedDeviceName + ":  " + readMessage);
                     break;
                 case BT_REMOTE_DEVICE_NAME:
@@ -135,7 +137,6 @@ public class BTservices extends Service {
                             Toast.LENGTH_SHORT).show();
                     break;
                 case BT_CONN_LOST:
-                    //TODO 마신 양 저장
                     bTserviceCallBack.ConnLost(milliLiter);
 
                     break;
@@ -145,10 +146,10 @@ public class BTservices extends Service {
         }
     };
 
-    private void setupChat() {
+    private void setupBTService() {
 
         // Initialize the BluetoothChatService to perform bluetooth connections
-        if (mChatService == null) mChatService = new BtMsgClass(this, mHandler);
+        if (mBTMsgService == null) mBTMsgService = new BtMsgClass(this, mBTHandler);
 
         // Initialize the buffer for outgoing messages
         mOutStringBuffer = new StringBuffer();
@@ -178,22 +179,35 @@ public class BTservices extends Service {
 
     @Override
     public boolean onUnbind(Intent intent) {
+        // 마지막 클라이언트가 연결 해제할 때 호출되는 함수.
         return super.onUnbind(intent);
     }
 
     @Override
-    public void onTaskRemoved(Intent rootIntent) {
-        super.onTaskRemoved(rootIntent);
+    public void onDestroy() {
+        super.onDestroy();
+
+
+        // Stop the Bluetooth chat services
+        if (mBTMsgService != null) {
+            mBTMsgService.stop();
+            mRecords mRecords = new mRecords(getApplicationContext(), session, true);
+            Date date = new Date();
+
+            mRecords.putRecord(date, (double) DrunkSum);
+        }
+        if (BuildConfig.DEBUG) Log.i(TAG, "--- ON DESTROY ---");
     }
+
 
     /**
      * Sends a msg_list_holder.
      *
      * @param message A string of text to send.
      */
-    private void sendMessage(String message) {
+    private void sendBTMessage(String message) {
         // Check that we're actually connected before trying anything
-        if (mChatService.getState() != BtMsgClass.STATE_CONNECTED) {
+        if (mBTMsgService.getState() != BtMsgClass.STATE_CONNECTED) {
             Toast.makeText(this, R.string.not_connected, Toast.LENGTH_SHORT).show();
             return;
         }
@@ -202,7 +216,7 @@ public class BTservices extends Service {
         if (message.length() > 0) {
             // Get the msg_list_holder bytes and tell the BluetoothChatService to write
             byte[] send = message.getBytes();
-            mChatService.write(send);
+            mBTMsgService.write(send);
 
             // Reset out string buffer to zero and clear the edit text field
             mOutStringBuffer.setLength(0);
@@ -210,7 +224,7 @@ public class BTservices extends Service {
         }
     }
 
-    private void processMessage(String message) {
+    private void processBTMessage(String message) {
         if (message.contains("/")) {
 
             String[] messages = message.split("/");      //\n로 메시지 타이밍 구분
@@ -232,19 +246,6 @@ public class BTservices extends Service {
         //어레이에 추가하지 않음.
     }
 
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        // Stop the Bluetooth chat services
-        if (mChatService != null) {
-            mChatService.stop();
-            mRecords mRecords = new mRecords(getApplicationContext(), session, true);
-            Date date = new Date();
-
-            mRecords.putRecord(date, (double) DrunkSum);
-        }
-        if (BuildConfig.DEBUG) Log.i(TAG, "--- ON DESTROY ---");
-    }
 
     private void RGBON() {
 
@@ -262,48 +263,60 @@ public class BTservices extends Service {
         Log.i(TAG, "RGB substring : " + green + "gx");
         Log.i(TAG, "RGB substring : " + blue + "bx");
         //값(0~255)색(rgb) x
-        BTservices.this.sendMessage(red + "rx");
-        BTservices.this.sendMessage(green + "gx");
-        BTservices.this.sendMessage(blue + "bx");
+        BTservices.this.sendBTMessage(red + "rx");
+        BTservices.this.sendBTMessage(green + "gx");
+        BTservices.this.sendBTMessage(blue + "bx");
 
         BT_LED_STATUS = true;
     }
 
+    interface service extends Handler.Callback {
+        @Override
+        boolean handleMessage(Message msg);
+    }
+
+    interface BTservice_CallBack {
+        void ConnLost(int sum);
+
+        void BtNotOn();
+    }
+
     /**
-     * Handler of incoming messages from clients.
+     * Handler of incoming messages from main activity.
      */
     @SuppressLint("HandlerLeak")
-    class IncomingHandler extends Handler {
+    class mActivityHandler extends Handler {
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what) {
                 case BT_Callback_Object:
-                    bTserviceCallBack = (BTservice_CallBack)msg.obj;
+                    bTserviceCallBack = (BTservice_CallBack) msg.obj;
                     break;
 
-                case BT_Options_Changed:
+                case BT_Device_Changed:
                     mPreferences mPref = new mPreferences(getApplicationContext());
                     String address = mPref.getStringValue(mPreferences.BT_ADDR);
 
                     if (!mBluetoothAdapter.isEnabled()) {
-
                         bTserviceCallBack.BtNotOn();
                     } else {
-                        setupChat();
-
-
+                        setupBTService();
                     }
 
                     // Get the BLuetoothDevice object
                     BluetoothDevice device = mBluetoothAdapter.getRemoteDevice(address);
                     // Attempt to connect to the device
-                    mChatService.connect(device);
+                    mBTMsgService.connect(device);
 
                     break;
+
+                case BT_LED_COLOR_CHANGED:
+                    RGBON();
+                    break;
                 case BT_LED_OFF:
-                    if (mChatService != null) {
+                    if (mBTMsgService != null) {
                         if (BT_LED_STATUS) {
-                            BTservices.this.sendMessage("ax");
+                            BTservices.this.sendBTMessage("ax");
                             BT_LED_STATUS = false;
                             Log.i(TAG, "RGB substring : ax");
                         } else RGBON();
@@ -314,11 +327,6 @@ public class BTservices extends Service {
             }
 
         }
-    }
-
-    interface BTservice_CallBack{
-        void ConnLost(int sum);
-        void BtNotOn();
     }
 
 }
