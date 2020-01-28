@@ -18,6 +18,7 @@ package com.tistory.kollhong.arduino_bluetooth;
 import android.app.Activity;
 import android.app.DialogFragment;
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.*;
@@ -81,6 +82,9 @@ public class ActivitySetting extends AppCompatActivity implements ColorPickerDia
         });
         mPreferences mPref = new mPreferences(getApplicationContext());
         autoConnectswitch.setChecked(mPref.getBoolValue(BT_Automatic_Connect));
+
+        Intent service = new Intent(this, BTservices.class);
+        bindService(service, BTServiceConnection, Context.BIND_AUTO_CREATE);
     }
 
     public void onSensorPairingBtn(View v) {
@@ -98,6 +102,11 @@ public class ActivitySetting extends AppCompatActivity implements ColorPickerDia
 
     }
 
+    @Override
+    protected void onDestroy() {
+        unbindService(BTServiceConnection);
+        super.onDestroy();
+    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {

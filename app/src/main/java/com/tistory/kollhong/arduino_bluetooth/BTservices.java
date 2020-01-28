@@ -46,6 +46,7 @@ public class BTservices extends Service {
     static final int BT_LED_OFF = 112;
     // Message types sent from the BluetoothChatService Handler
     static final int BT_STATE_CHANGE = 1;
+    static final int APP_CLOSING = 121;
 
     // Intent request codes
     static final int REQUEST_CONNECT_DEVICE = 200;
@@ -137,7 +138,7 @@ public class BTservices extends Service {
                             Toast.LENGTH_SHORT).show();
                     break;
                 case BT_CONN_LOST:
-                    bTserviceCallBack.ConnLost(milliLiter);
+                    bTserviceCallBack.SaveMilliLiters(milliLiter);
 
                     break;
 
@@ -225,6 +226,12 @@ public class BTservices extends Service {
     }
 
     private void processBTMessage(String message) {
+        //통신에 문제가 있는 장비에 한 함.
+
+        /*
+        //마지막 배열은 다음 메시지와 연결될 수 있기 때문에
+        //어레이에 추가하지 않음.
+
         if (message.contains("/")) {
 
             String[] messages = message.split("/");      //\n로 메시지 타이밍 구분
@@ -241,9 +248,10 @@ public class BTservices extends Service {
             tmpString = tmpString + message;
             Log.i(TAG, "Message 00 : " + tmpString);
         }
+         */
 
-        //마지막 배열은 다음 메시지와 연결될 수 있기 때문에
-        //어레이에 추가하지 않음.
+        milliLiter = Integer.parseInt(message);
+
     }
 
 
@@ -270,13 +278,8 @@ public class BTservices extends Service {
         BT_LED_STATUS = true;
     }
 
-    interface service extends Handler.Callback {
-        @Override
-        boolean handleMessage(Message msg);
-    }
-
     interface BTservice_CallBack {
-        void ConnLost(int sum);
+        void SaveMilliLiters(int sum);
 
         void BtNotOn();
     }
@@ -321,6 +324,10 @@ public class BTservices extends Service {
                             Log.i(TAG, "RGB substring : ax");
                         } else RGBON();
                     }
+                    break;
+                case APP_CLOSING:
+                    bTserviceCallBack.SaveMilliLiters(milliLiter);
+
 
                 default:
                     super.handleMessage(msg);

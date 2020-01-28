@@ -28,7 +28,6 @@ import android.widget.Toast;
 import java.util.Calendar;
 
 import static com.tistory.kollhong.arduino_bluetooth.ActivityRegister.isMyPage;
-import static com.tistory.kollhong.arduino_bluetooth.ActivitySetting.REQUEST_SETTINGS;
 import static com.tistory.kollhong.arduino_bluetooth.mDbMan.recordTable;
 import static com.tistory.kollhong.arduino_bluetooth.mDbMan.recordTableVar;
 import static com.tistory.kollhong.arduino_bluetooth.mPreferences.BT_Automatic_Connect;
@@ -199,6 +198,14 @@ public class ActivityMain extends AppCompatActivity {
             backKeyPressedTime = System.currentTimeMillis();
             Toast.makeText(this, getString(R.string.back_button), Toast.LENGTH_SHORT).show();
         } else {
+
+            Message msg = Message.obtain(null, BTservices.APP_CLOSING);
+            try {
+                BTMessenger.send(msg);
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
+
             stopService();
             finish();
         }
@@ -218,7 +225,7 @@ public class ActivityMain extends AppCompatActivity {
         }
 
         @Override
-        public void ConnLost(int sum) {
+        public void SaveMilliLiters(int sum) {
             Toast.makeText(getApplicationContext(), getString(R.string.not_connected), Toast.LENGTH_SHORT).show();
 
             Calendar date = Calendar.getInstance();
