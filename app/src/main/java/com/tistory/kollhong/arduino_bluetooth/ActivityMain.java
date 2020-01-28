@@ -41,6 +41,7 @@ import static com.tistory.kollhong.arduino_bluetooth.mPreferences.BT_Automatic_C
  */
 
 public class ActivityMain extends AppCompatActivity {
+    long backKeyPressedTime = 0L;
 
     private final String TAG = "MAIN";
     private String session;
@@ -193,8 +194,8 @@ public class ActivityMain extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        long backKeyPressedTime = 0L;
-        if (System.currentTimeMillis() > backKeyPressedTime + 2000) {
+
+        if (System.currentTimeMillis() > backKeyPressedTime + 2000L) {
             backKeyPressedTime = System.currentTimeMillis();
             Toast.makeText(this, getString(R.string.back_button), Toast.LENGTH_SHORT).show();
         } else {
